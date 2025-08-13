@@ -4,7 +4,7 @@
 @php
     $breadcrumbs = [
         ['title' => 'Reports'],
-        ['title' => 'Recent Supplies List']
+        ['title' => 'Supplies List History']
     ];
 @endphp
 
@@ -24,8 +24,8 @@
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Recent Supplies List</h1>
-                            <p class="text-gray-600 mt-2">Track recent stock supplies and deliveries</p>
+                            <h1 class="text-3xl font-bold text-gray-900">Supplies List History</h1>
+                            <p class="text-gray-600 mt-2">Complete history of all supply orders and deliveries</p>
                         </div>
                     </div>
                 </div>

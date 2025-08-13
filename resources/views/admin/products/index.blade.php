@@ -24,7 +24,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">Product Management</h1>
-                            <p class="text-gray-600 mt-2">Manage product categories and inventory</p>
+                            <p class="text-gray-600 mt-2">Manage products, categories, and supplies</p>
                         </div>
                     </div>
                 </div>
@@ -33,16 +33,6 @@
                 <div class="mb-8">
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-8">
-                            <button @click="activeTab = 'categories'" 
-                                    :class="activeTab === 'categories' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m0 4l2 2-2 2M3 7l2 2-2 2"></path>
-                                    </svg>
-                                    <span>Categories</span>
-                                </div>
-                            </button>
                             <button @click="activeTab = 'products'" 
                                     :class="activeTab === 'products' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
@@ -53,171 +43,43 @@
                                     <span>Products</span>
                                 </div>
                             </button>
+                            <button @click="activeTab = 'categories'" 
+                                    :class="activeTab === 'categories' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m0 4l2 2-2 2M3 7l2 2-2 2"></path>
+                                    </svg>
+                                    <span>Categories</span>
+                                </div>
+                            </button>
+                            <button @click="activeTab = 'supplies'" 
+                                    :class="activeTab === 'supplies' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                    </svg>
+                                    <span>Supplies</span>
+                                </div>
+                            </button>
                         </nav>
-                    </div>
-                </div>
-
-                <!-- Categories Tab Content -->
-                <div x-show="activeTab === 'categories'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-semibold text-gray-900">Product Categories</h2>
-                        <button @click="openAddCategoryModal()" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            <span>Add Category</span>
-                        </button>
-                    </div>
-
-                    <!-- Categories Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <template x-for="category in categories" :key="category.id">
-                            <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m0 4l2 2-2 2M3 7l2 2-2 2"></path>
-                                        </svg>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button @click="alert('Edit category functionality - implement server-side')"
-                                                class="text-gray-400 hover:text-blue-600 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                            </svg>
-                                        </button>
-                                        <button @click="deleteCategory(category.id)"
-                                                class="text-gray-400 hover:text-red-600 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2" x-text="category.name"></h3>
-                                <p class="text-gray-600 text-sm mb-4" x-text="category.description || 'No description available'"></p>
-                                <div class="flex items-center justify-between text-sm text-gray-500">
-                                    <span x-text="category.product_count + ' products'"></span>
-                                    <span x-text="new Date(category.created_at).toLocaleDateString()"></span>
-                                </div>
-                            </div>
-                        </template>
                     </div>
                 </div>
 
                 <!-- Products Tab Content -->
                 <div x-show="activeTab === 'products'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-semibold text-gray-900">Product Inventory</h2>
-                        <button @click="openAddProductModal()" 
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            <span>Add Product</span>
-                        </button>
-                    </div>
+                    @include('admin.products.product-list')
+                </div>
 
-                    <!-- Products Filters -->
-                    <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
-                        <div class="flex flex-wrap items-center space-x-4">
-                            <div class="flex-1 min-w-64">
-                                <div class="relative">
-                                    <input type="text" 
-                                           x-model="productSearchQuery"
-                                           placeholder="Search products..." 
-                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <select x-model="productCategoryFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">All Categories</option>
-                                <template x-for="category in categories" :key="category.id">
-                                    <option :value="category.id" x-text="category.name"></option>
-                                </template>
-                            </select>
-                            <select x-model="productStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">All Status</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </div>
-                    </div>
+                <!-- Categories Tab Content -->
+                <div x-show="activeTab === 'categories'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.categories')
+                </div>
 
-                    <!-- Products Table -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200">
-                                    <template x-for="product in filteredProducts" :key="product.id">
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-medium text-gray-900" x-text="product.name"></div>
-                                                        <div class="text-sm text-gray-500" x-text="product.barcode || 'No barcode'"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="text-sm text-gray-900" x-text="getCategoryName(product.category_id)"></span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">$<span x-text="product.price"></span></div>
-                                                <div class="text-xs text-gray-500">Cost: $<span x-text="product.cost"></span></div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium"
-                                                     :class="product.stock_quantity <= 5 ? 'text-red-600' : product.stock_quantity <= 10 ? 'text-yellow-600' : 'text-green-600'"
-                                                     x-text="product.stock_quantity + ' units'"></div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                                                      :class="product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                                                      x-text="product.status.charAt(0).toUpperCase() + product.status.slice(1)"></span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <div class="flex items-center space-x-2">
-                                                    <button @click="alert('Edit product functionality - implement server-side')"
-                                                            class="text-blue-600 hover:text-blue-900 transition-colors">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                        </svg>
-                                                    </button>
-                                                    <button @click="deleteProduct(product.id)"
-                                                            class="text-red-600 hover:text-red-900 transition-colors">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <!-- Supplies Tab Content -->
+                <div x-show="activeTab === 'supplies'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.supplies')
                 </div>
             </div>
 
@@ -400,6 +262,117 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Add Supply Modal -->
+            <div x-show="showAddSupplyModal" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+                 @click.self="closeAddSupplyModal()">
+                <div class="relative top-10 mx-auto p-5 border w-96 shadow-lg rounded-lg bg-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900" x-text="addSupplyForm.id ? 'Edit Supply' : 'Add New Supply'"></h3>
+                        <button @click="closeAddSupplyModal()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <form @submit.prevent="addSupply()">
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
+                            <div>
+                                <label for="add_supply_product_name" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                                <input type="text" 
+                                       id="add_supply_product_name"
+                                       x-model="addSupplyForm.product_name" 
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label for="add_supply_supplier" class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                                <input type="text" 
+                                       id="add_supply_supplier"
+                                       x-model="addSupplyForm.supplier" 
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="add_supply_quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                                    <input type="text" 
+                                           id="add_supply_quantity"
+                                           x-model="addSupplyForm.quantity" 
+                                           required
+                                           placeholder="e.g., 50 kg, 100 pieces"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="add_supply_cost" class="block text-sm font-medium text-gray-700 mb-1">Cost</label>
+                                    <input type="number" 
+                                           id="add_supply_cost"
+                                           x-model="addSupplyForm.cost" 
+                                           step="0.01"
+                                           min="0"
+                                           required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="add_supply_date" class="block text-sm font-medium text-gray-700 mb-1">Supply Date</label>
+                                <input type="date" 
+                                       id="add_supply_date"
+                                       x-model="addSupplyForm.date" 
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label for="add_supply_status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select id="add_supply_status"
+                                        x-model="addSupplyForm.status" 
+                                        required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="pending">Pending</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="add_supply_description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea id="add_supply_description"
+                                          x-model="addSupplyForm.product_description" 
+                                          rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-end space-x-3 mt-6">
+                            <button type="button" 
+                                    @click="closeAddSupplyModal()"
+                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit" 
+                                    :disabled="addSupplyForm.loading"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors disabled:opacity-50">
+                                <span x-show="!addSupplyForm.loading" x-text="addSupplyForm.id ? 'Update Supply' : 'Add Supply'"></span>
+                                <span x-show="addSupplyForm.loading">Saving...</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </main>
     </div>
 </div>
@@ -407,13 +380,17 @@
 <script>
 function productManagement() {
     return {
-        // State
-        activeTab: 'categories',
+        // State - Changed default tab to 'products'
+        activeTab: 'products',
         showAddCategoryModal: false,
         showAddProductModal: false,
+        showAddSupplyModal: false,
         productSearchQuery: '',
         productCategoryFilter: '',
         productStatusFilter: '',
+        supplySearchQuery: '',
+        supplyStatusFilter: '',
+        supplyDateFilter: '',
         
         // Form data
         addCategoryForm: {
@@ -431,6 +408,18 @@ function productManagement() {
             barcode: '',
             status: 'active',
             description: '',
+            loading: false
+        },
+
+        addSupplyForm: {
+            id: null,
+            product_name: '',
+            supplier: '',
+            quantity: '',
+            cost: '',
+            date: new Date().toISOString().split('T')[0],
+            status: 'pending',
+            product_description: '',
             loading: false
         },
         
@@ -523,6 +512,64 @@ function productManagement() {
                 description: 'Complete programming guide'
             }
         ],
+
+        supplies: [
+            {
+                id: 1,
+                supply_id: '#SUP-001',
+                product_name: 'Coffee Beans',
+                product_description: 'Premium Arabica',
+                supplier: 'Coffee Co.',
+                quantity: '50 kg',
+                cost: 450.00,
+                date: 'Dec 25, 2024',
+                status: 'delivered'
+            },
+            {
+                id: 2,
+                supply_id: '#SUP-002',
+                product_name: 'Pastries',
+                product_description: 'Assorted varieties',
+                supplier: 'Bakery Fresh',
+                quantity: '100 pieces',
+                cost: 275.00,
+                date: 'Dec 24, 2024',
+                status: 'delivered'
+            },
+            {
+                id: 3,
+                supply_id: '#SUP-003',
+                product_name: 'Milk',
+                product_description: 'Fresh dairy',
+                supplier: 'Dairy Farm',
+                quantity: '20 liters',
+                cost: 80.00,
+                date: 'Dec 23, 2024',
+                status: 'pending'
+            },
+            {
+                id: 4,
+                supply_id: '#SUP-004',
+                product_name: 'Sugar',
+                product_description: 'White granulated',
+                supplier: 'Sweet Supply Co.',
+                quantity: '25 kg',
+                cost: 75.00,
+                date: 'Dec 22, 2024',
+                status: 'delivered'
+            },
+            {
+                id: 5,
+                supply_id: '#SUP-005',
+                product_name: 'Paper Cups',
+                product_description: '16oz disposable',
+                supplier: 'EcoPack Ltd.',
+                quantity: '1000 pieces',
+                cost: 120.00,
+                date: 'Dec 21, 2024',
+                status: 'delivered'
+            }
+        ],
         
         // Computed properties
         get filteredProducts() {
@@ -547,6 +594,35 @@ function productManagement() {
             if (this.productStatusFilter) {
                 filtered = filtered.filter(product => 
                     product.status === this.productStatusFilter
+                );
+            }
+            
+            return filtered;
+        },
+
+        get filteredSupplies() {
+            let filtered = this.supplies;
+            
+            // Search filter
+            if (this.supplySearchQuery) {
+                filtered = filtered.filter(supply => 
+                    supply.product_name.toLowerCase().includes(this.supplySearchQuery.toLowerCase()) ||
+                    supply.supplier.toLowerCase().includes(this.supplySearchQuery.toLowerCase()) ||
+                    supply.supply_id.toLowerCase().includes(this.supplySearchQuery.toLowerCase())
+                );
+            }
+            
+            // Status filter
+            if (this.supplyStatusFilter) {
+                filtered = filtered.filter(supply => 
+                    supply.status === this.supplyStatusFilter
+                );
+            }
+            
+            // Date filter
+            if (this.supplyDateFilter) {
+                filtered = filtered.filter(supply => 
+                    supply.date.includes(this.supplyDateFilter)
                 );
             }
             
@@ -578,6 +654,16 @@ function productManagement() {
             this.showAddProductModal = false;
             this.resetProductForm();
         },
+
+        openAddSupplyModal() {
+            this.showAddSupplyModal = true;
+            this.resetSupplyForm();
+        },
+        
+        closeAddSupplyModal() {
+            this.showAddSupplyModal = false;
+            this.resetSupplyForm();
+        },
         
         resetCategoryForm() {
             this.addCategoryForm = {
@@ -597,6 +683,20 @@ function productManagement() {
                 barcode: '',
                 status: 'active',
                 description: '',
+                loading: false
+            };
+        },
+
+        resetSupplyForm() {
+            this.addSupplyForm = {
+                id: null,
+                product_name: '',
+                supplier: '',
+                quantity: '',
+                cost: '',
+                date: new Date().toISOString().split('T')[0],
+                status: 'pending',
+                product_description: '',
                 loading: false
             };
         },
@@ -653,6 +753,45 @@ function productManagement() {
                 alert('Product added successfully!');
             }, 1000);
         },
+
+        addSupply() {
+            if (!this.addSupplyForm.product_name.trim() || !this.addSupplyForm.supplier.trim()) return;
+            
+            this.addSupplyForm.loading = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                if (this.addSupplyForm.id) {
+                    // Update existing supply
+                    const index = this.supplies.findIndex(s => s.id === this.addSupplyForm.id);
+                    if (index !== -1) {
+                        this.supplies[index] = {
+                            ...this.addSupplyForm,
+                            supply_id: this.supplies[index].supply_id
+                        };
+                    }
+                    alert('Supply updated successfully!');
+                } else {
+                    // Add new supply
+                    const newSupply = {
+                        ...this.addSupplyForm,
+                        id: this.supplies.length + 1,
+                        supply_id: '#SUP-' + String(this.supplies.length + 1).padStart(3, '0'),
+                        cost: parseFloat(this.addSupplyForm.cost)
+                    };
+                    
+                    this.supplies.push(newSupply);
+                    alert('Supply added successfully!');
+                }
+                
+                this.closeAddSupplyModal();
+            }, 1000);
+        },
+
+        editSupply(supply) {
+            this.addSupplyForm = { ...supply };
+            this.showAddSupplyModal = true;
+        },
         
         deleteCategory(categoryId) {
             if (confirm('Are you sure you want to delete this category?')) {
@@ -676,6 +815,13 @@ function productManagement() {
                 
                 this.products = this.products.filter(p => p.id !== productId);
                 alert('Product deleted successfully!');
+            }
+        },
+
+        deleteSupply(supplyId) {
+            if (confirm('Are you sure you want to delete this supply?')) {
+                this.supplies = this.supplies.filter(s => s.id !== supplyId);
+                alert('Supply deleted successfully!');
             }
         }
     }
