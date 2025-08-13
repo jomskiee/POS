@@ -10,107 +10,6 @@
 <div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: false }">
     <!-- Sidebar Component -->
     @include('layouts.partials.sidebar')
-        <div class="p-4 border-b">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span class="text-white font-bold text-sm">POS</span>
-                </div>
-                <span x-show="sidebarOpen" x-transition class="text-xl font-bold text-gray-800 whitespace-nowrap">Point of Sale</span>
-            </div>
-        </div>
-        
-        <!-- Navigation -->
-        <nav class="mt-6">
-            <div x-show="sidebarOpen" x-transition class="px-4 pb-2">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu</p>
-            </div>
-            
-            <ul class="space-y-1 px-3">
-                <li>
-                    <a href="{{ route('admin.dashboard') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 group relative">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">Dashboard</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="{{ route('admin.users.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 group relative">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 715 0z"></path>
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">User Management</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="{{ route('admin.products.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-blue-600 bg-blue-50 group relative">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">Product Management</span>
-                    </a>
-                </li>
-                
-
-                
-                <!-- Reports with Submenu -->
-                <li>
-                    <div>
-                        <button @click="reportsOpen = !reportsOpen" 
-                                class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 group relative">
-                            <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            <span x-show="sidebarOpen" x-transition class="flex-1 text-left whitespace-nowrap">Reports</span>
-                            <svg x-show="sidebarOpen" :class="reportsOpen ? 'rotate-90' : ''" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                        
-                        <!-- Reports Submenu -->
-                        <div x-show="sidebarOpen && reportsOpen" 
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 transform -translate-y-2"
-                             x-transition:enter-end="opacity-100 transform translate-y-0"
-                             x-transition:leave="transition ease-in duration-150"
-                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                             x-transition:leave-end="opacity-0 transform -translate-y-2"
-                             class="mt-2 space-y-1">
-                            <a href="{{ route('admin.reports.daily-sales') }}" 
-                               class="flex items-center pl-11 pr-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
-                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                Daily Sales Report
-                            </a>
-                            
-                            <a href="{{ route('admin.reports.order-history') }}" 
-                               class="flex items-center pl-11 pr-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
-                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                Order List History
-                            </a>
-                            
-                            <a href="{{ route('admin.reports.supplies-list') }}" 
-                               class="flex items-center pl-11 pr-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
-                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                </svg>
-                                Recent Supplies List
-                            </a>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-    </div>
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
@@ -122,196 +21,75 @@
             <div class="w-full">
                 <!-- Page Header -->
                 <div class="mb-8">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Product Management</h1>
-                            <p class="text-gray-600 mt-2">Manage product categories and inventory</p>
-                        </div>
-                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900">Product Management</h1>
+                    <p class="text-gray-600 mt-2">Manage your products and categories efficiently</p>
                 </div>
 
                 <!-- Tab Navigation -->
-                <div class="mb-8">
+                <div class="bg-white rounded-xl shadow-lg mb-6">
                     <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex space-x-8">
+                        <nav class="-mb-px flex space-x-8 px-6">
                             <button @click="activeTab = 'categories'" 
                                     :class="activeTab === 'categories' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m0 4l2 2-2 2M3 7l2 2-2 2"></path>
-                                    </svg>
-                                    <span>Categories</span>
-                                </div>
+                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Product Categories
                             </button>
                             <button @click="activeTab = 'products'" 
                                     :class="activeTab === 'products' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                    </svg>
-                                    <span>Products</span>
-                                </div>
+                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Product List
                             </button>
                         </nav>
                     </div>
                 </div>
 
-                <!-- Categories Tab Content -->
-                <div x-show="activeTab === 'categories'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-semibold text-gray-900">Product Categories</h2>
-                        <button @click="openAddCategoryModal()" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            <span>Add Category</span>
-                        </button>
-                    </div>
-
-                    <!-- Categories Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <template x-for="category in categories" :key="category.id">
-                            <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m0 4l2 2-2 2M3 7l2 2-2 2"></path>
-                                        </svg>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button @click="alert('Edit category functionality - implement server-side')" 
-                                                class="text-gray-400 hover:text-blue-600 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                            </svg>
-                                        </button>
-                                        <button @click="deleteCategory(category.id)" 
-                                                class="text-gray-400 hover:text-red-600 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2" x-text="category.name"></h3>
-                                <p class="text-gray-600 text-sm mb-4" x-text="category.description || 'No description available'"></p>
-                                <div class="flex items-center justify-between text-sm text-gray-500">
-                                    <span x-text="category.product_count + ' products'"></span>
-                                    <span x-text="new Date(category.created_at).toLocaleDateString()"></span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- Products Tab Content -->
-                <div x-show="activeTab === 'products'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-semibold text-gray-900">Product Inventory</h2>
-                        <button @click="openAddProductModal()" 
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            <span>Add Product</span>
-                        </button>
-                    </div>
-
-                    <!-- Products Filters -->
-                    <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
-                        <div class="flex flex-wrap items-center space-x-4">
-                            <div class="flex-1 min-w-64">
-                                <div class="relative">
-                                    <input type="text" 
-                                           x-model="productSearchQuery"
-                                           placeholder="Search products..." 
-                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <select x-model="productCategoryFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">All Categories</option>
-                                <template x-for="category in categories" :key="category.id">
-                                    <option :value="category.id" x-text="category.name"></option>
-                                </template>
-                            </select>
-                            <select x-model="productStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">All Status</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
+                <!-- Categories Tab -->
+                <div x-show="activeTab === 'categories'" x-transition>
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Product Categories</h3>
+                            <button @click="openCategoryModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Add Category
+                            </button>
                         </div>
-                    </div>
 
-                    <!-- Products Table -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <!-- Categories Table -->
                         <div class="overflow-x-auto">
                             <table class="w-full">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
-                                    <template x-for="product in filteredProducts" :key="product.id">
+                                    <template x-for="category in categories" :key="category.id">
                                         <tr class="hover:bg-gray-50">
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-medium text-gray-900" x-text="product.name"></div>
-                                                        <div class="text-sm text-gray-500" x-text="product.barcode || 'No barcode'"></div>
-                                                    </div>
-                                                </div>
+                                                <div class="text-sm font-medium text-gray-900" x-text="category.name"></div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="text-sm text-gray-500" x-text="category.description"></div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="text-sm text-gray-900" x-text="getCategoryName(product.category_id)"></span>
+                                                <span class="text-sm text-gray-900" x-text="category.products_count + ' products'"></span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">$<span x-text="product.price"></span></div>
-                                                <div class="text-xs text-gray-500">Cost: $<span x-text="product.cost"></span></div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium" 
-                                                     :class="product.stock_quantity <= 5 ? 'text-red-600' : product.stock_quantity <= 10 ? 'text-yellow-600' : 'text-green-600'"
-                                                     x-text="product.stock_quantity + ' units'"></div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                                                      :class="product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                                                      x-text="product.status.charAt(0).toUpperCase() + product.status.slice(1)"></span>
+                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <div class="flex items-center space-x-2">
-                                                    <button @click="alert('Edit product functionality - implement server-side')" 
-                                                            class="text-blue-600 hover:text-blue-900 transition-colors">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                        </svg>
-                                                    </button>
-                                                    <button @click="deleteProduct(product.id)" 
-                                                            class="text-red-600 hover:text-red-900 transition-colors">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                        </svg>
-                                                    </button>
-                                                </div>
+                                                <button @click="editCategory(category)" class="text-blue-600 hover:text-blue-900 transition-colors mr-3">
+                                                    Edit
+                                                </button>
+                                                <button @click="deleteCategory(category.id)" class="text-red-600 hover:text-red-900 transition-colors">
+                                                    Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     </template>
@@ -320,185 +98,146 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Add Category Modal -->
-            <div x-show="showAddCategoryModal" 
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition ease-in duration-200"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-                 @click.self="closeAddCategoryModal()">
-                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-lg bg-white">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Add New Category</h3>
-                        <button @click="closeAddCategoryModal()" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <form @submit.prevent="addCategory()">
-                        <div class="space-y-4">
-                            <div>
-                                <label for="add_category_name" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
-                                <input type="text" 
-                                       id="add_category_name"
-                                       x-model="addCategoryForm.name" 
-                                       required
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            
-                            <div>
-                                <label for="add_category_description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <textarea id="add_category_description"
-                                          x-model="addCategoryForm.description" 
-                                          rows="3"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center justify-end space-x-3 mt-6">
-                            <button type="button" 
-                                    @click="closeAddCategoryModal()"
-                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                                Cancel
-                            </button>
-                            <button type="submit" 
-                                    :disabled="addCategoryForm.loading"
-                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50">
-                                <span x-show="!addCategoryForm.loading">Add Category</span>
-                                <span x-show="addCategoryForm.loading">Adding...</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Add Product Modal -->
-            <div x-show="showAddProductModal" 
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition ease-in duration-200"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-                 @click.self="closeAddProductModal()">
-                <div class="relative top-10 mx-auto p-5 border w-96 shadow-lg rounded-lg bg-white">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Add New Product</h3>
-                        <button @click="closeAddProductModal()" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <form @submit.prevent="addProduct()">
-                        <div class="space-y-4 max-h-96 overflow-y-auto">
-                            <div>
-                                <label for="add_product_name" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
-                                <input type="text" 
-                                       id="add_product_name"
-                                       x-model="addProductForm.name" 
-                                       required
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            
-                            <div>
-                                <label for="add_product_category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                                <select id="add_product_category"
-                                        x-model="addProductForm.category_id" 
-                                        required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">Select Category</option>
+                <!-- Products Tab -->
+                <div x-show="activeTab === 'products'" x-transition>
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Product List</h3>
+                            <div class="flex items-center space-x-4">
+                                <select x-model="categoryFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">All Categories</option>
                                     <template x-for="category in categories" :key="category.id">
                                         <option :value="category.id" x-text="category.name"></option>
                                     </template>
                                 </select>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label for="add_product_price" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                                    <input type="number" 
-                                           id="add_product_price"
-                                           x-model="addProductForm.price" 
-                                           step="0.01"
-                                           min="0"
-                                           required
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                
-                                <div>
-                                    <label for="add_product_cost" class="block text-sm font-medium text-gray-700 mb-1">Cost</label>
-                                    <input type="number" 
-                                           id="add_product_cost"
-                                           x-model="addProductForm.cost" 
-                                           step="0.01"
-                                           min="0"
-                                           required
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label for="add_product_stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
-                                <input type="number" 
-                                       id="add_product_stock"
-                                       x-model="addProductForm.stock_quantity" 
-                                       min="0"
-                                       required
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            
-                            <div>
-                                <label for="add_product_barcode" class="block text-sm font-medium text-gray-700 mb-1">Barcode (Optional)</label>
-                                <input type="text" 
-                                       id="add_product_barcode"
-                                       x-model="addProductForm.barcode" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            
-                            <div>
-                                <label for="add_product_status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <select id="add_product_status"
-                                        x-model="addProductForm.status" 
-                                        required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label for="add_product_description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <textarea id="add_product_description"
-                                          x-model="addProductForm.description" 
-                                          rows="3"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                <button @click="openProductModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    Add Product
+                                </button>
                             </div>
                         </div>
-                        
-                        <div class="flex items-center justify-end space-x-3 mt-6">
-                            <button type="button" 
-                                    @click="closeAddProductModal()"
-                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                                Cancel
-                            </button>
-                            <button type="submit" 
-                                    :disabled="addProductForm.loading"
-                                    class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors disabled:opacity-50">
-                                <span x-show="!addProductForm.loading">Add Product</span>
-                                <span x-show="addProductForm.loading">Adding...</span>
-                            </button>
+
+                        <!-- Products Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <template x-for="product in filteredProducts()" :key="product.id">
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="aspect-w-1 aspect-h-1 mb-4">
+                                        <div class="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 mb-1" x-text="product.name"></h4>
+                                    <p class="text-sm text-gray-500 mb-2" x-text="product.category"></p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-lg font-bold text-blue-600" x-text="'$' + product.price"></span>
+                                        <span class="text-sm text-gray-500" x-text="product.stock + ' in stock'"></span>
+                                    </div>
+                                    <div class="mt-3 flex space-x-2">
+                                        <button @click="editProduct(product)" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm transition-colors">
+                                            Edit
+                                        </button>
+                                        <button @click="deleteProduct(product.id)" class="flex-1 bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded text-sm transition-colors">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
                         </div>
-                    </form>
+                    </div>
+                </div>
+
+                <!-- Category Modal -->
+                <div x-show="showCategoryModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div class="mt-3">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900" x-text="categoryForm.id ? 'Edit Category' : 'Add New Category'"></h3>
+                                <button @click="closeCategoryModal()" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <form @submit.prevent="saveCategory()">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Category Name</label>
+                                        <input type="text" x-model="categoryForm.name" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea x-model="categoryForm.description" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end space-x-3 mt-6">
+                                    <button type="button" @click="closeCategoryModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                                        <span x-text="categoryForm.id ? 'Update' : 'Create'"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Modal -->
+                <div x-show="showProductModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div class="mt-3">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900" x-text="productForm.id ? 'Edit Product' : 'Add New Product'"></h3>
+                                <button @click="closeProductModal()" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <form @submit.prevent="saveProduct()">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Product Name</label>
+                                        <input type="text" x-model="productForm.name" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Category</label>
+                                        <select x-model="productForm.category_id" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                            <option value="">Select Category</option>
+                                            <template x-for="category in categories" :key="category.id">
+                                                <option :value="category.id" x-text="category.name"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Price</label>
+                                        <input type="number" step="0.01" x-model="productForm.price" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Stock Quantity</label>
+                                        <input type="number" x-model="productForm.stock" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea x-model="productForm.description" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end space-x-3 mt-6">
+                                    <button type="button" @click="closeProductModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                                        <span x-text="productForm.id ? 'Update' : 'Create'"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -508,291 +247,159 @@
 <script>
 function productManagement() {
     return {
-        // State
         activeTab: 'categories',
-        showAddCategoryModal: false,
-        showAddProductModal: false,
-        productSearchQuery: '',
-        productCategoryFilter: '',
-        productStatusFilter: '',
+        categoryFilter: '',
+        showCategoryModal: false,
+        showProductModal: false,
         
-        // Dummy categories data
         categories: [
-            {
-                id: 1,
-                name: 'Electronics',
-                description: 'Electronic devices and accessories',
-                product_count: 15,
-                created_at: '2024-01-15'
-            },
-            {
-                id: 2,
-                name: 'Clothing',
-                description: 'Apparel and fashion items',
-                product_count: 23,
-                created_at: '2024-01-20'
-            },
-            {
-                id: 3,
-                name: 'Food & Beverages',
-                description: 'Food items and drinks',
-                product_count: 8,
-                created_at: '2024-02-01'
-            },
-            {
-                id: 4,
-                name: 'Home & Garden',
-                description: 'Home improvement and garden supplies',
-                product_count: 12,
-                created_at: '2024-02-10'
-            }
+            { id: 1, name: 'Electronics', description: 'Electronic devices and gadgets', products_count: 15 },
+            { id: 2, name: 'Clothing', description: 'Apparel and fashion items', products_count: 8 },
+            { id: 3, name: 'Food & Beverages', description: 'Food items and drinks', products_count: 12 },
+            { id: 4, name: 'Books', description: 'Books and educational materials', products_count: 6 }
         ],
         
-        // Dummy products data
         products: [
-            {
-                id: 1,
-                name: 'iPhone 15 Pro',
-                description: 'Latest iPhone with advanced camera system',
-                category_id: 1,
-                price: 999.00,
-                cost: 750.00,
-                stock_quantity: 25,
-                barcode: '123456789012',
-                status: 'active',
-                created_at: '2024-03-01'
-            },
-            {
-                id: 2,
-                name: 'Samsung Galaxy S24',
-                description: 'High-end Android smartphone',
-                category_id: 1,
-                price: 899.00,
-                cost: 650.00,
-                stock_quantity: 18,
-                barcode: '123456789013',
-                status: 'active',
-                created_at: '2024-03-05'
-            },
-            {
-                id: 3,
-                name: 'Nike Air Max',
-                description: 'Comfortable running shoes',
-                category_id: 2,
-                price: 150.00,
-                cost: 90.00,
-                stock_quantity: 3,
-                barcode: '123456789014',
-                status: 'active',
-                created_at: '2024-03-10'
-            },
-            {
-                id: 4,
-                name: 'Coffee Beans',
-                description: 'Premium arabica coffee beans',
-                category_id: 3,
-                price: 25.00,
-                cost: 15.00,
-                stock_quantity: 50,
-                barcode: '123456789015',
-                status: 'active',
-                created_at: '2024-03-12'
-            },
-            {
-                id: 5,
-                name: 'Garden Hose',
-                description: '50ft expandable garden hose',
-                category_id: 4,
-                price: 45.00,
-                cost: 25.00,
-                stock_quantity: 8,
-                barcode: '123456789016',
-                status: 'inactive',
-                created_at: '2024-03-15'
-            }
+            { id: 1, name: 'iPhone 15 Pro', category: 'Electronics', category_id: 1, price: 999.99, stock: 25, description: 'Latest iPhone model' },
+            { id: 2, name: 'Samsung Galaxy S24', category: 'Electronics', category_id: 1, price: 899.99, stock: 30, description: 'Samsung flagship phone' },
+            { id: 3, name: 'MacBook Air', category: 'Electronics', category_id: 1, price: 1199.99, stock: 15, description: 'Apple laptop' },
+            { id: 4, name: 'T-Shirt', category: 'Clothing', category_id: 2, price: 29.99, stock: 50, description: 'Cotton t-shirt' },
+            { id: 5, name: 'Jeans', category: 'Clothing', category_id: 2, price: 79.99, stock: 35, description: 'Denim jeans' },
+            { id: 6, name: 'Coffee', category: 'Food & Beverages', category_id: 3, price: 12.99, stock: 100, description: 'Premium coffee beans' },
+            { id: 7, name: 'Energy Drink', category: 'Food & Beverages', category_id: 3, price: 3.99, stock: 200, description: 'Energy drink' },
+            { id: 8, name: 'Programming Book', category: 'Books', category_id: 4, price: 49.99, stock: 20, description: 'Learn programming' }
         ],
         
-        // Form data
-        addCategoryForm: {
+        categoryForm: {
+            id: null,
             name: '',
-            description: '',
-            loading: false
+            description: ''
         },
         
-        addProductForm: {
+        productForm: {
+            id: null,
             name: '',
-            description: '',
             category_id: '',
             price: '',
-            cost: '',
-            stock_quantity: '',
-            barcode: '',
-            status: 'active',
-            loading: false
+            stock: '',
+            description: ''
         },
-        
-        // Computed
-        get filteredProducts() {
-            let filtered = this.products;
-            
-            // Filter by search query
-            if (this.productSearchQuery) {
-                const query = this.productSearchQuery.toLowerCase();
-                filtered = filtered.filter(product => 
-                    product.name.toLowerCase().includes(query) || 
-                    product.barcode?.toLowerCase().includes(query)
-                );
+
+        filteredProducts() {
+            if (this.categoryFilter === '') {
+                return this.products;
             }
-            
-            // Filter by category
-            if (this.productCategoryFilter) {
-                filtered = filtered.filter(product => product.category_id == this.productCategoryFilter);
-            }
-            
-            // Filter by status
-            if (this.productStatusFilter) {
-                filtered = filtered.filter(product => product.status === this.productStatusFilter);
-            }
-            
-            return filtered;
+            return this.products.filter(product => product.category_id == this.categoryFilter);
         },
-        
-        // Methods
-        getCategoryName(categoryId) {
-            const category = this.categories.find(c => c.id === categoryId);
-            return category ? category.name : 'Unknown';
+
+        openCategoryModal() {
+            this.showCategoryModal = true;
+            this.resetCategoryForm();
         },
-        
-        openAddCategoryModal() {
-            this.showAddCategoryModal = true;
-            this.resetAddCategoryForm();
+
+        closeCategoryModal() {
+            this.showCategoryModal = false;
+            this.resetCategoryForm();
         },
-        
-        closeAddCategoryModal() {
-            this.showAddCategoryModal = false;
-            this.resetAddCategoryForm();
+
+        openProductModal() {
+            this.showProductModal = true;
+            this.resetProductForm();
         },
-        
-        openAddProductModal() {
-            this.showAddProductModal = true;
-            this.resetAddProductForm();
+
+        closeProductModal() {
+            this.showProductModal = false;
+            this.resetProductForm();
         },
-        
-        closeAddProductModal() {
-            this.showAddProductModal = false;
-            this.resetAddProductForm();
-        },
-        
-        resetAddCategoryForm() {
-            this.addCategoryForm = {
+
+        resetCategoryForm() {
+            this.categoryForm = {
+                id: null,
                 name: '',
-                description: '',
-                loading: false
+                description: ''
             };
         },
-        
-        resetAddProductForm() {
-            this.addProductForm = {
+
+        resetProductForm() {
+            this.productForm = {
+                id: null,
                 name: '',
-                description: '',
                 category_id: '',
                 price: '',
-                cost: '',
-                stock_quantity: '',
-                barcode: '',
-                status: 'active',
-                loading: false
+                stock: '',
+                description: ''
             };
         },
-        
-        async addCategory() {
-            this.addCategoryForm.loading = true;
-            
-            // Simulate loading delay for UI demonstration
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Add to dummy data (frontend only - replace with actual API call)
-            const newCategory = {
-                id: this.categories.length + 1,
-                name: this.addCategoryForm.name,
-                description: this.addCategoryForm.description,
-                product_count: 0,
-                created_at: new Date().toISOString()
-            };
-            
-            this.categories.push(newCategory);
-            this.closeAddCategoryModal();
-            alert('Category added successfully! (Demo - implement server-side)');
-            this.addCategoryForm.loading = false;
+
+        editCategory(category) {
+            this.categoryForm = { ...category };
+            this.showCategoryModal = true;
         },
-        
-        async addProduct() {
-            this.addProductForm.loading = true;
-            
-            // Simulate loading delay for UI demonstration
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Add to dummy data (frontend only - replace with actual API call)
-            const newProduct = {
-                id: this.products.length + 1,
-                name: this.addProductForm.name,
-                description: this.addProductForm.description,
-                category_id: parseInt(this.addProductForm.category_id),
-                price: parseFloat(this.addProductForm.price),
-                cost: parseFloat(this.addProductForm.cost),
-                stock_quantity: parseInt(this.addProductForm.stock_quantity),
-                barcode: this.addProductForm.barcode,
-                status: this.addProductForm.status,
-                created_at: new Date().toISOString()
-            };
-            
-            this.products.push(newProduct);
-            
-            // Update category product count (frontend only)
-            const category = this.categories.find(c => c.id === newProduct.category_id);
-            if (category) {
-                category.product_count++;
-            }
-            
-            this.closeAddProductModal();
-            alert('Product added successfully! (Demo - implement server-side)');
-            this.addProductForm.loading = false;
+
+        editProduct(product) {
+            this.productForm = { ...product };
+            this.showProductModal = true;
         },
-        
-        async deleteCategory(categoryId) {
-            if (!confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
-                return;
-            }
-            
-            // Simulate loading delay for UI demonstration
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Remove from dummy data (frontend only - replace with actual API call)
-            this.categories = this.categories.filter(c => c.id !== categoryId);
-            alert('Category deleted successfully! (Demo - implement server-side)');
-        },
-        
-        async deleteProduct(productId) {
-            if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-                return;
-            }
-            
-            // Simulate loading delay for UI demonstration
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Find product to get category_id before deletion (frontend only)
-            const product = this.products.find(p => p.id === productId);
-            if (product) {
-                // Update category product count (frontend only)
-                const category = this.categories.find(c => c.id === product.category_id);
-                if (category) {
-                    category.product_count--;
+
+        saveCategory() {
+            if (this.categoryForm.id) {
+                // Update existing category
+                const index = this.categories.findIndex(c => c.id === this.categoryForm.id);
+                if (index !== -1) {
+                    this.categories[index] = { ...this.categoryForm };
                 }
+                alert('Category updated successfully!');
+            } else {
+                // Add new category
+                const newCategory = {
+                    ...this.categoryForm,
+                    id: this.categories.length + 1,
+                    products_count: 0
+                };
+                this.categories.push(newCategory);
+                alert('Category added successfully!');
             }
+            this.closeCategoryModal();
+        },
+
+        saveProduct() {
+            const category = this.categories.find(c => c.id == this.productForm.category_id);
             
-            // Remove from dummy data (frontend only - replace with actual API call)
-            this.products = this.products.filter(p => p.id !== productId);
-            alert('Product deleted successfully! (Demo - implement server-side)');
+            if (this.productForm.id) {
+                // Update existing product
+                const index = this.products.findIndex(p => p.id === this.productForm.id);
+                if (index !== -1) {
+                    this.products[index] = {
+                        ...this.productForm,
+                        category: category ? category.name : ''
+                    };
+                }
+                alert('Product updated successfully!');
+            } else {
+                // Add new product
+                const newProduct = {
+                    ...this.productForm,
+                    id: this.products.length + 1,
+                    category: category ? category.name : ''
+                };
+                this.products.push(newProduct);
+                alert('Product added successfully!');
+            }
+            this.closeProductModal();
+        },
+
+        deleteCategory(categoryId) {
+            if (confirm('Are you sure you want to delete this category?')) {
+                this.categories = this.categories.filter(c => c.id !== categoryId);
+                alert('Category deleted successfully!');
+            }
+        },
+
+        deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                this.products = this.products.filter(p => p.id !== productId);
+                alert('Product deleted successfully!');
+            }
         }
     }
 }
