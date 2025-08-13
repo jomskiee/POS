@@ -145,6 +145,11 @@
                 </div>
                 
                 <div class="flex items-center space-x-4">
+                    <!-- POS Terminal Button - Hidden on mobile, visible on md+ screens -->
+                    <a href="{{ route('pos.terminal') }}" class="hidden md:inline-flex bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                        POS Terminal
+                    </a>
+                    
                     <!-- Notifications -->
                     <button class="text-gray-500 hover:text-gray-700 relative transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

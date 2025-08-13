@@ -20,30 +20,7 @@
             </div>
             
             <ul class="space-y-1 px-3">
-                <li>
-                    <a href="{{ route('pos.terminal') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-green-600 bg-green-50 group relative"
-                       x-data="{ tooltip: false }"
-                       @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
-                       @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">POS Terminal</span>
-                        
-                        <!-- Tooltip for collapsed state -->
-                        <div x-show="tooltip" 
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 transform scale-95"
-                             x-transition:enter-end="opacity-100 transform scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="opacity-100 transform scale-100"
-                             x-transition:leave-end="opacity-0 transform scale-95"
-                             class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap z-50">
-                            POS Terminal
-                        </div>
-                    </a>
-                </li>
+
                 
                 <li>
                     <a href="{{ route('employee.dashboard') }}" 

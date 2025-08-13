@@ -51,15 +51,7 @@
                     </a>
                 </li>
                 
-                <li>
-                    <a href="{{ route('pos.terminal') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 group relative">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">POS Terminal</span>
-                    </a>
-                </li>
+
                 
                 <li>
                     <a href="#" 
