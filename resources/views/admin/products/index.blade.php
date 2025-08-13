@@ -3,7 +3,7 @@
 @section('content')
 @php
     $breadcrumbs = [
-        ['title' => 'Product Management']
+        ['title' => 'Stocks Management']
     ];
 @endphp
 
@@ -23,8 +23,8 @@
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Product Management</h1>
-                            <p class="text-gray-600 mt-2">Manage products, categories, and supplies</p>
+                            <h1 class="text-3xl font-bold text-gray-900">Stocks Management</h1>
+                            <p class="text-gray-600 mt-2">Manage products, categories, supplies, and suppliers</p>
                         </div>
                     </div>
                 </div>
@@ -63,6 +63,16 @@
                                     <span>Supplies</span>
                                 </div>
                             </button>
+                            <button @click="activeTab = 'suppliers'" 
+                                    :class="activeTab === 'suppliers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                    <span>Suppliers</span>
+                                </div>
+                            </button>
                         </nav>
                     </div>
                 </div>
@@ -80,6 +90,11 @@
                 <!-- Supplies Tab Content -->
                 <div x-show="activeTab === 'supplies'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
                     @include('admin.products.supplies')
+                </div>
+
+                <!-- Suppliers Tab Content -->
+                <div x-show="activeTab === 'suppliers'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.suppliers')
                 </div>
             </div>
 
@@ -373,6 +388,124 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Add Supplier Modal -->
+            <div x-show="showAddSupplierModal" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+                 @click.self="closeAddSupplierModal()">
+                <div class="relative top-10 mx-auto p-5 border w-96 shadow-lg rounded-lg bg-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900" x-text="addSupplierForm.id ? 'Edit Supplier' : 'Add New Supplier'"></h3>
+                        <button @click="closeAddSupplierModal()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <form @submit.prevent="addSupplier()">
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
+                            <div>
+                                <label for="add_supplier_name" class="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
+                                <input type="text" 
+                                       id="add_supplier_name"
+                                       x-model="addSupplierForm.name" 
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label for="add_supplier_company" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                                <input type="text" 
+                                       id="add_supplier_company"
+                                       x-model="addSupplierForm.company" 
+                                       required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="add_supplier_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" 
+                                           id="add_supplier_email"
+                                           x-model="addSupplierForm.email" 
+                                           required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="add_supplier_phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                    <input type="tel" 
+                                           id="add_supplier_phone"
+                                           x-model="addSupplierForm.phone" 
+                                           required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="add_supplier_address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                <textarea id="add_supplier_address"
+                                          x-model="addSupplierForm.address" 
+                                          rows="2"
+                                          required
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="add_supplier_city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                    <input type="text" 
+                                           id="add_supplier_city"
+                                           x-model="addSupplierForm.city" 
+                                           required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="add_supplier_country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                                    <input type="text" 
+                                           id="add_supplier_country"
+                                           x-model="addSupplierForm.country" 
+                                           required
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="add_supplier_status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select id="add_supplier_status"
+                                        x-model="addSupplierForm.status" 
+                                        required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-end space-x-3 mt-6">
+                            <button type="button" 
+                                    @click="closeAddSupplierModal()"
+                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit" 
+                                    :disabled="addSupplierForm.loading"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors disabled:opacity-50">
+                                <span x-show="!addSupplierForm.loading" x-text="addSupplierForm.id ? 'Update Supplier' : 'Add Supplier'"></span>
+                                <span x-show="addSupplierForm.loading">Saving...</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </main>
     </div>
 </div>
@@ -385,12 +518,15 @@ function productManagement() {
         showAddCategoryModal: false,
         showAddProductModal: false,
         showAddSupplyModal: false,
+        showAddSupplierModal: false,
         productSearchQuery: '',
         productCategoryFilter: '',
         productStatusFilter: '',
         supplySearchQuery: '',
         supplyStatusFilter: '',
         supplyDateFilter: '',
+        supplierSearchQuery: '',
+        supplierStatusFilter: '',
         
         // Form data
         addCategoryForm: {
@@ -420,6 +556,19 @@ function productManagement() {
             date: new Date().toISOString().split('T')[0],
             status: 'pending',
             product_description: '',
+            loading: false
+        },
+
+        addSupplierForm: {
+            id: null,
+            name: '',
+            company: '',
+            email: '',
+            phone: '',
+            address: '',
+            city: '',
+            country: '',
+            status: 'active',
             loading: false
         },
         
@@ -570,6 +719,69 @@ function productManagement() {
                 status: 'delivered'
             }
         ],
+
+        suppliers: [
+            {
+                id: 1,
+                name: 'John Anderson',
+                company: 'Coffee Co.',
+                email: 'john@coffeeco.com',
+                phone: '+1-555-0123',
+                address: '123 Coffee Street',
+                city: 'Seattle',
+                country: 'USA',
+                products_supplied: 15,
+                status: 'active'
+            },
+            {
+                id: 2,
+                name: 'Sarah Williams',
+                company: 'Bakery Fresh',
+                email: 'sarah@bakeryfresh.com',
+                phone: '+1-555-0124',
+                address: '456 Bakery Avenue',
+                city: 'New York',
+                country: 'USA',
+                products_supplied: 8,
+                status: 'active'
+            },
+            {
+                id: 3,
+                name: 'Mike Johnson',
+                company: 'Dairy Farm',
+                email: 'mike@dairyfarm.com',
+                phone: '+1-555-0125',
+                address: '789 Farm Road',
+                city: 'Wisconsin',
+                country: 'USA',
+                products_supplied: 5,
+                status: 'active'
+            },
+            {
+                id: 4,
+                name: 'Lisa Chen',
+                company: 'Sweet Supply Co.',
+                email: 'lisa@sweetsupply.com',
+                phone: '+1-555-0126',
+                address: '321 Sugar Lane',
+                city: 'California',
+                country: 'USA',
+                products_supplied: 12,
+                status: 'active'
+            },
+            {
+                id: 5,
+                name: 'David Smith',
+                company: 'EcoPack Ltd.',
+                email: 'david@ecopack.com',
+                phone: '+1-555-0127',
+                address: '654 Green Street',
+                city: 'Portland',
+                country: 'USA',
+                products_supplied: 20,
+                status: 'inactive'
+            }
+        ],
         
         // Computed properties
         get filteredProducts() {
@@ -628,6 +840,28 @@ function productManagement() {
             
             return filtered;
         },
+
+        get filteredSuppliers() {
+            let filtered = this.suppliers;
+            
+            // Search filter
+            if (this.supplierSearchQuery) {
+                filtered = filtered.filter(supplier => 
+                    supplier.name.toLowerCase().includes(this.supplierSearchQuery.toLowerCase()) ||
+                    supplier.company.toLowerCase().includes(this.supplierSearchQuery.toLowerCase()) ||
+                    supplier.email.toLowerCase().includes(this.supplierSearchQuery.toLowerCase())
+                );
+            }
+            
+            // Status filter
+            if (this.supplierStatusFilter) {
+                filtered = filtered.filter(supplier => 
+                    supplier.status === this.supplierStatusFilter
+                );
+            }
+            
+            return filtered;
+        },
         
         // Methods
         getCategoryName(categoryId) {
@@ -664,6 +898,16 @@ function productManagement() {
             this.showAddSupplyModal = false;
             this.resetSupplyForm();
         },
+
+        openAddSupplierModal() {
+            this.showAddSupplierModal = true;
+            this.resetSupplierForm();
+        },
+        
+        closeAddSupplierModal() {
+            this.showAddSupplierModal = false;
+            this.resetSupplierForm();
+        },
         
         resetCategoryForm() {
             this.addCategoryForm = {
@@ -697,6 +941,21 @@ function productManagement() {
                 date: new Date().toISOString().split('T')[0],
                 status: 'pending',
                 product_description: '',
+                loading: false
+            };
+        },
+
+        resetSupplierForm() {
+            this.addSupplierForm = {
+                id: null,
+                name: '',
+                company: '',
+                email: '',
+                phone: '',
+                address: '',
+                city: '',
+                country: '',
+                status: 'active',
                 loading: false
             };
         },
@@ -792,6 +1051,44 @@ function productManagement() {
             this.addSupplyForm = { ...supply };
             this.showAddSupplyModal = true;
         },
+
+        addSupplier() {
+            if (!this.addSupplierForm.name.trim() || !this.addSupplierForm.company.trim()) return;
+            
+            this.addSupplierForm.loading = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                if (this.addSupplierForm.id) {
+                    // Update existing supplier
+                    const index = this.suppliers.findIndex(s => s.id === this.addSupplierForm.id);
+                    if (index !== -1) {
+                        this.suppliers[index] = {
+                            ...this.addSupplierForm,
+                            products_supplied: this.suppliers[index].products_supplied
+                        };
+                    }
+                    alert('Supplier updated successfully!');
+                } else {
+                    // Add new supplier
+                    const newSupplier = {
+                        ...this.addSupplierForm,
+                        id: this.suppliers.length + 1,
+                        products_supplied: 0
+                    };
+                    
+                    this.suppliers.push(newSupplier);
+                    alert('Supplier added successfully!');
+                }
+                
+                this.closeAddSupplierModal();
+            }, 1000);
+        },
+
+        editSupplier(supplier) {
+            this.addSupplierForm = { ...supplier };
+            this.showAddSupplierModal = true;
+        },
         
         deleteCategory(categoryId) {
             if (confirm('Are you sure you want to delete this category?')) {
@@ -822,6 +1119,13 @@ function productManagement() {
             if (confirm('Are you sure you want to delete this supply?')) {
                 this.supplies = this.supplies.filter(s => s.id !== supplyId);
                 alert('Supply deleted successfully!');
+            }
+        },
+
+        deleteSupplier(supplierId) {
+            if (confirm('Are you sure you want to delete this supplier?')) {
+                this.suppliers = this.suppliers.filter(s => s.id !== supplierId);
+                alert('Supplier deleted successfully!');
             }
         }
     }
