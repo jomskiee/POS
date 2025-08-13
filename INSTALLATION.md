@@ -13,7 +13,7 @@
 1. **Clone the repository**
 ```bash
 git clone https://github.com/jomskiee/POS.git
-cd POS/pos-system
+cd POS
 ```
 
 2. **Install PHP dependencies**
@@ -118,6 +118,22 @@ npm run prod
 
 # Start development server
 php artisan serve
+```
+
+## 📁 Project Structure
+```
+📁 POS/ (Laravel Root)
+├── 📁 app/ (Controllers, Models, Middleware)
+├── 📁 config/ (Configuration files)
+├── 📁 database/ (Migrations, Seeders)
+├── 📁 public/ (Web accessible files)
+├── 📁 resources/ (Views, Assets, CSS)
+├── 📁 routes/ (Web & API routes)
+├── 📁 storage/ (Logs, Cache, Uploads)
+├── 📄 composer.json (PHP dependencies)
+├── 📄 package.json (NPM dependencies)
+├── 📄 .env.example (Environment template)
+└── 📄 artisan (Laravel CLI)
 ```
 
 ## 📞 Support
