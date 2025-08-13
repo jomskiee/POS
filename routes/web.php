@@ -43,6 +43,21 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Product Management routes (design only - server-side to be implemented)
     Route::get('/admin/products', [App\Http\Controllers\ProductManagementController::class, 'index'])->name('admin.products.index');
     
+    // Sales & Transactions routes
+    Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
+    
+    // Business Intelligence routes
+    Route::get('/admin/business-intelligence', [App\Http\Controllers\BusinessIntelligenceController::class, 'index'])->name('admin.business-intelligence.index');
+    
+    // Accounting & Finance routes
+    Route::get('/admin/accounting', [App\Http\Controllers\AccountingController::class, 'index'])->name('admin.accounting.index');
+    
+    // Advanced Inventory routes
+    Route::get('/admin/inventory', [App\Http\Controllers\InventoryController::class, 'index'])->name('admin.inventory.index');
+    
+    // Purchase Orders routes
+    Route::get('/admin/purchase-orders', [App\Http\Controllers\PurchaseOrderController::class, 'index'])->name('admin.purchase-orders.index');
+    
     // Reports routes
     Route::get('/admin/reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('admin.reports.index');
     Route::get('/admin/reports/daily-sales', [App\Http\Controllers\ReportsController::class, 'dailySales'])->name('admin.reports.daily-sales');
