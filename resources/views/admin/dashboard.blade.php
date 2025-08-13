@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true }">
+<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true }" id="dashboard-container">
     <!-- Sidebar -->
-    <div :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden">
+    <div id="sidebar" :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden w-64">
         <div class="p-4 border-b">
             <div class="flex items-center space-x-2">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -125,7 +125,7 @@
         <header class="bg-white shadow-sm border-b border-gray-200">
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="flex items-center space-x-4">
-                    <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <button @click="sidebarOpen = !sidebarOpen" onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-700 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -332,10 +332,73 @@
 </div>
 
 <script>
+let sidebarCollapsed = false;
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('w-16');
-    sidebar.classList.toggle('w-64');
+    sidebarCollapsed = !sidebarCollapsed;
+    
+    if (sidebarCollapsed) {
+        // Collapse sidebar
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-16');
+        
+        // Hide all text spans with whitespace-nowrap class
+        const textSpans = sidebar.querySelectorAll('span.whitespace-nowrap');
+        textSpans.forEach(span => {
+            span.style.display = 'none';
+        });
+        
+        // Hide menu header
+        const menuHeader = sidebar.querySelector('p.text-xs');
+        if (menuHeader) menuHeader.style.display = 'none';
+        
+        // Hide brand text
+        const brandText = sidebar.querySelector('span.text-xl');
+        if (brandText) brandText.style.display = 'none';
+        
+        // Center all icons
+        const svgs = sidebar.querySelectorAll('svg');
+        svgs.forEach(svg => {
+            svg.classList.remove('mr-3');
+            svg.classList.add('mx-auto');
+        });
+        
+        console.log('Sidebar collapsed');
+        
+    } else {
+        // Expand sidebar
+        sidebar.classList.remove('w-16');
+        sidebar.classList.add('w-64');
+        
+        // Show all text spans
+        const textSpans = sidebar.querySelectorAll('span.whitespace-nowrap');
+        textSpans.forEach(span => {
+            span.style.display = 'block';
+        });
+        
+        // Show menu header
+        const menuHeader = sidebar.querySelector('p.text-xs');
+        if (menuHeader) menuHeader.style.display = 'block';
+        
+        // Show brand text
+        const brandText = sidebar.querySelector('span.text-xl');
+        if (brandText) brandText.style.display = 'block';
+        
+        // Reset icon margins
+        const svgs = sidebar.querySelectorAll('svg');
+        svgs.forEach(svg => {
+            svg.classList.remove('mx-auto');
+            svg.classList.add('mr-3');
+        });
+        
+        console.log('Sidebar expanded');
+    }
 }
+
+// Test function on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Admin dashboard JavaScript loaded');
+});
 </script>
 @endsection

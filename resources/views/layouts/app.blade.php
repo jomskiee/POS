@@ -35,6 +35,13 @@
     
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    
+    <!-- Debug Alpine.js -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            console.log('Alpine.js initialized successfully');
+        });
+    </script>
 </head>
 <body class="bg-gray-50 font-sans">
     <div id="app">
