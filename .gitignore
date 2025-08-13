@@ -1,0 +1,46 @@
+# Dependencies
+pos-system/node_modules/
+pos-system/vendor/
+
+# Environment files
+pos-system/.env
+pos-system/.env.backup
+
+# Cache and logs
+pos-system/storage/logs/*
+pos-system/storage/framework/cache/*
+pos-system/storage/framework/sessions/*
+pos-system/storage/framework/testing/*
+pos-system/storage/framework/views/*
+pos-system/bootstrap/cache/*
+
+# Database
+pos-system/database/database.sqlite
+
+# Build files
+pos-system/public/hot
+pos-system/public/storage
+pos-system/public/css/app.css
+pos-system/public/js/app.js
+pos-system/public/mix-manifest.json
+
+# IDE and OS files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Laravel specific
+pos-system/storage/*.key
+pos-system/.phpunit.result.cache
+pos-system/docker-compose.override.yml
+pos-system/Homestead.json
+pos-system/Homestead.yaml
+pos-system/npm-debug.log
+pos-system/yarn-error.log
+
+# Keep important directories
+!pos-system/storage/app/.gitignore
+!pos-system/storage/framework/.gitignore
+!pos-system/storage/logs/.gitignore
