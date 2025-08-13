@@ -1,9 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $breadcrumbs = [
+        ['title' => 'Reports'],
+        ['title' => $activeSection === 'daily-sales' ? 'Daily Sales Report' : ($activeSection === 'order-history' ? 'Order List History' : 'Recent Supplies List')]
+    ];
+@endphp
+
 <div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: true }">
-    <!-- Main Sidebar -->
-    <div :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden">
+    <!-- Sidebar Component -->
+    @include('layouts.partials.sidebar')
         <div class="p-4 border-b">
             <div class="flex items-center space-x-2">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -106,8 +113,8 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Top Navigation -->
-        <header class="bg-white shadow-sm border-b border-gray-200">
+        <!-- Navbar Component -->
+        @include('layouts.partials.navbar')
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="flex items-center space-x-4">
                     <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 hover:text-gray-700 transition-colors">
