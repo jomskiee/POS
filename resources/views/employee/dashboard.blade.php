@@ -21,7 +21,7 @@
             
             <ul class="space-y-1 px-3">
                 <li>
-                    <a href="#" 
+                    <a href="{{ route('pos.terminal') }}" 
                        class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-green-600 bg-green-50 group relative"
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"

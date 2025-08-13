@@ -39,3 +39,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'employee'])->group(function () {
     Route::get('/employee/dashboard', [App\Http\Controllers\EmployeeDashboardController::class, 'index'])->name('employee.dashboard');
 });
+
+// POS Terminal routes (accessible by both admin and employee)
+Route::middleware(['auth', 'employee'])->group(function () {
+    Route::get('/pos/terminal', [App\Http\Controllers\POSTerminalController::class, 'index'])->name('pos.terminal');
+    Route::post('/pos/add-to-cart', [App\Http\Controllers\POSTerminalController::class, 'addToCart'])->name('pos.add-to-cart');
+    Route::post('/pos/remove-from-cart', [App\Http\Controllers\POSTerminalController::class, 'removeFromCart'])->name('pos.remove-from-cart');
+    Route::post('/pos/process-transaction', [App\Http\Controllers\POSTerminalController::class, 'processTransaction'])->name('pos.process-transaction');
+});
