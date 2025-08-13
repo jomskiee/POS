@@ -16,7 +16,6 @@
         <div class="flex-1 min-w-64">
             <div class="relative">
                 <input type="text" 
-                       x-model="supplierSearchQuery"
                        placeholder="Search suppliers..." 
                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -26,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <select x-model="supplierStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             <option value="">All Status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>

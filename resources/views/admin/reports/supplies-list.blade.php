@@ -1,34 +1,14 @@
-@extends('layouts.app')
-
-@section('content')
-@php
-    $breadcrumbs = [
-        ['title' => 'Reports'],
-        ['title' => 'Supplies List History']
-    ];
-@endphp
-
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: true }">
-    <!-- Sidebar Component -->
-    @include('layouts.partials.sidebar')
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Navbar Component -->
-        @include('layouts.partials.navbar')
-
-        <!-- Page Content -->
-        <main class="flex-1 overflow-auto p-6">
-            <div class="w-full">
-                <!-- Page Header -->
-                <div class="mb-8">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Supplies List History</h1>
-                            <p class="text-gray-600 mt-2">Complete history of all supply orders and deliveries</p>
-                        </div>
-                    </div>
-                </div>
+<!-- Supplies List History Tab Content -->
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900">Supplies List History</h2>
+                <p class="text-gray-600 mt-2">Complete history of all supply orders and deliveries</p>
+            </div>
+        </div>
+    </div>
 
                 <!-- Supplies Table -->
                 <div class="bg-white rounded-xl shadow-lg">
@@ -134,8 +114,4 @@
                         </table>
                     </div>
                 </div>
-            </div>
-        </main>
-    </div>
 </div>
-@endsection
