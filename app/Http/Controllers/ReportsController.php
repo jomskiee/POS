@@ -6,35 +6,24 @@ use Illuminate\Http\Request;
 
 class ReportsController extends Controller
 {
-    /**
-     * Display the main reports page (default to daily sales).
-     */
     public function index()
     {
-        return $this->dailySales();
+        // Redirect to daily sales as default
+        return redirect()->route('admin.reports.daily-sales');
     }
 
-    /**
-     * Display daily sales report.
-     */
     public function dailySales()
     {
-        return view('admin.reports.index', ['activeSection' => 'daily-sales']);
+        return view('admin.reports.daily-sales');
     }
 
-    /**
-     * Display order list history.
-     */
     public function orderHistory()
     {
-        return view('admin.reports.index', ['activeSection' => 'order-history']);
+        return view('admin.reports.order-history');
     }
 
-    /**
-     * Display recent supplies list.
-     */
     public function suppliesList()
     {
-        return view('admin.reports.index', ['activeSection' => 'supplies-list']);
+        return view('admin.reports.supplies-list');
     }
 }
