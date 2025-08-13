@@ -42,6 +42,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     
     // Product Management routes (design only - server-side to be implemented)
     Route::get('/admin/products', [App\Http\Controllers\ProductManagementController::class, 'index'])->name('admin.products.index');
+    
+    // Reports routes
+    Route::get('/admin/reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('admin.reports.index');
+    Route::get('/admin/reports/daily-sales', [App\Http\Controllers\ReportsController::class, 'dailySales'])->name('admin.reports.daily-sales');
+    Route::get('/admin/reports/order-history', [App\Http\Controllers\ReportsController::class, 'orderHistory'])->name('admin.reports.order-history');
+    Route::get('/admin/reports/supplies-list', [App\Http\Controllers\ReportsController::class, 'suppliesList'])->name('admin.reports.supplies-list');
 });
 
 // Employee routes

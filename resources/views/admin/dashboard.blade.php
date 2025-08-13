@@ -89,7 +89,7 @@
 
                 
                 <li>
-                    <a href="#" 
+                    <a href="{{ route('admin.reports.index') }}" 
                        class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 group relative"
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
