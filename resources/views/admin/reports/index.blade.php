@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true }">
+<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: true }">
     <!-- Main Sidebar -->
     <div :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden">
         <div class="p-4 border-b">
@@ -51,57 +51,54 @@
                     </a>
                 </li>
 
-                
+                <!-- Reports with Submenu -->
                 <li>
-                    <a href="{{ route('admin.reports.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-blue-600 bg-blue-50 group relative">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">Reports</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <!-- Sub-sidebar for Reports -->
-    <div class="w-64 bg-gray-100 min-h-screen shadow-sm border-r border-gray-200">
-        <div class="p-4 border-b border-gray-200 bg-white">
-            <h2 class="text-lg font-semibold text-gray-900">Reports</h2>
-            <p class="text-sm text-gray-600">Analytics & Data</p>
-        </div>
-        
-        <nav class="mt-4">
-            <ul class="space-y-1 px-3">
-                <li>
-                    <a href="{{ route('admin.reports.daily-sales') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ $activeSection === 'daily-sales' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50' }} transition-colors">
-                        <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Daily Sales Report
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="{{ route('admin.reports.order-history') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ $activeSection === 'order-history' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50' }} transition-colors">
-                        <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        Order List History
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="{{ route('admin.reports.supplies-list') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ $activeSection === 'supplies-list' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50' }} transition-colors">
-                        <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                        </svg>
-                        Recent Supplies List
-                    </a>
+                    <div>
+                        <button @click="reportsOpen = !reportsOpen" 
+                                class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-blue-600 bg-blue-50 group relative">
+                            <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition class="flex-1 text-left whitespace-nowrap">Reports</span>
+                            <svg x-show="sidebarOpen" :class="reportsOpen ? 'rotate-90' : ''" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Reports Submenu -->
+                        <div x-show="sidebarOpen && reportsOpen" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 transform -translate-y-2"
+                             x-transition:enter-end="opacity-100 transform translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 transform translate-y-0"
+                             x-transition:leave-end="opacity-0 transform -translate-y-2"
+                             class="mt-2 space-y-1">
+                            <a href="{{ route('admin.reports.daily-sales') }}" 
+                               class="flex items-center pl-11 pr-3 py-2 text-sm font-medium rounded-md {{ $activeSection === 'daily-sales' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition-colors">
+                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Daily Sales Report
+                            </a>
+                            
+                            <a href="{{ route('admin.reports.order-history') }}" 
+                               class="flex items-center pl-11 pr-3 py-2 text-sm font-medium rounded-md {{ $activeSection === 'order-history' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition-colors">
+                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Order List History
+                            </a>
+                            
+                            <a href="{{ route('admin.reports.supplies-list') }}" 
+                               class="flex items-center pl-11 pr-3 py-2 text-sm font-medium rounded-md {{ $activeSection === 'supplies-list' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition-colors">
+                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                </svg>
+                                Recent Supplies List
+                            </a>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </nav>
@@ -445,13 +442,13 @@
                 </div>
 
                 @elseif($activeSection === 'supplies-list')
-                <!-- Recent Supplies List -->
+                <!-- Recent Supplies List (Read-only) -->
                 <div>
                     <div class="mb-8">
                         <div class="flex items-center justify-between">
                             <div>
                                 <h1 class="text-3xl font-bold text-gray-900">Recent Supplies List</h1>
-                                <p class="text-gray-600 mt-2">Track inventory supplies and deliveries</p>
+                                <p class="text-gray-600 mt-2">View inventory supplies and deliveries</p>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -461,9 +458,6 @@
                                     <option>Food Corp</option>
                                 </select>
                                 <input type="date" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                    Add Supply
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -516,7 +510,7 @@
                         </div>
                     </div>
 
-                    <!-- Supplies Table -->
+                    <!-- Supplies Table (Read-only) -->
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                         <div class="px-6 py-4 border-b border-gray-200">
                             <div class="flex items-center justify-between">
@@ -547,7 +541,6 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
@@ -582,10 +575,6 @@
                                                       x-text="supply.status.charAt(0).toUpperCase() + supply.status.slice(1)"></span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="supply.date"></td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <button class="text-blue-600 hover:text-blue-900 transition-colors mr-3">View</button>
-                                                <button class="text-gray-600 hover:text-gray-900 transition-colors">Edit</button>
-                                            </td>
                                         </tr>
                                     </template>
                                 </tbody>
