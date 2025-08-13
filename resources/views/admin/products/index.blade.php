@@ -237,7 +237,7 @@
                                         </svg>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <button @click="openEditCategoryModal(category)" 
+                                        <button @click="alert('Edit category functionality - implement server-side')" 
                                                 class="text-gray-400 hover:text-blue-600 transition-colors">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -354,7 +354,7 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div class="flex items-center space-x-2">
-                                                    <button @click="openEditProductModal(product)" 
+                                                    <button @click="alert('Edit product functionality - implement server-side')" 
                                                             class="text-blue-600 hover:text-blue-900 transition-colors">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -763,69 +763,55 @@ function productManagement() {
         async addCategory() {
             this.addCategoryForm.loading = true;
             
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Add to dummy data
-                const newCategory = {
-                    id: this.categories.length + 1,
-                    name: this.addCategoryForm.name,
-                    description: this.addCategoryForm.description,
-                    product_count: 0,
-                    created_at: new Date().toISOString()
-                };
-                
-                this.categories.push(newCategory);
-                this.closeAddCategoryModal();
-                alert('Category added successfully!');
-                
-            } catch (error) {
-                console.error('Error adding category:', error);
-                alert('Failed to add category. Please try again.');
-            } finally {
-                this.addCategoryForm.loading = false;
-            }
+            // Simulate loading delay for UI demonstration
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Add to dummy data (frontend only - replace with actual API call)
+            const newCategory = {
+                id: this.categories.length + 1,
+                name: this.addCategoryForm.name,
+                description: this.addCategoryForm.description,
+                product_count: 0,
+                created_at: new Date().toISOString()
+            };
+            
+            this.categories.push(newCategory);
+            this.closeAddCategoryModal();
+            alert('Category added successfully! (Demo - implement server-side)');
+            this.addCategoryForm.loading = false;
         },
         
         async addProduct() {
             this.addProductForm.loading = true;
             
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Add to dummy data
-                const newProduct = {
-                    id: this.products.length + 1,
-                    name: this.addProductForm.name,
-                    description: this.addProductForm.description,
-                    category_id: parseInt(this.addProductForm.category_id),
-                    price: parseFloat(this.addProductForm.price),
-                    cost: parseFloat(this.addProductForm.cost),
-                    stock_quantity: parseInt(this.addProductForm.stock_quantity),
-                    barcode: this.addProductForm.barcode,
-                    status: this.addProductForm.status,
-                    created_at: new Date().toISOString()
-                };
-                
-                this.products.push(newProduct);
-                
-                // Update category product count
-                const category = this.categories.find(c => c.id === newProduct.category_id);
-                if (category) {
-                    category.product_count++;
-                }
-                
-                this.closeAddProductModal();
-                alert('Product added successfully!');
-                
-            } catch (error) {
-                console.error('Error adding product:', error);
-                alert('Failed to add product. Please try again.');
-            } finally {
-                this.addProductForm.loading = false;
+            // Simulate loading delay for UI demonstration
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Add to dummy data (frontend only - replace with actual API call)
+            const newProduct = {
+                id: this.products.length + 1,
+                name: this.addProductForm.name,
+                description: this.addProductForm.description,
+                category_id: parseInt(this.addProductForm.category_id),
+                price: parseFloat(this.addProductForm.price),
+                cost: parseFloat(this.addProductForm.cost),
+                stock_quantity: parseInt(this.addProductForm.stock_quantity),
+                barcode: this.addProductForm.barcode,
+                status: this.addProductForm.status,
+                created_at: new Date().toISOString()
+            };
+            
+            this.products.push(newProduct);
+            
+            // Update category product count (frontend only)
+            const category = this.categories.find(c => c.id === newProduct.category_id);
+            if (category) {
+                category.product_count++;
             }
+            
+            this.closeAddProductModal();
+            alert('Product added successfully! (Demo - implement server-side)');
+            this.addProductForm.loading = false;
         },
         
         async deleteCategory(categoryId) {
@@ -833,18 +819,12 @@ function productManagement() {
                 return;
             }
             
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                // Remove from dummy data
-                this.categories = this.categories.filter(c => c.id !== categoryId);
-                alert('Category deleted successfully!');
-                
-            } catch (error) {
-                console.error('Error deleting category:', error);
-                alert('Failed to delete category. Please try again.');
-            }
+            // Simulate loading delay for UI demonstration
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Remove from dummy data (frontend only - replace with actual API call)
+            this.categories = this.categories.filter(c => c.id !== categoryId);
+            alert('Category deleted successfully! (Demo - implement server-side)');
         },
         
         async deleteProduct(productId) {
@@ -852,28 +832,22 @@ function productManagement() {
                 return;
             }
             
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                // Find product to get category_id before deletion
-                const product = this.products.find(p => p.id === productId);
-                if (product) {
-                    // Update category product count
-                    const category = this.categories.find(c => c.id === product.category_id);
-                    if (category) {
-                        category.product_count--;
-                    }
+            // Simulate loading delay for UI demonstration
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Find product to get category_id before deletion (frontend only)
+            const product = this.products.find(p => p.id === productId);
+            if (product) {
+                // Update category product count (frontend only)
+                const category = this.categories.find(c => c.id === product.category_id);
+                if (category) {
+                    category.product_count--;
                 }
-                
-                // Remove from dummy data
-                this.products = this.products.filter(p => p.id !== productId);
-                alert('Product deleted successfully!');
-                
-            } catch (error) {
-                console.error('Error deleting product:', error);
-                alert('Failed to delete product. Please try again.');
             }
+            
+            // Remove from dummy data (frontend only - replace with actual API call)
+            this.products = this.products.filter(p => p.id !== productId);
+            alert('Product deleted successfully! (Demo - implement server-side)');
         }
     }
 }

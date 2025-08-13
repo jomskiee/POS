@@ -40,18 +40,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/users/{user}', [App\Http\Controllers\UserManagementController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{user}', [App\Http\Controllers\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
     
-    // Product Management routes
+    // Product Management routes (design only - server-side to be implemented)
     Route::get('/admin/products', [App\Http\Controllers\ProductManagementController::class, 'index'])->name('admin.products.index');
-    
-    // Category Management routes
-    Route::post('/admin/categories', [App\Http\Controllers\ProductManagementController::class, 'storeCategory'])->name('admin.categories.store');
-    Route::put('/admin/categories/{category}', [App\Http\Controllers\ProductManagementController::class, 'updateCategory'])->name('admin.categories.update');
-    Route::delete('/admin/categories/{category}', [App\Http\Controllers\ProductManagementController::class, 'destroyCategory'])->name('admin.categories.destroy');
-    
-    // Product routes
-    Route::post('/admin/products/store', [App\Http\Controllers\ProductManagementController::class, 'storeProduct'])->name('admin.products.store');
-    Route::put('/admin/products/{product}', [App\Http\Controllers\ProductManagementController::class, 'updateProduct'])->name('admin.products.update');
-    Route::delete('/admin/products/{product}', [App\Http\Controllers\ProductManagementController::class, 'destroyProduct'])->name('admin.products.destroy');
 });
 
 // Employee routes
