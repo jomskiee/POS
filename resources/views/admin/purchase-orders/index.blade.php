@@ -23,8 +23,8 @@
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Purchase Orders Management</h1>
-                            <p class="text-gray-600 mt-2">Create, track, and manage purchase orders with vendor comparison</p>
+                            <h1 class="text-3xl font-bold text-gray-900">Purchase & Procurement</h1>
+                            <p class="text-gray-600 mt-2">Complete procurement system with purchase orders, vendor management, and supplies tracking</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <button @click="openVendorComparisonModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
@@ -75,6 +75,16 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                                     </svg>
                                     <span>Quality Control</span>
+                                </div>
+                            </button>
+                            <button @click="activeTab = 'supplies-history'" 
+                                    :class="activeTab === 'supplies-history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                    </svg>
+                                    <span>Supplies History</span>
                                 </div>
                             </button>
                         </nav>
@@ -417,6 +427,11 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Supplies History Tab -->
+                <div x-show="activeTab === 'supplies-history'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.reports.supplies-list')
                 </div>
             </div>
 

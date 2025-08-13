@@ -3,7 +3,7 @@
 @section('content')
 @php
     $breadcrumbs = [
-        ['title' => 'Advanced Inventory']
+        ['title' => 'Inventory & Stock Management']
     ];
 @endphp
 
@@ -23,8 +23,8 @@
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Advanced Inventory</h1>
-                            <p class="text-gray-600 mt-2">Stock alerts, movement tracking, and inventory management</p>
+                            <h1 class="text-3xl font-bold text-gray-900">Inventory & Stock Management</h1>
+                            <p class="text-gray-600 mt-2">Complete inventory control with products, categories, suppliers, and stock tracking</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <button @click="openBarcodeScanner()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
@@ -47,6 +47,46 @@
                 <div class="mb-8">
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-8">
+                            <button @click="activeTab = 'products'" 
+                                    :class="activeTab === 'products' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                    </svg>
+                                    <span>Product List</span>
+                                </div>
+                            </button>
+                            <button @click="activeTab = 'categories'" 
+                                    :class="activeTab === 'categories' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                    <span>Categories</span>
+                                </div>
+                            </button>
+                            <button @click="activeTab = 'supplies'" 
+                                    :class="activeTab === 'supplies' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                    </svg>
+                                    <span>Supplies List</span>
+                                </div>
+                            </button>
+                            <button @click="activeTab = 'suppliers'" 
+                                    :class="activeTab === 'suppliers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <span>Supplier List</span>
+                                </div>
+                            </button>
                             <button @click="activeTab = 'alerts'" 
                                     :class="activeTab === 'alerts' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
@@ -79,6 +119,26 @@
                             </button>
                         </nav>
                     </div>
+                </div>
+
+                <!-- Product List Tab -->
+                <div x-show="activeTab === 'products'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.product-list')
+                </div>
+
+                <!-- Categories Tab -->
+                <div x-show="activeTab === 'categories'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.categories')
+                </div>
+
+                <!-- Supplies List Tab -->
+                <div x-show="activeTab === 'supplies'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.supplies')
+                </div>
+
+                <!-- Supplier List Tab -->
+                <div x-show="activeTab === 'suppliers'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.suppliers')
                 </div>
 
                 <!-- Stock Alerts Tab -->
@@ -536,7 +596,7 @@
 <script>
 function inventoryManagement() {
     return {
-        activeTab: 'alerts',
+        activeTab: 'products',
         showBarcodeModal: false,
         showTransferModal: false,
         
