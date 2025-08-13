@@ -1,40 +1,67 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="min-h-screen bg-gray-100" x-data="posTerminal()">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="flex items-center justify-between px-6 py-4">
-            <div class="flex items-center space-x-4">
-                <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('employee.dashboard') }}" 
-                   class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </a>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">POS Terminal</h1>
-                    <p class="text-sm text-gray-500">Point of Sale System</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <!-- Current User -->
-                <div class="text-right">
-                    <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</p>
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>POS Terminal - {{ config('app.name', 'POS System') }}</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-100 font-sans overflow-hidden">
+    <div class="h-screen flex flex-col" x-data="posTerminal()">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('employee.dashboard') }}" 
+                       class="text-gray-500 hover:text-gray-700 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">POS Terminal</h1>
+                        <p class="text-sm text-gray-500">Point of Sale System</p>
+                    </div>
                 </div>
                 
-                <!-- Current Time -->
-                <div class="text-right border-l pl-4">
-                    <p class="text-sm font-medium text-gray-900" x-text="currentTime"></p>
-                    <p class="text-xs text-gray-500" x-text="currentDate"></p>
+                <div class="flex items-center space-x-4">
+                    <!-- Current User -->
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</p>
+                    </div>
+                    
+                    <!-- Current Time -->
+                    <div class="text-right border-l pl-4">
+                        <p class="text-sm font-medium text-gray-900" x-text="currentTime"></p>
+                        <p class="text-xs text-gray-500" x-text="currentDate"></p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <div class="flex h-screen pt-16">
+        <!-- Main Content -->
+        <div class="flex flex-1 overflow-hidden">
         <!-- Left Panel - Products -->
         <div class="flex-1 p-6">
             <!-- Search and Categories -->
@@ -94,7 +121,7 @@
             </div>
 
             <!-- Products Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 overflow-y-auto max-h-[calc(100vh-300px)]">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 overflow-y-auto h-[calc(100vh-240px)]">
                 <template x-for="product in filteredProducts" :key="product.id">
                     <div @click="addToCart(product)" 
                          class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md hover:border-blue-300 cursor-pointer transition-all group">
@@ -115,7 +142,7 @@
         <!-- Right Panel - Cart -->
         <div class="w-96 bg-white border-l border-gray-200 flex flex-col">
             <!-- Cart Header -->
-            <div class="p-6 border-b border-gray-200">
+            <div class="p-6 border-b border-gray-200 flex-shrink-0">
                 <h2 class="text-xl font-bold text-gray-900 mb-2">Current Order</h2>
                 <div class="flex justify-between text-sm text-gray-500">
                     <span x-text="'Items: ' + cartItems.length"></span>
@@ -124,7 +151,7 @@
             </div>
 
             <!-- Cart Items -->
-            <div class="flex-1 overflow-y-auto p-6">
+            <div class="flex-1 overflow-y-auto p-6 min-h-0">
                 <div x-show="cartItems.length === 0" class="text-center py-12">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z"></path>
@@ -173,7 +200,7 @@
             </div>
 
             <!-- Cart Footer -->
-            <div class="border-t border-gray-200 p-6 space-y-4">
+            <div class="border-t border-gray-200 p-6 space-y-4 flex-shrink-0">
                 <!-- Totals -->
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
@@ -209,7 +236,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
 function posTerminal() {
@@ -318,4 +344,5 @@ function posTerminal() {
     }
 }
 </script>
-@endsection
+</body>
+</html>
