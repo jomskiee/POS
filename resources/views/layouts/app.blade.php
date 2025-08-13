@@ -7,14 +7,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'POS System') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link href="https://unpkg.com/heroicons@1.0.6/outline/index.css" rel="stylesheet">
     
     <!-- Tailwind CSS CDN for development -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,19 +30,10 @@
     <!-- Alpine.js for interactive components -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Scripts -->
+    <!-- POS System Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    
-    <!-- Debug Alpine.js -->
-    <script>
-        document.addEventListener('alpine:init', () => {
-            console.log('Alpine.js initialized successfully');
-        });
-    </script>
 </head>
 <body class="bg-gray-50 font-sans">
-    <div id="app">
-        @yield('content')
-    </div>
+    @yield('content')
 </body>
 </html>

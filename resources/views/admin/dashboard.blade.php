@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 flex" id="dashboard-container">
+<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true }">
     <!-- Sidebar -->
-    <div id="sidebar" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden w-64">
+    <div :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden">
         <div class="p-4 border-b">
             <div class="flex items-center space-x-2">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                     <span class="text-white font-bold text-sm">POS</span>
                 </div>
-                <span class="text-xl font-bold text-gray-800 whitespace-nowrap brand-text">Point of Sale</span>
+                <span x-show="sidebarOpen" x-transition class="text-xl font-bold text-gray-800 whitespace-nowrap">Point of Sale</span>
             </div>
         </div>
         
         <!-- Navigation -->
         <nav class="mt-6">
-            <div class="px-4 pb-2 menu-header">
+            <div x-show="sidebarOpen" x-transition class="px-4 pb-2">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu</p>
             </div>
             
@@ -23,11 +23,11 @@
                 <li>
                     <a href="{{ route('admin.dashboard') }}" 
                        class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-blue-600 bg-blue-50 group relative">
-                        <svg class="w-5 h-5 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
                         </svg>
-                        <span class="whitespace-nowrap menu-text">Dashboard</span>
+                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">Dashboard</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div class="tooltip absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap z-50 hidden">
@@ -42,10 +42,10 @@
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" class="mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                         </svg>
-                        <span class="whitespace-nowrap menu-text">User Management</span>
+                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">User Management</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div class="tooltip hidden" 
@@ -61,10 +61,10 @@
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" class="mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
-                        <span class="whitespace-nowrap menu-text">Product Management</span>
+                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">Product Management</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div class="tooltip hidden" 
@@ -80,10 +80,10 @@
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" class="mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
-                        <span class="whitespace-nowrap menu-text">Reports</span>
+                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">Reports</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div class="tooltip hidden" 
@@ -99,10 +99,10 @@
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" class="mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
                         </svg>
-                        <span class="whitespace-nowrap menu-text">Inventory</span>
+                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">Inventory</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div class="tooltip hidden" 
@@ -121,7 +121,7 @@
         <header class="bg-white shadow-sm border-b border-gray-200">
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="flex items-center space-x-4">
-                    <button onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 hover:text-gray-700 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
