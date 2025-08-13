@@ -37,13 +37,13 @@
                 </li>
                 
                 <li>
-                    <a href="#" 
+                    <a href="{{ route('admin.users.index') }}" 
                        class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 group relative"
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
                         <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 715 0z"></path>
                         </svg>
                         <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">User Management</span>
                         
