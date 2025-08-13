@@ -30,6 +30,9 @@
         }
     </script>
     
+    <!-- Alpine.js for interactive components -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
