@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true }" id="employee-dashboard-container">
+<div class="min-h-screen bg-gray-50 flex" id="employee-dashboard-container">
     <!-- Sidebar -->
-    <div id="sidebar" :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden w-64">
+    <div id="sidebar" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden w-64">
         <div class="p-4 border-b">
             <div class="flex items-center space-x-2">
                 <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
                     <span class="text-white font-bold text-sm">POS</span>
                 </div>
-                <span x-show="sidebarOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="text-xl font-bold text-gray-800 whitespace-nowrap">Employee Portal</span>
+                <span class="text-xl font-bold text-gray-800 whitespace-nowrap brand-text">Employee Portal</span>
             </div>
         </div>
         
         <!-- Navigation -->
         <nav class="mt-6">
-            <div class="px-4 pb-2" x-show="sidebarOpen" x-transition>
+            <div class="px-4 pb-2" class="menu-header">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Employee Menu</p>
             </div>
             
@@ -26,10 +26,10 @@
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" class="mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                         </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">POS Terminal</span>
+                        <span class="menu-header" class="whitespace-nowrap">POS Terminal</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div x-show="tooltip" x-transition 
@@ -45,10 +45,10 @@
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" class="mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">My Transactions</span>
+                        <span class="menu-header" class="whitespace-nowrap">My Transactions</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div x-show="tooltip" x-transition 
@@ -64,10 +64,10 @@
                        x-data="{ tooltip: false }"
                        @mouseenter="!sidebarOpen ? tooltip = true : tooltip = false"
                        @mouseleave="tooltip = false">
-                        <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 flex-shrink-0" class="mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span x-show="sidebarOpen" x-transition class="whitespace-nowrap">My Collections</span>
+                        <span class="menu-header" class="whitespace-nowrap">My Collections</span>
                         
                         <!-- Tooltip for collapsed state -->
                         <div x-show="tooltip" x-transition 
@@ -86,7 +86,7 @@
         <header class="bg-white shadow-sm border-b border-gray-200">
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="flex items-center space-x-4">
-                    <button @click="sidebarOpen = !sidebarOpen" onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <button onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-700 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -309,10 +309,73 @@
 </div>
 
 <script>
+let sidebarCollapsed = false;
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('w-16');
-    sidebar.classList.toggle('w-64');
+    sidebarCollapsed = !sidebarCollapsed;
+    
+    if (sidebarCollapsed) {
+        // Collapse sidebar
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-16');
+        
+        // Hide brand text
+        const brandText = sidebar.querySelector('.brand-text');
+        if (brandText) brandText.style.display = 'none';
+        
+        // Hide menu header
+        const menuHeader = sidebar.querySelector('.menu-header');
+        if (menuHeader) menuHeader.style.display = 'none';
+        
+        // Hide all menu text
+        const menuTexts = sidebar.querySelectorAll('.menu-text');
+        menuTexts.forEach(text => {
+            text.style.display = 'none';
+        });
+        
+        // Center all icons
+        const svgs = sidebar.querySelectorAll('svg');
+        svgs.forEach(svg => {
+            svg.classList.remove('mr-3');
+            svg.classList.add('mx-auto');
+        });
+        
+        console.log('Employee sidebar collapsed');
+        
+    } else {
+        // Expand sidebar
+        sidebar.classList.remove('w-16');
+        sidebar.classList.add('w-64');
+        
+        // Show brand text
+        const brandText = sidebar.querySelector('.brand-text');
+        if (brandText) brandText.style.display = 'inline';
+        
+        // Show menu header
+        const menuHeader = sidebar.querySelector('.menu-header');
+        if (menuHeader) menuHeader.style.display = 'block';
+        
+        // Show all menu text
+        const menuTexts = sidebar.querySelectorAll('.menu-text');
+        menuTexts.forEach(text => {
+            text.style.display = 'inline';
+        });
+        
+        // Reset icon margins
+        const svgs = sidebar.querySelectorAll('svg');
+        svgs.forEach(svg => {
+            svg.classList.remove('mx-auto');
+            svg.classList.add('mr-3');
+        });
+        
+        console.log('Employee sidebar expanded');
+    }
 }
+
+// Test function on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Employee dashboard JavaScript loaded');
+});
 </script>
 @endsection
