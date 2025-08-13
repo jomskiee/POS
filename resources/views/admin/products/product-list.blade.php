@@ -54,8 +54,76 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
-                <template x-for="product in filteredProducts" :key="product.id">
+            <tbody class="divide-y divide-gray-200" x-data="{
+                products: [
+                    {
+                        id: 1,
+                        name: 'iPhone 15 Pro',
+                        category_id: 1,
+                        price: 999.99,
+                        cost: 750.00,
+                        stock_quantity: 25,
+                        barcode: '123456789012',
+                        status: 'active',
+                        description: 'Latest iPhone model'
+                    },
+                    {
+                        id: 2,
+                        name: 'Samsung Galaxy S24',
+                        category_id: 1,
+                        price: 899.99,
+                        cost: 650.00,
+                        stock_quantity: 18,
+                        barcode: '123456789013',
+                        status: 'active',
+                        description: 'Samsung flagship phone'
+                    },
+                    {
+                        id: 3,
+                        name: 'MacBook Pro 16',
+                        category_id: 1,
+                        price: 2499.99,
+                        cost: 1800.00,
+                        stock_quantity: 8,
+                        barcode: '123456789014',
+                        status: 'active',
+                        description: 'Apple laptop'
+                    },
+                    {
+                        id: 4,
+                        name: 'Nike Air Max',
+                        category_id: 2,
+                        price: 129.99,
+                        cost: 80.00,
+                        stock_quantity: 45,
+                        barcode: '123456789015',
+                        status: 'active',
+                        description: 'Popular sneakers'
+                    },
+                    {
+                        id: 5,
+                        name: 'Coffee Beans Premium',
+                        category_id: 3,
+                        price: 24.99,
+                        cost: 15.00,
+                        stock_quantity: 120,
+                        barcode: '123456789016',
+                        status: 'active',
+                        description: 'Arabica coffee beans'
+                    }
+                ],
+                categories: [
+                    { id: 1, name: 'Electronics' },
+                    { id: 2, name: 'Clothing' },
+                    { id: 3, name: 'Food & Beverages' },
+                    { id: 4, name: 'Books' }
+                ],
+                getCategoryName(categoryId) {
+                    const category = this.categories.find(cat => cat.id === categoryId);
+                    return category ? category.name : 'Unknown';
+                }
+            }">
+                <template x-for="product in products" :key="product.id">
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">

@@ -11,7 +11,52 @@
 </div>
 
 <!-- Categories Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" x-data="{
+    categories: [
+        {
+            id: 1,
+            name: 'Electronics',
+            description: 'Electronic devices and gadgets',
+            product_count: 5,
+            created_at: '2024-01-15'
+        },
+        {
+            id: 2,
+            name: 'Clothing',
+            description: 'Apparel and fashion items',
+            product_count: 12,
+            created_at: '2024-01-20'
+        },
+        {
+            id: 3,
+            name: 'Food & Beverages',
+            description: 'Food items and drinks',
+            product_count: 8,
+            created_at: '2024-02-01'
+        },
+        {
+            id: 4,
+            name: 'Books',
+            description: 'Books and educational materials',
+            product_count: 15,
+            created_at: '2024-02-10'
+        },
+        {
+            id: 5,
+            name: 'Home & Garden',
+            description: 'Home improvement and garden supplies',
+            product_count: 6,
+            created_at: '2024-02-15'
+        },
+        {
+            id: 6,
+            name: 'Sports & Outdoors',
+            description: 'Sports equipment and outdoor gear',
+            product_count: 9,
+            created_at: '2024-02-20'
+        }
+    ]
+}">
     <template x-for="category in categories" :key="category.id">
         <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
             <div class="flex items-start justify-between mb-4">
