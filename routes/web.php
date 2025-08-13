@@ -58,6 +58,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Purchase Orders routes
     Route::get('/admin/purchase-orders', [App\Http\Controllers\PurchaseOrderController::class, 'index'])->name('admin.purchase-orders.index');
     
+    // System Settings routes
+    Route::get('/admin/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('admin.settings.index');
+    
+    // Digital Integration routes
+    Route::get('/admin/digital-integration', [App\Http\Controllers\DigitalIntegrationController::class, 'index'])->name('admin.digital-integration.index');
+    
     // Reports routes
     Route::get('/admin/reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('admin.reports.index');
     Route::get('/admin/reports/daily-sales', [App\Http\Controllers\ReportsController::class, 'dailySales'])->name('admin.reports.daily-sales');
