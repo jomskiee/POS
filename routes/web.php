@@ -46,8 +46,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Sales & Transactions routes
     Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
     
-    // Business Intelligence routes
-    Route::get('/admin/business-intelligence', [App\Http\Controllers\BusinessIntelligenceController::class, 'index'])->name('admin.business-intelligence.index');
+
     
     // Accounting & Finance routes
     Route::get('/admin/accounting', [App\Http\Controllers\AccountingController::class, 'index'])->name('admin.accounting.index');

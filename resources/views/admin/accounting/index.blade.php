@@ -24,7 +24,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">Accounting & Finance</h1>
-                            <p class="text-gray-600 mt-2">Financial tracking, expense management, and budgeting</p>
+                            <p class="text-gray-600 mt-2">Financial tracking, expense management, budgeting, and business intelligence analytics</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <button @click="openExpenseModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
@@ -77,12 +77,42 @@
                                     <span>Budget Planning</span>
                                 </div>
                             </button>
+                            <button @click="activeTab = 'business-intelligence'" 
+                                    :class="activeTab === 'business-intelligence' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    <span>Business Intelligence</span>
+                                </div>
+                            </button>
                         </nav>
                     </div>
                 </div>
 
                 <!-- Financial Overview Tab -->
                 <div x-show="activeTab === 'overview'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.accounting.financial-overview')
+                </div>
+
+                <!-- Expense Management Tab -->
+                <div x-show="activeTab === 'expenses'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.accounting.expense-management')
+                </div>
+
+                <!-- Budget Planning Tab -->
+                <div x-show="activeTab === 'budget'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.accounting.budget-planning')
+                </div>
+
+                <!-- Business Intelligence Tab -->
+                <div x-show="activeTab === 'business-intelligence'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.accounting.business-intelligence')
+                </div>
+
+                <!-- Keep existing content temporarily for reference -->
+                <div x-show="false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
                     <!-- Summary Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="bg-white rounded-xl shadow-lg p-6">
