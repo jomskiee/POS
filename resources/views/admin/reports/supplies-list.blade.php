@@ -1,11 +1,11 @@
-<!-- Supplies List History Tab Content -->
+<!-- Purchase Order Items Tab Content -->
 <div class="space-y-6">
     <!-- Page Header -->
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-xl font-semibold text-gray-900">Supplies List History</h2>
-                <p class="text-gray-600 mt-2">Complete history of all supply orders and deliveries</p>
+                <h2 class="text-xl font-semibold text-gray-900">Purchase Order Items</h2>
+                <p class="text-gray-600 mt-2">Complete history of all purchase order items and deliveries</p>
             </div>
         </div>
     </div>
@@ -16,7 +16,7 @@
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supply ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PO Item ID</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
@@ -27,7 +27,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200">
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#SUP-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-001</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">Coffee Beans</div>
                                         <div class="text-xs text-gray-500">Premium Arabica</div>
@@ -41,7 +41,7 @@
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#SUP-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-002</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">Pastries</div>
                                         <div class="text-xs text-gray-500">Assorted varieties</div>
@@ -55,7 +55,7 @@
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#SUP-003</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-003</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">Milk</div>
                                         <div class="text-xs text-gray-500">Fresh dairy</div>
@@ -69,7 +69,7 @@
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#SUP-004</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-004</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">Sugar</div>
                                         <div class="text-xs text-gray-500">White granulated</div>
@@ -83,7 +83,7 @@
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#SUP-005</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-005</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">Paper Cups</div>
                                         <div class="text-xs text-gray-500">16oz disposable</div>
@@ -97,7 +97,7 @@
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#SUP-006</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-006</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">Tea Bags</div>
                                         <div class="text-xs text-gray-500">Earl Grey blend</div>

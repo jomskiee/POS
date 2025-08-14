@@ -24,7 +24,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">Purchase & Procurement</h1>
-                            <p class="text-gray-600 mt-2">Complete procurement system with purchase orders, vendor management, and supplies tracking</p>
+                            <p class="text-gray-600 mt-2">Complete procurement system with purchase orders, supplier management, and PO item tracking</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <button @click="openVendorComparisonModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
@@ -77,14 +77,24 @@
                                     <span>Quality Control</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'supplies-history'" 
-                                    :class="activeTab === 'supplies-history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                            <button @click="activeTab = 'suppliers'" 
+                                    :class="activeTab === 'suppliers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <span>Supplier Management</span>
+                                </div>
+                            </button>
+                            <button @click="activeTab = 'po-items'" 
+                                    :class="activeTab === 'po-items' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                     </svg>
-                                    <span>Supplies History</span>
+                                    <span>Purchase Order Items</span>
                                 </div>
                             </button>
                         </nav>
@@ -429,8 +439,13 @@
                     </div>
                 </div>
 
-                <!-- Supplies History Tab -->
-                <div x-show="activeTab === 'supplies-history'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                <!-- Supplier Management Tab -->
+                <div x-show="activeTab === 'suppliers'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.products.suppliers')
+                </div>
+
+                <!-- Purchase Order Items Tab -->
+                <div x-show="activeTab === 'po-items'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
                     @include('admin.reports.supplies-list')
                 </div>
             </div>

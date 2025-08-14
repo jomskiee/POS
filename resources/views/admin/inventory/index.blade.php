@@ -67,26 +67,7 @@
                                     <span>Categories</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'supplies'" 
-                                    :class="activeTab === 'supplies' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                    </svg>
-                                    <span>Supplies List</span>
-                                </div>
-                            </button>
-                            <button @click="activeTab = 'suppliers'" 
-                                    :class="activeTab === 'suppliers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                    </svg>
-                                    <span>Supplier List</span>
-                                </div>
-                            </button>
+
                             <button @click="activeTab = 'alerts'" 
                                     :class="activeTab === 'alerts' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
@@ -131,15 +112,7 @@
                     @include('admin.products.categories')
                 </div>
 
-                <!-- Supplies List Tab -->
-                <div x-show="activeTab === 'supplies'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.products.supplies')
-                </div>
 
-                <!-- Supplier List Tab -->
-                <div x-show="activeTab === 'suppliers'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.products.suppliers')
-                </div>
 
                 <!-- Stock Alerts Tab -->
                 <div x-show="activeTab === 'alerts'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
