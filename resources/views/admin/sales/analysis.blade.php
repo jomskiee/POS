@@ -1,6 +1,6 @@
 <!-- Sales Analysis Tab Content -->
 <div class="space-y-6" x-data="salesAnalysis()">
-    <!-- Analysis Controls -->
+    <!-- Unified Analysis Controls -->
     <div class="bg-white rounded-xl shadow-lg p-6">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
@@ -8,17 +8,20 @@
                 <p class="text-gray-600 mt-1">Comprehensive sales metrics, trends, and performance analytics</p>
             </div>
             <div class="flex flex-col sm:flex-row gap-3">
-                <select x-model="selectedPeriod" @change="updateAnalysis()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                    <option value="quarter">This Quarter</option>
-                    <option value="year">This Year</option>
-                    <option value="custom">Custom Range</option>
-                </select>
-                <div x-show="selectedPeriod === 'custom'" class="flex gap-2">
-                    <input type="date" x-model="customStartDate" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <input type="date" x-model="customEndDate" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <div class="bg-gray-50 px-3 py-2 rounded-lg border">
+                    <label class="text-xs font-medium text-gray-600 block mb-1">Global Filter for All Charts</label>
+                    <select x-model="globalFilter" @change="updateAllCharts()" class="px-3 py-1 border-0 bg-transparent text-sm focus:ring-0 focus:outline-none">
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                <div x-show="globalFilter === 'custom'" class="flex gap-2">
+                    <input type="date" x-model="customStartDate" @change="updateAllCharts()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="date" x-model="customEndDate" @change="updateAllCharts()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <button @click="exportAnalysis()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,6 +29,16 @@
                     </svg>
                     <span>Export Report</span>
                 </button>
+            </div>
+        </div>
+        <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm text-blue-700">
+                    <strong>Active Filter:</strong> <span x-text="getFilterDescription()"></span> - All charts and metrics below are synchronized to this time period.
+                </span>
             </div>
         </div>
     </div>
@@ -143,11 +156,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900">Revenue Trend</h3>
-                <select x-model="revenueChartPeriod" class="px-3 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                </select>
+                <div class="text-sm text-gray-500" x-text="`Period: ${getFilterDescription()}`"></div>
             </div>
             <div class="h-64 flex items-end justify-between space-x-2">
                 <template x-for="(item, index) in revenueData" :key="index">
@@ -223,11 +232,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900">Top Selling Products</h3>
-                <select x-model="topProductsPeriod" class="px-3 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                </select>
+                <div class="text-sm text-gray-500" x-text="`Period: ${getFilterDescription()}`"></div>
             </div>
             <div class="space-y-4">
                 <template x-for="(product, index) in topProducts" :key="index">
@@ -256,7 +261,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900">Sales by Hour</h3>
-                <span class="text-sm text-gray-500">Today</span>
+                <div class="text-sm text-gray-500" x-text="`Period: ${getFilterDescription()}`"></div>
             </div>
             <div class="h-48 flex items-end justify-between space-x-1">
                 <template x-for="hour in hourlyData" :key="hour.hour">
@@ -274,7 +279,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900">Payment Methods</h3>
-                <span class="text-sm text-gray-500" x-text="selectedPeriod"></span>
+                <div class="text-sm text-gray-500" x-text="`Period: ${getFilterDescription()}`"></div>
             </div>
             <div class="space-y-4">
                 <template x-for="method in paymentMethods" :key="method.name">
@@ -344,12 +349,10 @@
 <script>
 function salesAnalysis() {
     return {
-        selectedPeriod: 'month',
+        globalFilter: 'month',
         customStartDate: '',
         customEndDate: '',
-        revenueChartPeriod: 'daily',
         categoryChartType: 'doughnut',
-        topProductsPeriod: 'week',
         
         metrics: {
             totalRevenue: 125420.50,
@@ -422,9 +425,23 @@ function salesAnalysis() {
             }).format(amount);
         },
         
-        updateAnalysis() {
-            // Simulate data update based on selected period
-            console.log('Updating analysis for period:', this.selectedPeriod);
+        updateAllCharts() {
+            // Simulate data update based on global filter for all charts
+            console.log('Updating all charts for period:', this.globalFilter);
+            // Here you would typically make API calls to update all chart data
+            // All charts are now synchronized to the same time period
+        },
+        
+        getFilterDescription() {
+            const descriptions = {
+                'today': 'Today',
+                'week': 'This Week', 
+                'month': 'This Month',
+                'quarter': 'This Quarter',
+                'year': 'This Year',
+                'custom': `${this.customStartDate} to ${this.customEndDate}`
+            };
+            return descriptions[this.globalFilter] || 'This Month';
         },
         
         exportAnalysis() {
