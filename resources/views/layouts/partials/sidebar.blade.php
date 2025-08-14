@@ -49,7 +49,7 @@
             
             <li>
                 <a href="{{ route('admin.inventory.index') }}" 
-                   class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.inventory.*') || request()->routeIs('admin.products.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} group relative">
+                   class="flex items-center px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.inventory.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} group relative">
                     <svg class="w-5 h-5 flex-shrink-0" :class="sidebarOpen ? 'mr-3' : 'mx-auto'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
