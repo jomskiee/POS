@@ -119,32 +119,32 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-xl shadow-lg p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-6">Budget vs Actual</h3>
-            <div class="h-64 flex items-end justify-between space-x-2">
+            <div class="h-64 flex items-end justify-between space-x-4">
                 <div class="flex flex-col items-center space-y-2">
-                    <div class="space-y-1">
-                        <div class="w-12 bg-blue-500 rounded-t" style="height: 120px;" title="Budget: $12,000"></div>
-                        <div class="w-12 bg-blue-300 rounded-t" style="height: 84px;" title="Actual: $8,450"></div>
+                    <div class="flex space-x-1">
+                        <div class="w-6 bg-blue-500 rounded-t" style="height: 120px;" title="Budget: $12,000"></div>
+                        <div class="w-6 bg-blue-300 rounded-t" style="height: 84px;" title="Actual: $8,450"></div>
                     </div>
                     <span class="text-xs text-gray-500">Marketing</span>
                 </div>
                 <div class="flex flex-col items-center space-y-2">
-                    <div class="space-y-1">
-                        <div class="w-12 bg-green-500 rounded-t" style="height: 160px;" title="Budget: $20,000"></div>
-                        <div class="w-12 bg-green-300 rounded-t" style="height: 122px;" title="Actual: $15,200"></div>
+                    <div class="flex space-x-1">
+                        <div class="w-6 bg-green-500 rounded-t" style="height: 160px;" title="Budget: $20,000"></div>
+                        <div class="w-6 bg-green-300 rounded-t" style="height: 122px;" title="Actual: $15,200"></div>
                     </div>
                     <span class="text-xs text-gray-500">Operating</span>
                 </div>
                 <div class="flex flex-col items-center space-y-2">
-                    <div class="space-y-1">
-                        <div class="w-12 bg-purple-500 rounded-t" style="height: 64px;" title="Budget: $8,000"></div>
-                        <div class="w-12 bg-purple-300 rounded-t" style="height: 46px;" title="Actual: $5,800"></div>
+                    <div class="flex space-x-1">
+                        <div class="w-6 bg-purple-500 rounded-t" style="height: 64px;" title="Budget: $8,000"></div>
+                        <div class="w-6 bg-purple-300 rounded-t" style="height: 46px;" title="Actual: $5,800"></div>
                     </div>
                     <span class="text-xs text-gray-500">Admin</span>
                 </div>
                 <div class="flex flex-col items-center space-y-2">
-                    <div class="space-y-1">
-                        <div class="w-12 bg-yellow-500 rounded-t" style="height: 80px;" title="Budget: $10,000"></div>
-                        <div class="w-12 bg-yellow-300 rounded-t" style="height: 24px;" title="Actual: $3,000"></div>
+                    <div class="flex space-x-1">
+                        <div class="w-6 bg-yellow-500 rounded-t" style="height: 80px;" title="Budget: $10,000"></div>
+                        <div class="w-6 bg-yellow-300 rounded-t" style="height: 24px;" title="Actual: $3,000"></div>
                     </div>
                     <span class="text-xs text-gray-500">Tech</span>
                 </div>
