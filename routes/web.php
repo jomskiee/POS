@@ -33,40 +33,35 @@ Route::post('/logout', function () {
 // Admin routes
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    
+
     // User Management routes
     Route::get('/admin/users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('admin.users.index');
     Route::post('/admin/users', [App\Http\Controllers\UserManagementController::class, 'store'])->name('admin.users.store');
     Route::put('/admin/users/{user}', [App\Http\Controllers\UserManagementController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{user}', [App\Http\Controllers\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
-    
 
-    
+
+
     // Sales & Transactions routes
     Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
-    
 
-    
+
+
     // Accounting & Finance routes
     Route::get('/admin/accounting', [App\Http\Controllers\AccountingController::class, 'index'])->name('admin.accounting.index');
-    
+
     // Advanced Inventory routes
     Route::get('/admin/inventory', [App\Http\Controllers\InventoryController::class, 'index'])->name('admin.inventory.index');
-    
+
     // Purchase Orders routes
     Route::get('/admin/purchase-orders', [App\Http\Controllers\PurchaseOrderController::class, 'index'])->name('admin.purchase-orders.index');
-    
+
     // System Settings routes
     Route::get('/admin/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('admin.settings.index');
-    
+
     // Digital Integration routes
     Route::get('/admin/digital-integration', [App\Http\Controllers\DigitalIntegrationController::class, 'index'])->name('admin.digital-integration.index');
-    
-    // Reports routes
-    Route::get('/admin/reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('admin.reports.index');
-    Route::get('/admin/reports/daily-sales', [App\Http\Controllers\ReportsController::class, 'dailySales'])->name('admin.reports.daily-sales');
-    Route::get('/admin/reports/order-history', [App\Http\Controllers\ReportsController::class, 'orderHistory'])->name('admin.reports.order-history');
-    Route::get('/admin/reports/supplies-list', [App\Http\Controllers\ReportsController::class, 'suppliesList'])->name('admin.reports.supplies-list');
+
 });
 
 // Employee routes
