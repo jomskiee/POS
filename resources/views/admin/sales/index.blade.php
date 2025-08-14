@@ -24,7 +24,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">Sales & Analytics</h1>
-                            <p class="text-gray-600 mt-2">Manage sales transactions, returns, receipts, and analytics reports</p>
+                            <p class="text-gray-600 mt-2">Transaction management, payment processing, returns handling, and comprehensive sales analytics</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <button @click="openReceiptModal()" 
@@ -79,14 +79,14 @@
                                     <span>Returns & Refunds</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'reports'" 
-                                    :class="activeTab === 'reports' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                            <button @click="activeTab = 'analysis'" 
+                                    :class="activeTab === 'analysis' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                     </svg>
-                                    <span>Sales Reports</span>
+                                    <span>Sales Analysis</span>
                                 </div>
                             </button>
                         </nav>
@@ -108,9 +108,9 @@
                     @include('admin.sales.returns')
                 </div>
 
-                <!-- Sales Reports Tab -->
-                <div x-show="activeTab === 'reports'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.sales.reports')
+                <!-- Sales Analysis Tab -->
+                <div x-show="activeTab === 'analysis'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                    @include('admin.sales.analysis')
                 </div>
             </div>
 
