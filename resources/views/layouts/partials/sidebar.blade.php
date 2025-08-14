@@ -141,14 +141,14 @@
                     </svg>
                     Order List History
                 </a>
-                <a href="{{ route('admin.reports.supplies-history') }}" 
-                   class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
-                          {{ request()->routeIs('admin.reports.supplies-history') ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50' }}">
-                    <svg class="mr-3 h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                    </svg>
-                    Supplies List History
-                </a>
+                                 <a href="{{ route('admin.reports.supplies-list') }}" 
+                    class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
+                           {{ request()->routeIs('admin.reports.supplies-list') ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50' }}">
+                     <svg class="mr-3 h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                     </svg>
+                     Supplies List History
+                 </a>
             </div>
         </li>
 
@@ -172,19 +172,19 @@
                 Settings
             </div>
             
-            <!-- Digital Integration -->
-            <li>
-                <a href="{{ route('admin.digital.index') }}" 
-                   class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
-                          {{ request()->routeIs('admin.digital.*') ? 'bg-blue-100 text-blue-700 border-r-4 border-blue-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                    <svg class="mr-3 h-6 w-6 flex-shrink-0 transition-transform duration-200 group-hover:scale-110
-                               {{ request()->routeIs('admin.digital.*') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" 
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
-                    <span class="transition-all duration-200" :class="sidebarOpen ? 'opacity-100' : 'opacity-0'">Digital Integration</span>
-                </a>
-            </li>
+                         <!-- Digital Integration -->
+             <li>
+                 <a href="{{ route('admin.digital-integration.index') }}" 
+                    class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
+                           {{ request()->routeIs('admin.digital-integration.*') ? 'bg-blue-100 text-blue-700 border-r-4 border-blue-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                     <svg class="mr-3 h-6 w-6 flex-shrink-0 transition-transform duration-200 group-hover:scale-110
+                                {{ request()->routeIs('admin.digital-integration.*') ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500' }}" 
+                          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                     </svg>
+                     <span class="transition-all duration-200" :class="sidebarOpen ? 'opacity-100' : 'opacity-0'">Digital Integration</span>
+                 </a>
+             </li>
 
             <!-- System Settings -->
             <li>
