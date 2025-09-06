@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Broker;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -15,54 +16,101 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        // Create admin users
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@mail.com',
-            'address' => '123 Admin Street, Admin City, AC 12345',
-            'password' => Hash::make('12345678'),
-            'role' => 'admin',
-        ]);
+        // Define users data
+        $users = [
+            // Admin users
+            [
+                'name' => 'Admin User',
+                'email' => 'admin@mail.com',
+                'address' => '123 Admin Street, Admin City, AC 12345',
+                'password' => Hash::make('12345678'),
+                'role' => 'admin',
+            ],
+            [
+                'name' => 'Sarah Manager',
+                'email' => 'sarah@mail.com',
+                'address' => '456 Management Ave, Admin City, AC 12346',
+                'password' => Hash::make('12345678'),
+                'role' => 'admin',
+            ],
+            // Broker users
+            [
+                'name' => 'John Broker',
+                'email' => 'john.broker@mail.com',
+                'address' => '789 Sales Street, Broker City, BC 54321',
+                'password' => Hash::make('12345678'),
+                'role' => 'broker',
+            ],
+            [
+                'name' => 'Jane Sales',
+                'email' => 'jane.sales@mail.com',
+                'address' => '321 Commerce Blvd, Broker City, BC 54322',
+                'password' => Hash::make('12345678'),
+                'role' => 'broker',
+            ],
+            [
+                'name' => 'Mike Seller',
+                'email' => 'mike.seller@mail.com',
+                'address' => '654 Trade Lane, Broker City, BC 54323',
+                'password' => Hash::make('12345678'),
+                'role' => 'broker',
+            ],
+            [
+                'name' => 'Lisa Agent',
+                'email' => 'lisa.agent@mail.com',
+                'address' => '987 Market Square, Broker City, BC 54324',
+                'password' => Hash::make('12345678'),
+                'role' => 'broker',
+            ],
+            [
+                'name' => 'Robert Wilson',
+                'email' => 'robert.wilson@mail.com',
+                'address' => '111 Business Park, Broker City, BC 54325',
+                'password' => Hash::make('12345678'),
+                'role' => 'broker',
+            ],
+            [
+                'name' => 'Emily Davis',
+                'email' => 'emily.davis@mail.com',
+                'address' => '222 Enterprise Ave, Broker City, BC 54326',
+                'password' => Hash::make('12345678'),
+                'role' => 'broker',
+            ],
+            // Regular users
+            [
+                'name' => 'Regular User',
+                'email' => 'user@mail.com',
+                'address' => '555 User Street, User City, UC 98765',
+                'password' => Hash::make('12345678'),
+                'role' => 'user',
+            ],
+        ];
 
-        User::create([
-            'name' => 'Sarah Manager',
-            'email' => 'sarah@mail.com',
-            'address' => '456 Management Ave, Admin City, AC 12346',
-            'password' => Hash::make('12345678'),
-            'role' => 'admin',
-        ]);
+        // Create users and brokers
+        foreach ($users as $userData) {
+            $user = User::create($userData);
 
-        // Create broker users
-        User::create([
-            'name' => 'John Broker',
-            'email' => 'john.broker@mail.com',
-            'address' => '789 Sales Street, Broker City, BC 54321',
-            'password' => Hash::make('12345678'),
-            'role' => 'broker',
-        ]);
+            // If user role is broker, create a corresponding broker record
+            if ($user->role === 'broker') {
+                Broker::create([
+                    'user_id' => $user->id,
+                    'name' => $user->name,
+                    'account_balance' => $this->generateRandomBalance(),
+                ]);
+            }
+        }
 
-        User::create([
-            'name' => 'Jane Sales',
-            'email' => 'jane.sales@mail.com',
-            'address' => '321 Commerce Blvd, Broker City, BC 54322',
-            'password' => Hash::make('12345678'),
-            'role' => 'broker',
-        ]);
+        $this->command->info('UserSeeder completed successfully!');
+        $this->command->info('Created ' . User::count() . ' users');
+        $this->command->info('Created ' . Broker::count() . ' brokers');
+    }
 
-        User::create([
-            'name' => 'Mike Seller',
-            'email' => 'mike.seller@mail.com',
-            'address' => '654 Trade Lane, Broker City, BC 54323',
-            'password' => Hash::make('12345678'),
-            'role' => 'broker',
-        ]);
-
-        User::create([
-            'name' => 'Lisa Agent',
-            'email' => 'lisa.agent@mail.com',
-            'address' => '987 Market Square, Broker City, BC 54324',
-            'password' => Hash::make('12345678'),
-            'role' => 'broker',
-        ]);
+    /**
+     * Generate a random balance for brokers
+     */
+    private function generateRandomBalance()
+    {
+        // Generate random balance between $100.00 and $50,000.00
+        return rand(10000, 5000000) / 100;
     }
 }

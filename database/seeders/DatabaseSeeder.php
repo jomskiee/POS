@@ -16,9 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         User::truncate();
-        $this->call([
-            UserSeeder::class,
-            BrokerSeeder::class,
-        ]);
+        $this->call(UserSeeder::class);
     }
 }
