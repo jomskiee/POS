@@ -14,7 +14,7 @@
                 Use your credentials to access the POS system
             </p>
         </div>
-        
+
         <!-- Success Message -->
         @if(session('message'))
             <div class="rounded-md bg-green-50 p-4">
@@ -32,34 +32,34 @@
                 </div>
             </div>
         @endif
-        
+
         <form class="mt-8 space-y-6" method="POST" action="{{ route('login') }}">
             @csrf
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                     <label for="email" class="sr-only">Email address</label>
-                    <input id="email" 
-                           name="email" 
-                           type="email" 
-                           autocomplete="email" 
-                           required 
+                    <input id="email"
+                           name="email"
+                           type="email"
+                           autocomplete="email"
+                           required
                            autofocus
                            value="{{ old('email') }}"
-                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm @error('email') border-red-300 @enderror" 
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm @error('email') border-red-300 @enderror"
                            placeholder="Email address">
                     @error('email')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-                
+
                 <div>
                     <label for="password" class="sr-only">Password</label>
-                    <input id="password" 
-                           name="password" 
-                           type="password" 
-                           autocomplete="current-password" 
-                           required 
-                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm @error('password') border-red-300 @enderror" 
+                    <input id="password"
+                           name="password"
+                           type="password"
+                           autocomplete="current-password"
+                           required
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm @error('password') border-red-300 @enderror"
                            placeholder="Password">
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -69,9 +69,9 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <input id="remember" 
-                           name="remember" 
-                           type="checkbox" 
+                    <input id="remember"
+                           name="remember"
+                           type="checkbox"
                            {{ old('remember') ? 'checked' : '' }}
                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="remember" class="ml-2 block text-sm text-gray-900">
@@ -98,13 +98,13 @@
                     Sign in
                 </button>
             </div>
-            
+
             <!-- Demo credentials hint -->
             <div class="mt-6 p-4 bg-blue-50 rounded-md border border-blue-200">
                 <h3 class="text-sm font-medium text-blue-800">Demo Credentials</h3>
                 <div class="mt-2 text-sm text-blue-700">
                     <p><strong>Admin:</strong> admin@mail.com / 12345678</p>
-                    <p><strong>Employee:</strong> employee@mail.com / 12345678</p>
+                    <p><strong>Employee:</strong> john.broker@mail.com / 12345678</p>
                 </div>
             </div>
         </form>

@@ -28,18 +28,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', function () {
-    if (Auth::check()) {
-        $user = Auth::user();
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'broker') {
-            return redirect()->route('broker.dashboard');
-        }
-    }
-    return redirect()->route('login');
-})->name('home')->middleware('auth');
-
 // Custom logout route
 Route::post('/logout', function () {
     Auth::logout();
@@ -63,34 +51,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Sales & Transactions routes
     Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
 
-
-
-    // Accounting & Finance routes
-    Route::get('/admin/accounting', [App\Http\Controllers\AccountingController::class, 'index'])->name('admin.accounting.index');
-
-    // Advanced Inventory routes
-    Route::get('/admin/inventory', [App\Http\Controllers\InventoryController::class, 'index'])->name('admin.inventory.index');
-
-    // Purchase Orders routes
-    Route::get('/admin/purchase-orders', [App\Http\Controllers\PurchaseOrderController::class, 'index'])->name('admin.purchase-orders.index');
-
-    // System Settings routes
-    Route::get('/admin/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('admin.settings.index');
-
-    // Digital Integration routes
-    Route::get('/admin/digital-integration', [App\Http\Controllers\DigitalIntegrationController::class, 'index'])->name('admin.digital-integration.index');
-
-    // Note: POS Terminal is NOT accessible by admin - only by brokers
-
 });
 
 // Broker routes
 Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
-    
+
     // Broker Inventory routes
     Route::get('/broker/inventory', [App\Http\Controllers\InventoryController::class, 'brokerIndex'])->name('broker.inventory.index');
-    
+
     // Broker Sales routes
     Route::get('/broker/sales', [App\Http\Controllers\SalesController::class, 'brokerIndex'])->name('broker.sales.index');
 });
