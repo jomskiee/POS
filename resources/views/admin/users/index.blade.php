@@ -24,7 +24,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">User Management</h1>
-                            <p class="text-gray-600 mt-2">Manage system users and their permissions</p>
+                            <p class="text-gray-600 mt-2">Manage system users such as admin and brokers.</p>
                         </div>
                         <button @click="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
                             <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@
                 <div class="bg-white rounded-xl shadow-lg mb-6">
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
-                            <button @click="activeTab = 'admins'" 
+                            <button @click="activeTab = 'admins'"
                                     :class="activeTab === 'admins' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@
                                 </svg>
                                 Admins (<span x-text="filteredAdmins().length"></span>)
                             </button>
-                            <button @click="activeTab = 'brokers'" 
+                            <button @click="activeTab = 'brokers'"
                                     :class="activeTab === 'brokers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,35 +58,6 @@
                         </nav>
                     </div>
                 </div>
-
-                <!-- Filters -->
-                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                        <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
-                            <div class="relative">
-                                <input 
-                                    type="text" 
-                                    x-model="searchQuery"
-                                    placeholder="Search users..." 
-                                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full md:w-64">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <select x-model="roleFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">All Roles</option>
-                                <option value="admin">Admin</option>
-                                <option value="broker">Broker</option>
-                            </select>
-                        </div>
-                        <div class="text-sm text-gray-600">
-                            <span x-text="filteredUsers().length"></span> users found
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Tab Content -->
                 <div class="tab-content">
                     <!-- Admin List Tab -->
@@ -406,7 +377,7 @@ function userManagement() {
 
             this.users.push(newUser);
             this.closeAddModal();
-            
+
             // Show success message (you could implement a toast notification)
             alert('User added successfully!');
         },
@@ -438,7 +409,7 @@ function userManagement() {
             }
 
             this.closeEditModal();
-            
+
             // Show success message (you could implement a toast notification)
             alert('User updated successfully!');
         },
@@ -452,7 +423,7 @@ function userManagement() {
             if (confirm('Are you sure you want to delete this user?')) {
                 // Simulate deleting user (in real app, this would be an API call)
                 this.users = this.users.filter(user => user.id !== userId);
-                
+
                 // Show success message (you could implement a toast notification)
                 alert('User deleted successfully!');
             }
