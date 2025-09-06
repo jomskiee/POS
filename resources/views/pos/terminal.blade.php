@@ -32,7 +32,7 @@
         <header class="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="flex items-center space-x-4">
-                    <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('employee.dashboard') }}" 
+                    <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('broker.dashboard') }}" 
                        class="text-gray-500 hover:text-gray-700 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>

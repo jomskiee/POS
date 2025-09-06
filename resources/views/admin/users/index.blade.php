@@ -35,6 +35,30 @@
                     </div>
                 </div>
 
+                <!-- Tab Navigation -->
+                <div class="bg-white rounded-xl shadow-lg mb-6">
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                            <button @click="activeTab = 'admins'" 
+                                    :class="activeTab === 'admins' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                Admins (<span x-text="filteredAdmins().length"></span>)
+                            </button>
+                            <button @click="activeTab = 'brokers'" 
+                                    :class="activeTab === 'brokers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Brokers (<span x-text="filteredBrokers().length"></span>)
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+
                 <!-- Filters -->
                 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
@@ -54,7 +78,7 @@
                             <select x-model="roleFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">All Roles</option>
                                 <option value="admin">Admin</option>
-                                <option value="employee">Employee</option>
+                                <option value="broker">Broker</option>
                             </select>
                         </div>
                         <div class="text-sm text-gray-600">
@@ -63,60 +87,16 @@
                     </div>
                 </div>
 
-                <!-- Users Table -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <template x-for="user in filteredUsers()" :key="user.id">
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium text-sm"
-                                                     :class="user.name.charAt(0) === 'A' ? 'bg-red-500' : user.name.charAt(0) === 'J' ? 'bg-blue-500' : user.name.charAt(0) === 'M' ? 'bg-green-500' : user.name.charAt(0) === 'S' ? 'bg-purple-500' : 'bg-gray-500'">
-                                                    <span x-text="user.name.charAt(0)"></span>
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900" x-text="user.name"></div>
-                                                    <div class="text-sm text-gray-500" x-text="user.address"></div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900" x-text="user.email"></div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                                                  :class="user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'"
-                                                  x-text="user.role.charAt(0).toUpperCase() + user.role.slice(1)"></span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="user.created_at"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <button @click="openEditModal(user)" class="text-blue-600 hover:text-blue-900 transition-colors mr-3">
-                                                Edit
-                                            </button>
-                                            <button @click="deleteUser(user.id)" :disabled="user.id === currentUserId" 
-                                                    class="text-red-600 hover:text-red-900 transition-colors disabled:text-gray-400 disabled:cursor-not-allowed">
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Admin List Tab -->
+                    <div x-show="activeTab === 'admins'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                        @include('admin.users.admin-list')
+                    </div>
+
+                    <!-- Broker List Tab -->
+                    <div x-show="activeTab === 'brokers'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                        @include('admin.users.broker-list')
                     </div>
                 </div>
 
@@ -153,7 +133,7 @@
                                         <select x-model="addForm.role" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                                             <option value="">Select Role</option>
                                             <option value="admin">Admin</option>
-                                            <option value="employee">Employee</option>
+                                            <option value="broker">Broker</option>
                                         </select>
                                         <span x-show="addForm.errors.role" class="text-red-500 text-xs" x-text="addForm.errors.role"></span>
                                     </div>
@@ -212,7 +192,7 @@
                                         <label class="block text-sm font-medium text-gray-700">Role</label>
                                         <select x-model="editForm.role" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                                             <option value="admin">Admin</option>
-                                            <option value="employee">Employee</option>
+                                            <option value="broker">Broker</option>
                                         </select>
                                         <span x-show="editForm.errors.role" class="text-red-500 text-xs" x-text="editForm.errors.role"></span>
                                     </div>
@@ -246,6 +226,7 @@
 <script>
 function userManagement() {
     return {
+        activeTab: 'admins',
         searchQuery: '',
         roleFilter: '',
         showAddModal: false,
@@ -262,18 +243,18 @@ function userManagement() {
             },
             {
                 id: 2,
-                name: 'Jane Employee',
+                name: 'Jane Broker',
                 email: 'jane@example.com',
                 address: '456 Oak Ave, City, State',
-                role: 'employee',
+                role: 'broker',
                 created_at: '2024-02-10'
             },
             {
                 id: 3,
-                name: 'Mike Staff',
+                name: 'Mike Broker',
                 email: 'mike@example.com',
                 address: '789 Pine Rd, City, State',
-                role: 'employee',
+                role: 'broker',
                 created_at: '2024-03-05'
             },
             {
@@ -286,11 +267,19 @@ function userManagement() {
             },
             {
                 id: 5,
-                name: 'Alex Worker',
+                name: 'Alex Broker',
                 email: 'alex@example.com',
                 address: '654 Maple Dr, City, State',
-                role: 'employee',
+                role: 'broker',
                 created_at: '2024-03-12'
+            },
+            {
+                id: 6,
+                name: 'Lisa Broker',
+                email: 'lisa@example.com',
+                address: '987 Cedar Ln, City, State',
+                role: 'broker',
+                created_at: '2024-03-18'
             }
         ],
         addForm: {
@@ -319,6 +308,22 @@ function userManagement() {
                                     user.email.toLowerCase().includes(this.searchQuery.toLowerCase());
                 const matchesRole = this.roleFilter === '' || user.role === this.roleFilter;
                 return matchesSearch && matchesRole;
+            });
+        },
+
+        filteredAdmins() {
+            return this.users.filter(user => {
+                const matchesSearch = user.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                                    user.email.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return user.role === 'admin' && matchesSearch;
+            });
+        },
+
+        filteredBrokers() {
+            return this.users.filter(user => {
+                const matchesSearch = user.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                                    user.email.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return user.role === 'broker' && matchesSearch;
             });
         },
 
@@ -451,6 +456,10 @@ function userManagement() {
                 // Show success message (you could implement a toast notification)
                 alert('User deleted successfully!');
             }
+        },
+
+        viewPerformance(user) {
+            alert(`Viewing performance for ${user.name}:\n\nTotal Sales: $${Math.floor(Math.random() * 10000) + 5000}\nOrders Processed: ${Math.floor(Math.random() * 500) + 100}\nCustomer Rating: ${(Math.random() * 2 + 3).toFixed(1)}/5.0`);
         }
     }
 }

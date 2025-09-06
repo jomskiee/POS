@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
-    public function index()
+    public function brokerIndex()
     {
-        return view('admin.inventory.index');
+        return view('broker.inventory.index');
     }
 }

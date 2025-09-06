@@ -40,8 +40,8 @@ class LoginController extends Controller
     {
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'employee') {
-            return redirect()->route('employee.dashboard');
+        } elseif ($user->role === 'broker') {
+            return redirect()->route('broker.dashboard');
         }
 
         return redirect()->intended($this->redirectPath());

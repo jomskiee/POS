@@ -2,21 +2,21 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true }">
-    <!-- Employee Sidebar Component -->
-    @include('layouts.partials.employee-sidebar')
+    <!-- Broker Sidebar Component -->
+    @include('layouts.partials.broker-sidebar')
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Employee Navbar Component -->
-        @include('layouts.partials.employee-navbar')
+        <!-- Broker Navbar Component -->
+        @include('layouts.partials.broker-navbar')
 
         <!-- Page Content -->
         <main class="flex-1 overflow-auto p-6">
             <div class="w-full">
                 <!-- Page Header -->
                 <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900">Employee Dashboard</h1>
-                    <p class="text-gray-600 mt-2">Welcome back! Here's your performance overview and daily tasks.</p>
+                    <h1 class="text-3xl font-bold text-gray-900">Broker Dashboard</h1>
+                    <p class="text-gray-600 mt-2">Welcome back! Here's your sales performance and daily activities.</p>
                 </div>
 
                 <!-- Stats Cards -->

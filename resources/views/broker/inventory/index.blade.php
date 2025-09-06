@@ -8,13 +8,13 @@
 @endphp
 
 <div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: false }">
-    <!-- Sidebar Component -->
-    @include('layouts.partials.sidebar')
+    <!-- Broker Sidebar Component -->
+    @include('layouts.partials.broker-sidebar')
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Navbar Component -->
-        @include('layouts.partials.navbar')
+        <!-- Broker Navbar Component -->
+        @include('layouts.partials.broker-navbar')
 
         <!-- Page Content -->
         <main class="flex-1 overflow-auto p-6" x-data="inventoryManagement()">
@@ -33,7 +33,7 @@
                                 </svg>
                                 <span>Barcode Scanner</span>
                             </button>
-                            <button @click="openTransferModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+                            <button @click="openTransferModal()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                                 </svg>
@@ -48,7 +48,7 @@
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-8">
                             <button @click="activeTab = 'products'" 
-                                    :class="activeTab === 'products' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    :class="activeTab === 'products' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@
                                 </div>
                             </button>
                             <button @click="activeTab = 'categories'" 
-                                    :class="activeTab === 'categories' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    :class="activeTab === 'categories' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@
                             </button>
 
                             <button @click="activeTab = 'alerts'" 
-                                    :class="activeTab === 'alerts' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    :class="activeTab === 'alerts' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@
                                 </div>
                             </button>
                             <button @click="activeTab = 'movement'" 
-                                    :class="activeTab === 'movement' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    :class="activeTab === 'movement' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@
                                 </div>
                             </button>
                             <button @click="activeTab = 'valuation'" 
-                                    :class="activeTab === 'valuation' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                    :class="activeTab === 'valuation' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,27 +104,27 @@
 
                 <!-- Product List Tab -->
                 <div x-show="activeTab === 'products'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.inventory.product-list')
+                    @include('broker.inventory.product-list')
                 </div>
 
                 <!-- Categories Tab -->
                 <div x-show="activeTab === 'categories'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.inventory.categories')
+                    @include('broker.inventory.categories')
                 </div>
 
                 <!-- Stock Alerts Tab -->
                 <div x-show="activeTab === 'alerts'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.inventory.stock-alerts')
+                    @include('broker.inventory.stock-alerts')
                 </div>
 
                 <!-- Movement Tracking Tab -->
                 <div x-show="activeTab === 'movement'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.inventory.movement-tracking')
+                    @include('broker.inventory.movement-tracking')
                 </div>
 
                 <!-- Inventory Valuation Tab -->
                 <div x-show="activeTab === 'valuation'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                    @include('admin.inventory.inventory-valuation')
+                    @include('broker.inventory.inventory-valuation')
                 </div>
             </div>
 
@@ -163,7 +163,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Manual Barcode Entry</label>
                             <input type="text" 
                                    placeholder="Enter barcode manually"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         </div>
                     </div>
                     
@@ -204,7 +204,7 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Product</label>
-                                <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                                     <option value="">Select Product</option>
                                     <option value="1">Coffee Beans Premium</option>
                                     <option value="2">Wireless Headphones</option>
@@ -214,7 +214,7 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">From Location</label>
-                                <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                                     <option value="">Select Source</option>
                                     <option value="warehouse">Main Warehouse</option>
                                     <option value="store">Store Front</option>
@@ -224,7 +224,7 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">To Location</label>
-                                <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                                     <option value="">Select Destination</option>
                                     <option value="warehouse">Main Warehouse</option>
                                     <option value="store">Store Front</option>
@@ -238,14 +238,14 @@
                                        min="1"
                                        required
                                        placeholder="Enter quantity"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                                 <textarea rows="3"
                                           placeholder="Transfer notes (optional)"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
                             </div>
                         </div>
                         
@@ -256,7 +256,7 @@
                                 Cancel
                             </button>
                             <button type="submit" 
-                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                    class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
                                 Process Transfer
                             </button>
                         </div>

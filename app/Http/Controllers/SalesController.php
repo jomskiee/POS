@@ -10,4 +10,9 @@ class SalesController extends Controller
     {
         return view('admin.sales.index');
     }
+
+    public function brokerIndex()
+    {
+        return view('broker.sales.index');
+    }
 }
