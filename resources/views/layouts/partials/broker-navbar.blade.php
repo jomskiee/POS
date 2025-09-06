@@ -1,4 +1,4 @@
-<!-- Employee Navbar Component -->
+<!-- Broker Navbar Component -->
 <header class="bg-white shadow-sm border-b border-gray-200">
     <div class="flex items-center justify-between px-6 py-4">
         <div class="flex items-center space-x-4">
@@ -12,7 +12,7 @@
             <nav class="text-sm">
                 <ol class="flex items-center space-x-2">
                     <li>
-                        <a href="{{ route('employee.dashboard') }}" class="text-gray-500 hover:text-gray-700">Employee</a>
+                        <a href="{{ route('broker.dashboard') }}" class="text-gray-500 hover:text-gray-700">Broker</a>
                     </li>
                     @if(isset($breadcrumbs) && !empty($breadcrumbs))
                         @foreach($breadcrumbs as $breadcrumb)
@@ -33,12 +33,27 @@
         </div>
         
         <div class="flex items-center space-x-4">
-            <!-- POS Terminal Button - Hidden on mobile, visible on md+ screens -->
-            @if(Route::has('pos.terminal'))
-                <a href="{{ route('pos.terminal') }}" class="hidden md:inline-flex bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                    POS Terminal
-                </a>
-            @endif
+            <!-- POS Terminal Button -->
+            <a href="{{ route('pos.terminal') }}" class="hidden md:inline-flex bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                POS Terminal
+            </a>
+            
+            <!-- Quick Actions -->
+            <div class="hidden md:flex items-center space-x-2">
+                <button class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Quick Sale">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </button>
+                <button class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Inventory Check">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </button>
+            </div>
             
             <!-- Notifications -->
             <button class="text-gray-500 hover:text-gray-700 relative transition-colors">
@@ -51,7 +66,7 @@
             <!-- User Dropdown -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 transition-colors">
-                    <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center">
+                    <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center">
                         <span class="text-sm font-medium text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                     </div>
                     <span>{{ auth()->user()->name }}</span>
@@ -73,7 +88,7 @@
                         <div class="px-4 py-2 text-sm text-gray-700 border-b">
                             <div class="font-medium">{{ auth()->user()->name }}</div>
                             <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
-                            <div class="text-xs text-green-600 font-medium">Employee</div>
+                            <div class="text-xs text-green-600 font-medium">Broker</div>
                         </div>
                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,9 +98,9 @@
                         </a>
                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
-                            Time Sheet
+                            My Sales
                         </a>
                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

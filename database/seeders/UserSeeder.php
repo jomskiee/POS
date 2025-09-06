@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class AdminUserSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -22,12 +22,12 @@ class AdminUserSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // Create a sample employee user
+        // Create a sample broker user
         User::create([
-            'name' => 'Employee User',
-            'email' => 'employee@mail.com',
+            'name' => 'Broker User',
+            'email' => 'broker@mail.com',
             'password' => Hash::make('12345678'),
-            'role' => 'employee',
+            'role' => 'broker',
         ]);
     }
 }

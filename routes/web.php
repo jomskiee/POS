@@ -62,15 +62,23 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Digital Integration routes
     Route::get('/admin/digital-integration', [App\Http\Controllers\DigitalIntegrationController::class, 'index'])->name('admin.digital-integration.index');
 
+    // Note: POS Terminal is NOT accessible by admin - only by brokers
+
 });
 
-// Employee routes
-Route::middleware(['auth', 'employee'])->group(function () {
-    Route::get('/employee/dashboard', [App\Http\Controllers\EmployeeDashboardController::class, 'index'])->name('employee.dashboard');
+// Broker routes
+Route::middleware(['auth', 'broker'])->group(function () {
+    Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
+    
+    // Broker Inventory routes
+    Route::get('/broker/inventory', [App\Http\Controllers\InventoryController::class, 'brokerIndex'])->name('broker.inventory.index');
+    
+    // Broker Sales routes
+    Route::get('/broker/sales', [App\Http\Controllers\SalesController::class, 'brokerIndex'])->name('broker.sales.index');
 });
 
-// POS Terminal routes (accessible by both admin and employee)
-Route::middleware(['auth', 'employee'])->group(function () {
+// POS Terminal routes (accessible by brokers only)
+Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/pos/terminal', [App\Http\Controllers\POSTerminalController::class, 'index'])->name('pos.terminal');
     Route::post('/pos/add-to-cart', [App\Http\Controllers\POSTerminalController::class, 'addToCart'])->name('pos.add-to-cart');
     Route::post('/pos/remove-from-cart', [App\Http\Controllers\POSTerminalController::class, 'removeFromCart'])->name('pos.remove-from-cart');
