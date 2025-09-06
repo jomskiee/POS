@@ -76,14 +76,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('12345678'),
                 'role' => 'broker',
             ],
-            // Regular users
-            [
-                'name' => 'Regular User',
-                'email' => 'user@mail.com',
-                'address' => '555 User Street, User City, UC 98765',
-                'password' => Hash::make('12345678'),
-                'role' => 'user',
-            ],
         ];
 
         // Create users and brokers
