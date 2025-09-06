@@ -13,6 +13,6 @@ class InventoryController extends Controller
 
     public function brokerIndex()
     {
-        return view('admin.inventory.index');
+        return view('broker.inventory.index');
     }
 }

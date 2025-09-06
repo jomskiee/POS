@@ -13,6 +13,6 @@ class SalesController extends Controller
 
     public function brokerIndex()
     {
-        return view('admin.sales.index');
+        return view('broker.sales.index');
     }
 }
