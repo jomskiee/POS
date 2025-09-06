@@ -15,19 +15,37 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'broker') {
+            return redirect()->route('broker.dashboard');
+        }
+    }
+    return redirect()->route('login');
 });
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'broker') {
+            return redirect()->route('broker.dashboard');
+        }
+    }
+    return redirect()->route('login');
+})->name('home')->middleware('auth');
 
 // Custom logout route
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
-    return redirect('/login')->with('message', 'You have been logged out successfully.');
+    return redirect()->route('login')->with('message', 'You have been logged out successfully.');
 })->name('logout')->middleware('auth');
 
 // Admin routes
