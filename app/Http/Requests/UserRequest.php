@@ -45,7 +45,7 @@ class UserRequest extends FormRequest
             'role' => [
                 'required',
                 'string',
-                Rule::in(['admin', 'broker', 'user'])
+                Rule::in(['admin', 'broker'])
             ],
         ];
     }
