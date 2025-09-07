@@ -24,23 +24,41 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        $userId = $this->route('user') ? $this->route('user')->id : null;
+        // Get the user ID and ensure it's an integer
+        $userId = $this->route('id');
+        $userId = is_numeric($userId) ? (int) $userId : $userId;
+
+        $emailRules = ['required', 'string', 'email', 'max:255'];
+
+        // Only add unique rule if we have a user ID (update mode)
+        if ($userId) {
+            // Try different approaches for the unique rule
+            $emailRules[] = Rule::unique('users', 'email')->ignore($userId, 'id');
+        } else {
+            $emailRules[] = 'unique:users,email';
+        }
+
+        // Password validation rules
+        $passwordRules = [];
+
+        if ($this->isMethod('post')) {
+            // Create mode - password is always required
+            $passwordRules = ['required', 'string', 'min:8', 'confirmed'];
+        } else {
+            // Update mode - check if change_password checkbox is checked
+            if ($this->has('change_password') && $this->input('change_password')) {
+                // If checkbox is checked, password is required
+                $passwordRules = ['required', 'string', 'min:8', 'confirmed'];
+            } else {
+                // If checkbox is not checked, password is nullable
+                $passwordRules = ['nullable', 'string', 'min:8'];
+            }
+        }
 
         return [
             'name' => ['required', 'string', 'max:255', 'min:2'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($userId)
-            ],
-            'password' => [
-                $this->isMethod('post') ? 'required' : 'nullable',
-                'string',
-                'min:8',
-                'confirmed'
-            ],
+            'email' => $emailRules,
+            'password' => $passwordRules,
             'address' => ['nullable', 'string', 'max:500'],
             'role' => [
                 'required',

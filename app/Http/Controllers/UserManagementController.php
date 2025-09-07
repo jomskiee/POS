@@ -2,136 +2,234 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Constants\RoleStatusConstant;
+use App\Constants\UserStatusConstant;
+use App\Http\Requests\UserRequest;
+use App\Models\Admin;
+use App\Models\Broker;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class UserManagementController extends Controller
 {
     /**
-     * Display a listing of users.
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
-        return view('admin.users.index');
+        $admins = Admin::with('user')->get();
+        $brokers = Broker::with('user')->get();
+        // count for the cards
+        $deletedBrokers = Broker::onlyTrashed()->count();
+        $deactivatedBrokers = Broker::where('status', 'deactivated')->count();
+        $activeBrokers = Broker::where('status', 'active')->count();
+        $totalBrokers = Broker::count();
+
+        $deactivatedAdmins = Admin::where('status', 'deactivated')->count();
+        $activeAdmins = Admin::where('status', 'active')->count();
+        $totalAdmins = Admin::count();
+
+        $count = [
+            'deletedBrokers' => $deletedBrokers,
+            'deactivatedBrokers' => $deactivatedBrokers,
+            'activeBrokers' => $activeBrokers,
+            'totalBrokers' => $totalBrokers,
+            'deactivatedAdmins' => $deactivatedAdmins,
+            'activeAdmins' => $activeAdmins,
+            'totalAdmins' => $totalAdmins
+        ];
+
+        return view('admin.users.index', compact('admins', 'brokers', 'count'));
     }
 
     /**
-     * Store a newly created user.
+     * @return View
      */
-    public function store(Request $request)
+    public function create(): View
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'address' => 'required|string|max:500',
-            'role' => 'required|in:admin,employee',
-            'password' => 'required|string|min:8|confirmed',
+        return view('admin.users._form', [
+            'action' => route('admin.users.store'),
+            'user' => null,
+            'profile' => null,
+            'title' => 'Create New User',
+            'description' => 'Add a new admin or broker to the system.'
         ]);
+    }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
+    /**
+     * @param UserRequest $request
+     * @return RedirectResponse
+     */
+    public function store(UserRequest $request): RedirectResponse
+    {
         try {
-            $user = User::create([
+            DB::beginTransaction();
+
+            $userData = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'address' => $request->address,
+                'password' => $request->password,
                 'role' => $request->role,
-                'password' => Hash::make($request->password),
-            ]);
+            ];
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User created successfully!',
-                'user' => $user
-            ]);
+            $profileData = [
+                'name' => $request->name,
+                'address' => $request->address,
+            ];
+
+            // No account_balance input - it defaults to 0 in migration
+            User::createUserWithRole($userData, $profileData);
+
+            DB::commit();
+
+            return redirect()->route('admin.users.index')
+                ->with('success', ucfirst($request->role) . ' created successfully!');
+
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create user. Please try again.'
-            ], 500);
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to create user. Please try again.');
         }
     }
 
     /**
-     * Update the specified user.
+     * @param $id
+     * @return View
      */
-    public function update(Request $request, User $user)
+    public function edit($id): View
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'address' => 'required|string|max:500',
-            'role' => 'required|in:admin,employee',
-            'password' => 'nullable|string|min:8|confirmed',
+        $user = User::findOrFail($id);
+        $profile = $user->getProfile();
+
+        return view('admin.users._form', [
+            'action' => route('admin.users.update', $id),
+            'user' => $user,
+            'profile' => $profile,
+            'title' => 'Edit User',
+            'description' => 'Update user information and profile details.'
         ]);
+    }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
+    /**
+     * @param UserRequest $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function update(UserRequest $request, $id): RedirectResponse
+    {
         try {
-            $updateData = [
+            DB::beginTransaction();
+
+            $user = User::findOrFail($id);
+
+            // Update user data
+            $userData = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'address' => $request->address,
-                'role' => $request->role,
             ];
 
             // Only update password if provided
             if ($request->filled('password')) {
-                $updateData['password'] = Hash::make($request->password);
+                $userData['password'] = Hash::make($request->password);
             }
 
-            $user->update($updateData);
+            $user->update($userData);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User updated successfully!',
-                'user' => $user
-            ]);
+            // Update profile data
+            $profileData = [
+                'name' => $request->name,
+                'address' => $request->address,
+            ];
+
+            $user->updateProfile($profileData);
+
+            DB::commit();
+
+            // Redirect to appropriate tab based on user role
+            $redirectUrl = route('admin.users.index');
+            if ($user->role === RoleStatusConstant::BROKER) {
+                $redirectUrl .= '#brokers';
+            } else {
+                $redirectUrl .= '#admins';
+            }
+
+            return redirect($redirectUrl)
+                ->with('success', 'User updated successfully!');
+
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update user. Please try again.'
-            ], 500);
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to update user. Please try again.');
         }
     }
 
     /**
-     * Remove the specified user.
+     * @param $id
+     * @return RedirectResponse
      */
-    public function destroy(User $user)
+    public function activate($id): RedirectResponse
     {
         try {
-            // Prevent deleting the current user
-            if ($user->id === auth()->id()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'You cannot delete your own account.'
-                ], 403);
-            }
+            $user = User::findOrFail($id);
 
-            $user->delete();
+            $user->updateStatus(UserStatusConstant::ACTIVE);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User deleted successfully!'
-            ]);
+            return redirect()->back()
+                ->with('success', 'User activated successfully!');
+
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete user. Please try again.'
-            ], 500);
+            return redirect()->back()
+                ->with('error', 'Failed to activate user. Please try again.');
+        }
+    }
+
+    /**
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function deactivate($id): RedirectResponse
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            // Prevent admin from deactivating themselves
+            if ($user->id === auth()->user()->id) {
+                return redirect()->back()->with('error', 'You cannot deactivate your own account.');
+            }
+            $user->updateStatus(UserStatusConstant::DEACTIVATED);
+
+            return redirect()->back()
+                ->with('success', 'User deactivated successfully!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to deactivate user. Please try again.');
+        }
+    }
+
+    /**
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function destroy($id): RedirectResponse
+    {
+        try {
+            DB::beginTransaction();
+            $user = User::findOrFail($id);
+            $user->deleteProfile();
+            DB::commit();
+            return redirect()->route('admin.users.index')
+                ->with('success', 'User deactivated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Failed to deactivate user. Please try again.');
         }
     }
 }

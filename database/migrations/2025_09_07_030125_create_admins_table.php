@@ -8,34 +8,28 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('brokers', function (Blueprint $table) {
+        Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('address')->nullable();
-            $table->decimal('account_balance', 10, 2)->default(0.00);
+            $table->text('address')->nullable();
             $table->enum('status', ['active', 'deactivated'])->default('active');
             $table->timestamps();
-            $table->softDeletes();
 
             // Add indexes for better performance
             $table->index('user_id');
-            $table->index('account_balance');
+            $table->index('status');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('brokers');
+        Schema::dropIfExists('admins');
     }
 };
