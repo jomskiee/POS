@@ -50,6 +50,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users/create', [App\Http\Controllers\UserManagementController::class, 'create'])->name('admin.users.create');
     Route::post('/admin/users', [App\Http\Controllers\UserManagementController::class, 'store'])->name('admin.users.store');
 
+    // Inventory & Stock Management routes
+    Route::get('/admin/inventory', [App\Http\Controllers\InventoryController::class, 'adminIndex'])->name('admin.inventory.index');
+
     // Sales & Transactions routes
     Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
 });
@@ -58,8 +61,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
 
-    // Broker Inventory routes
-    Route::get('/broker/inventory', [App\Http\Controllers\InventoryController::class, 'brokerIndex'])->name('broker.inventory.index');
 
     // Broker Sales routes
     Route::get('/broker/sales', [App\Http\Controllers\SalesController::class, 'brokerIndex'])->name('broker.sales.index');
