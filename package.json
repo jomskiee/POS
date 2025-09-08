@@ -20,5 +20,9 @@
         "sass": "^1.32.11",
         "sass-loader": "^11.0.1",
         "tailwindcss": "^3.3.5"
+    },
+    "dependencies": {
+        "sweetalert2": "^11.23.0",
+        "toastr": "^2.1.4"
     }
 }

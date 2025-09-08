@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Toastr styles consolidated */
+
+/* Placement and interaction */
+#toast-container.toast-top-right {
+    top: 5rem !important; /* below navbar */
+    right: 1rem !important;
+    z-index: 50 !important; /* similar to Tailwind z-50 */
+    pointer-events: none; /* container doesn't block UI */
+}
+#toast-container > .toast {
+    pointer-events: auto; /* toast remains interactive */
+    margin-bottom: 0.75rem;
+    max-width: 24rem;
+    width: 100%;
+    border-radius: 0.75rem !important; /* rounded-xl */
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05) !important; /* shadow-lg */
+    border: 1px solid #e5e7eb !important; /* ring-1 ring-gray-200 */
+    background-color: #ffffff !important;
+}
+
+/* Theme accents (left bar) and text */
+#toast-container > .toast { color: #111827 !important; }
+#toast-container > .toast-success { border-left: 6px solid #059669 !important; }
+#toast-container > .toast-error { border-left: 6px solid #dc2626 !important; }
+#toast-container > .toast-info { border-left: 6px solid #2563eb !important; }
+#toast-container > .toast-warning { border-left: 6px solid #d97706 !important; }
+#toast-container > .toast .toast-title { font-weight: 700 !important; }
+#toast-container > .toast .toast-message { color: #1f2937 !important; /* gray-800 */ font-size: 0.95rem !important; }
+#toast-container > .toast .toast-close-button { color: #6b7280 !important; opacity: 1 !important; }
+#toast-container > .toast .toast-close-button:hover { color: #374151 !important; }
+#toast-container > .toast .toast-progress { background-color: #2563eb !important; height: 3px !important; }

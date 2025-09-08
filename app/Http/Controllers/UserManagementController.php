@@ -153,9 +153,9 @@ class UserManagementController extends Controller
             // Redirect to appropriate tab based on user role
             $redirectUrl = route('admin.users.index');
             if ($user->role === RoleStatusConstant::BROKER) {
-                $redirectUrl .= '#brokers';
+                $redirectUrl .= '?tab=brokers';
             } else {
-                $redirectUrl .= '#admins';
+                $redirectUrl .= '?tab=admins';
             }
 
             return redirect($redirectUrl)
@@ -224,8 +224,8 @@ class UserManagementController extends Controller
             $user = User::findOrFail($id);
             $user->deleteProfile();
             DB::commit();
-            return redirect()->route('admin.users.index')
-                ->with('success', 'User deactivated successfully!');
+            return redirect()->back()
+                ->with('success', 'User deleted successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()

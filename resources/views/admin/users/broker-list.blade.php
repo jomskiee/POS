@@ -3,9 +3,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center">
             <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
+                <x-heroicon-o-users class="w-5 h-5 text-blue-600" />
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Total Brokers</p>
@@ -17,9 +15,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center">
             <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
+                <x-heroicon-o-check-circle class="w-5 h-5 text-green-600" />
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Active Brokers</p>
@@ -31,9 +27,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center">
             <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
-                </svg>
+                <x-heroicon-o-x-circle class="w-5 h-5 text-red-600" />
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Deactivated Brokers</p>
@@ -45,9 +39,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center">
             <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
+                <x-heroicon-o-trash class="w-5 h-5 text-gray-600" />
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Deleted Brokers</p>
@@ -77,7 +69,7 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium text-sm bg-blue-500">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm bg-blue-500">
                                     <span>{{ substr($broker->name, 0, 1) }}</span>
                                 </div>
                                 <div class="ml-4">
@@ -96,33 +88,49 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $broker->created_at->format('M d, Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('admin.users.edit', $broker->user->id) }}" class="text-blue-600 hover:text-blue-900 transition-colors mr-3">
-                                Edit
-                            </a>
-                            @if($broker->status === 'active')
-                                <form method="POST" action="{{ route('admin.users.deactivate', $broker->user->id) }}" class="inline">
+                            <div class="flex items-center gap-2">
+                                <span class="relative group inline-block">
+                                    <a href="{{ route('admin.users.edit', $broker->user->id) }}" class="p-2 rounded-full hover:bg-gray-100 text-blue-600 hover:text-blue-800 transition-colors" aria-label="Edit">
+                                        <x-heroicon-o-pencil-square class="w-6 h-6" />
+                                    </a>
+                                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Edit</span>
+                                </span>
+
+                                @if($broker->status === 'active')
+                                    <form method="POST" action="{{ route('admin.users.deactivate', $broker->user->id) }}" class="inline" data-swal="deactivate">
+                                        @csrf
+                                        @method('PATCH')
+                                        <span class="relative group inline-block">
+                                            <button type="submit" class="p-2 rounded-full hover:bg-gray-100 text-orange-600 hover:text-orange-800 transition-colors" aria-label="Deactivate">
+                                                <x-heroicon-o-user-minus class="w-6 h-6" />
+                                            </button>
+                                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Deactivate</span>
+                                        </span>
+                                    </form>
+                                @else
+                                    <form method="POST" action="{{ route('admin.users.activate', $broker->user->id) }}" class="inline" data-swal="activate">
+                                        @csrf
+                                        @method('PATCH')
+                                        <span class="relative group inline-block">
+                                            <button type="submit" class="p-2 rounded-full hover:bg-gray-100 text-green-600 hover:text-green-800 transition-colors" aria-label="Activate">
+                                                <x-heroicon-o-user-plus class="w-6 h-6" />
+                                            </button>
+                                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Activate</span>
+                                        </span>
+                                    </form>
+                                @endif
+
+                                <form method="POST" action="{{ route('admin.users.destroy', $broker->user->id) }}" class="inline" data-swal="delete">
                                     @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="text-orange-600 hover:text-orange-900 transition-colors mr-3" onclick="return confirm('Are you sure you want to deactivate this broker?')">
-                                        Deactivate
-                                    </button>
+                                    @method('DELETE')
+                                    <span class="relative group inline-block">
+                                        <button type="submit" class="p-2 rounded-full hover:bg-gray-100 text-red-600 hover:text-red-800 transition-colors" aria-label="Delete">
+                                            <x-heroicon-o-trash class="w-6 h-6" />
+                                        </button>
+                                        <span class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Delete</span>
+                                    </span>
                                 </form>
-                            @else
-                                <form method="POST" action="{{ route('admin.users.activate', $broker->user->id) }}" class="inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="text-green-600 hover:text-green-900 transition-colors mr-3" onclick="return confirm('Are you sure you want to activate this broker?')">
-                                        Activate
-                                    </button>
-                                </form>
-                            @endif
-                            <form method="POST" action="{{ route('admin.users.destroy', $broker->user->id) }}" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900 transition-colors" onclick="return confirm('Are you sure you want to delete this broker? This action cannot be undone.')">
-                                    Delete
-                                </button>
-                            </form>
+                            </div>
                         </td>
                     </tr>
                     @endforeach

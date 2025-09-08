@@ -60,11 +60,9 @@ class UserRequest extends FormRequest
             'email' => $emailRules,
             'password' => $passwordRules,
             'address' => ['nullable', 'string', 'max:500'],
-            'role' => [
-                'required',
-                'string',
-                Rule::in(['admin', 'broker'])
-            ],
+            'role' => $this->isMethod('post')
+                ? ['required', 'string', Rule::in(['admin', 'broker'])]
+                : ['prohibited'],
         ];
     }
 
@@ -86,6 +84,7 @@ class UserRequest extends FormRequest
             'password.confirmed' => 'The password confirmation does not match.',
             'role.required' => 'Please select a user role.',
             'role.in' => 'The selected role is invalid.',
+            'role.prohibited' => 'Role cannot be changed after creation.',
             'address.max' => 'The address may not be greater than 500 characters.',
         ];
     }

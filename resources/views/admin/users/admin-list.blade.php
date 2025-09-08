@@ -4,9 +4,7 @@
     <div class="bg-white rounded-xl shadow-lg p-6">
         <div class="flex items-center">
             <div class="p-3 rounded-full bg-blue-100">
-                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                </svg>
+                <x-heroicon-o-users class="w-6 h-6 text-blue-600" />
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Total Admins</p>
@@ -19,9 +17,7 @@
     <div class="bg-white rounded-xl shadow-lg p-6">
         <div class="flex items-center">
             <div class="p-3 rounded-full bg-green-100">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                <x-heroicon-o-check-circle class="w-6 h-6 text-green-600" />
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Active Admins</p>
@@ -34,9 +30,7 @@
     <div class="bg-white rounded-xl shadow-lg p-6">
         <div class="flex items-center">
             <div class="p-3 rounded-full bg-red-100">
-                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
-                </svg>
+                <x-heroicon-o-x-circle class="w-6 h-6 text-red-600" />
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Deactivated Admins</p>
@@ -69,7 +63,7 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium text-sm bg-blue-500">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm bg-blue-500">
                                         <span>{{ substr($admin->name, 0, 1) }}</span>
                                     </div>
                                     <div class="ml-4">
@@ -89,30 +83,41 @@
                                     {{ ucfirst($admin->status) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                <a href="{{ route('admin.users.edit', $admin->user->id) }}" class="text-blue-600 hover:text-blue-900 transition-colors">Edit</a>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium"><div class="flex items-center gap-2">
+                                <span class="relative group inline-block">
+                                    <a href="{{ route('admin.users.edit', $admin->user->id) }}" class="p-2 rounded-full hover:bg-gray-100 text-blue-600 hover:text-blue-800 transition-colors" aria-label="Edit">
+                                        <x-heroicon-o-pencil-square class="w-6 h-6" />
+                                    </a>
+                                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Edit</span>
+                                </span>
 
                                 @if($admin->status === 'active')
-                                    <form method="POST" action="{{ route('admin.users.deactivate', $admin->user->id) }}" class="inline">
+                                    <form method="POST" action="{{ route('admin.users.deactivate', $admin->user->id) }}" class="inline" data-swal="deactivate">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit"
-                                                class="text-orange-600 hover:text-orange-900 transition-colors {{ $admin->user->id === auth()->id() ? 'opacity-50 cursor-not-allowed' : '' }}"
-                                                {{ $admin->user->id === auth()->id() ? 'disabled' : '' }}
-                                                onclick="{{ $admin->user->id === auth()->id() ? 'return false;' : "return confirm('Are you sure you want to deactivate this admin?')" }}">
-                                            Deactivate
-                                        </button>
+                                        <span class="relative group inline-block">
+                                            <button type="submit"
+                                                    class="p-2 rounded-full hover:bg-gray-100 text-orange-600 hover:text-orange-800 transition-colors {{ $admin->user->id === auth()->id() ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                                    {{ $admin->user->id === auth()->id() ? 'disabled' : '' }}
+                                                    aria-label="Deactivate">
+                                                <x-heroicon-o-user-minus class="w-6 h-6" />
+                                            </button>
+                                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Deactivate</span>
+                                        </span>
                                     </form>
                                 @else
-                                    <form method="POST" action="{{ route('admin.users.activate', $admin->user->id) }}" class="inline">
+                                    <form method="POST" action="{{ route('admin.users.activate', $admin->user->id) }}" class="inline" data-swal="activate">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="text-green-600 hover:text-green-900 transition-colors" onclick="return confirm('Are you sure you want to activate this admin?')">
-                                            Activate
-                                        </button>
+                                        <span class="relative group inline-block">
+                                            <button type="submit" class="p-2 rounded-full hover:bg-gray-100 text-green-600 hover:text-green-800 transition-colors" aria-label="Activate">
+                                                <x-heroicon-o-user-plus class="w-6 h-6" />
+                                            </button>
+                                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Activate</span>
+                                        </span>
                                     </form>
                                 @endif
-                            </td>
+                            </div></td>
                         </tr>
                     @empty
                         <tr>
