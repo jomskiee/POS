@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Constants\RoleStatusConstant;
 use App\Constants\UserStatusConstant;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\Admin;
 use App\Models\Broker;
@@ -23,14 +24,16 @@ class UserManagementController extends Controller
     {
         $admins = Admin::with('user')->get();
         $brokers = Broker::with('user')->get();
-        // count for the cards
+
+        // Get broker statistics using query scopes
         $deletedBrokers = Broker::onlyTrashed()->count();
-        $deactivatedBrokers = Broker::where('status', 'deactivated')->count();
-        $activeBrokers = Broker::where('status', 'active')->count();
+        $deactivatedBrokers = Broker::deactivated()->count();
+        $activeBrokers = Broker::active()->count();
         $totalBrokers = Broker::count();
 
-        $deactivatedAdmins = Admin::where('status', 'deactivated')->count();
-        $activeAdmins = Admin::where('status', 'active')->count();
+        // Get admin statistics using query scopes
+        $deactivatedAdmins = Admin::deactivated()->count();
+        $activeAdmins = Admin::active()->count();
         $totalAdmins = Admin::count();
 
         $count = [
@@ -59,6 +62,27 @@ class UserManagementController extends Controller
             'description' => 'Add a new admin or broker to the system.'
         ]);
     }
+
+    /**
+     * @param $id
+     *
+     * @return View
+     */
+    public function edit($id): View
+    {
+        $user = User::findOrFail($id);
+        $profile = $user->getProfile();
+
+        return view('admin.users._form', [
+            'action' => route('admin.users.update', $id),
+            'user' => $user,
+            'profile' => $profile,
+            'title' => 'Edit User',
+            'description' => 'Update user information and profile details.'
+        ]);
+    }
+
+    // ============== CRUD Operations ============== //
 
     /**
      * @param UserRequest $request
@@ -97,23 +121,6 @@ class UserManagementController extends Controller
         }
     }
 
-    /**
-     * @param $id
-     * @return View
-     */
-    public function edit($id): View
-    {
-        $user = User::findOrFail($id);
-        $profile = $user->getProfile();
-
-        return view('admin.users._form', [
-            'action' => route('admin.users.update', $id),
-            'user' => $user,
-            'profile' => $profile,
-            'title' => 'Edit User',
-            'description' => 'Update user information and profile details.'
-        ]);
-    }
 
     /**
      * @param UserRequest $request

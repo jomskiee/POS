@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Constants\RoleStatusConstant;
 use App\Constants\UserStatusConstant;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,55 +34,101 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    // ============== RELATIONS ============== //
+
+    /**
+     * @return HasOne
+     */
     public function broker(): HasOne
     {
         return $this->hasOne(Broker::class);
     }
 
+    /**
+     * @return HasOne
+     */
     public function admin(): HasOne
     {
         return $this->hasOne(Admin::class);
     }
 
+    // ============== Accessors ============== //
+
+    /**
+     * @return bool
+     */
     public function isBroker(): bool
     {
         return $this->role === RoleStatusConstant::BROKER;
     }
 
+    /**
+     * @return bool
+     */
     public function isAdmin(): bool
     {
         return $this->role === RoleStatusConstant::ADMIN;
     }
 
+    /**
+     * @return bool
+     */
     public function isActive(): bool
     {
         return $this->status === UserStatusConstant::ACTIVE;
     }
 
+    /**
+     * @return bool
+     */
     public function isDeactivated(): bool
     {
         return $this->status === UserStatusConstant::DEACTIVATED;
     }
 
-    public function scopeBrokers($query)
+    // ============== Scopes ============== //
+
+    /**
+     * @param mixed $query
+     *
+     * @return Builder
+     */
+    public function scopeBrokers($query): Builder
     {
         return $query->where('role', RoleStatusConstant::BROKER);
     }
 
-    public function scopeAdmins($query)
+    /**
+     * @param mixed $query
+     *
+     * @return Builder
+     */
+    public function scopeAdmins($query): Builder
     {
         return $query->where('role', RoleStatusConstant::ADMIN);
     }
 
-    public function scopeActive($query)
+    /**
+     * @param mixed $query
+     *
+     * @return Builder
+     */
+    public function scopeActive($query): Builder
     {
         return $query->where('status', UserStatusConstant::ACTIVE);
     }
 
-    public function scopeDeactivated($query)
+    /**
+     * @param mixed $query
+     *
+     * @return Builder
+     */
+    public function scopeDeactivated($query): Builder
     {
         return $query->where('status', UserStatusConstant::DEACTIVATED);
     }
+
+    // ============== Database Operations ============== //
 
     /**
      * Create a new user with role-specific profile

@@ -6,6 +6,7 @@ use App\Constants\UserStatusConstant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class Admin extends Model
 {
@@ -18,20 +19,51 @@ class Admin extends Model
         'status',
     ];
 
+    // ============== RELATIONS ============== //
+
+    /**
+     * @return BelongsTo
+     */
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function scopeActive($query)
+    // ============== Scopes ============== //
+
+    /**
+     * @param mixed $query
+     *
+     * @return Builder
+     */
+    public function scopeActive($query): Builder
     {
         return $query->where('status', UserStatusConstant::ACTIVE);
     }
 
-    public function scopeByUser($query, $userId)
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeDeactivated($query): Builder
+    {
+        return $query->where('status', UserStatusConstant::DEACTIVATED);
+    }
+
+    /**
+     * @param mixed $query
+     * @param int $userId
+     *
+     * @return Builder
+     */
+    public function scopeByUser($query, $userId): Builder
     {
         return $query->where('user_id', $userId);
     }
+
+    // ====================DATABASE OPERATIONS=========================//
 
     /**
      * Create a new admin profile

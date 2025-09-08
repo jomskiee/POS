@@ -64,7 +64,7 @@
                     @if(request('tab', 'fishBoxes') === 'fishBoxes')
                         @include('admin.inventory.fish-boxes')
                     @elseif(request('tab') === 'fishTypes')
-                        @include('admin.inventory.fish-types')
+                        @include('admin.inventory.fish-types', ['fishTypes' => $fishTypes ?? collect()])
                     @elseif(request('tab') === 'movement')
                         @include('admin.inventory.movement-tracking')
                     @endif
@@ -73,4 +73,7 @@
         </main>
     </div>
 </div>
+
+<!-- Inventory page specific JS -->
+<script src="{{ asset('js/inventory.js') }}" defer></script>
 @endsection

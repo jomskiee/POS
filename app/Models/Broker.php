@@ -52,6 +52,16 @@ class Broker extends Model
      *
      * @return Builder
      */
+    public function scopeDeactivated($query): Builder
+    {
+        return $query->where('status', UserStatusConstant::DEACTIVATED);
+    }
+
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
     public function scopeWithPositiveBalance($query): Builder
     {
         return $query->where('account_balance', '>', 0);
