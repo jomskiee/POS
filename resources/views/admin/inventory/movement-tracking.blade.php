@@ -1,60 +1,52 @@
 <!-- Movement Summary Cards -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-xl shadow-lg p-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-                </svg>
+            <div class="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-arrow-trending-up class="w-4 h-4 md:w-6 md:h-6 text-white" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Stock In</p>
-                <p class="text-2xl font-bold text-gray-900">1,234</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Stock In</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">1,234</p>
                 <p class="text-xs text-blue-600">This month</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                </svg>
+            <div class="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-arrow-trending-down class="w-4 h-4 md:w-6 md:h-6 text-white" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Stock Out</p>
-                <p class="text-2xl font-bold text-gray-900">987</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Stock Out</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">987</p>
                 <p class="text-xs text-red-600">This month</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                </svg>
+            <div class="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-arrow-path class="w-4 h-4 md:w-6 md:h-6 text-white" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Transfers</p>
-                <p class="text-2xl font-bold text-gray-900">45</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Transfers</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">45</p>
                 <p class="text-xs text-blue-600">This month</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                </svg>
+            <div class="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-adjustments-horizontal class="w-4 h-4 md:w-6 md:h-6 text-white" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Adjustments</p>
-                <p class="text-2xl font-bold text-gray-900">12</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Adjustments</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">12</p>
                 <p class="text-xs text-purple-600">This month</p>
             </div>
         </div>

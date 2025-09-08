@@ -1,49 +1,49 @@
 <!-- Broker Stats -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white rounded-lg shadow p-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <x-heroicon-o-users class="w-5 h-5 text-blue-600" />
+            <div class="w-6 h-6 md:w-8 md:h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-users class="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Brokers</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $count['totalBrokers'] }}</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Total Brokers</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['totalBrokers'] }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <x-heroicon-o-check-circle class="w-5 h-5 text-green-600" />
+            <div class="w-6 h-6 md:w-8 md:h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-check-circle class="w-4 h-4 md:w-5 md:h-5 text-green-600" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Active Brokers</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $count['activeBrokers'] }}</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Active Brokers</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['activeBrokers'] }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                <x-heroicon-o-x-circle class="w-5 h-5 text-red-600" />
+            <div class="w-6 h-6 md:w-8 md:h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-x-circle class="w-4 h-4 md:w-5 md:h-5 text-red-600" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Deactivated Brokers</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $count['deactivatedBrokers'] }}</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Deactivated Brokers</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['deactivatedBrokers'] }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <x-heroicon-o-trash class="w-5 h-5 text-gray-600" />
+            <div class="w-6 h-6 md:w-8 md:h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <x-heroicon-o-trash class="w-4 h-4 md:w-5 md:h-5 text-gray-600" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Deleted Brokers</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $count['deletedBrokers'] }}</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Deleted Brokers</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['deletedBrokers'] }}</p>
             </div>
         </div>
     </div>
