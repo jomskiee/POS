@@ -41,16 +41,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     // User Management routes
+    Route::get('/admin/users/{id}/edit', [App\Http\Controllers\UserManagementController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/admin/users/{id}', [App\Http\Controllers\UserManagementController::class, 'update'])->name('admin.users.update');
+    Route::patch('/admin/users/{id}/activate', [App\Http\Controllers\UserManagementController::class, 'activate'])->name('admin.users.activate');
+    Route::patch('/admin/users/{id}/deactivate', [App\Http\Controllers\UserManagementController::class, 'deactivate'])->name('admin.users.deactivate');
+    Route::delete('/admin/users/{id}', [App\Http\Controllers\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
     Route::get('/admin/users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/create', [App\Http\Controllers\UserManagementController::class, 'create'])->name('admin.users.create');
     Route::post('/admin/users', [App\Http\Controllers\UserManagementController::class, 'store'])->name('admin.users.store');
-    Route::put('/admin/users/{user}', [App\Http\Controllers\UserManagementController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{user}', [App\Http\Controllers\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
-
-
 
     // Sales & Transactions routes
     Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
-
 });
 
 // Broker routes
