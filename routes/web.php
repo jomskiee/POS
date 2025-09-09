@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\FishTypesController;
+use App\Http\Controllers\Admin\FishBoxController;
+use App\Http\Controllers\Admin\FishManagementController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,15 +44,36 @@ Route::post('/logout', function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
-    // User Management routes
-    Route::get('/admin/users/{id}/edit', [App\Http\Controllers\UserManagementController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/admin/users/{id}', [App\Http\Controllers\UserManagementController::class, 'update'])->name('admin.users.update');
-    Route::patch('/admin/users/{id}/activate', [App\Http\Controllers\UserManagementController::class, 'activate'])->name('admin.users.activate');
-    Route::patch('/admin/users/{id}/deactivate', [App\Http\Controllers\UserManagementController::class, 'deactivate'])->name('admin.users.deactivate');
-    Route::delete('/admin/users/{id}', [App\Http\Controllers\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
-    Route::get('/admin/users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('admin.users.index');
-    Route::get('/admin/users/create', [App\Http\Controllers\UserManagementController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [App\Http\Controllers\UserManagementController::class, 'store'])->name('admin.users.store');
+    // User Management routes - grouped by controller
+    Route::controller(UserManagementController::class)->prefix('admin/users')->name('admin.users.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::patch('/{id}/activate', 'activate')->name('activate');
+        Route::patch('/{id}/deactivate', 'deactivate')->name('deactivate');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    // Fish Management routes - Main controller that delegates to specific controllers
+    Route::controller(FishManagementController::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/inventory', 'index')->name('inventory.index');
+    });
+
+    // Fish Types Management routes - grouped by controller
+    Route::controller(FishTypesController::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::post('/fish-types', 'store')->name('fish-types.store');
+        Route::put('/fish-types/{id}', 'update')->name('fish-types.update');
+        Route::delete('/fish-types/{id}', 'destroy')->name('fish-types.destroy');
+    });
+
+    // Fish Box Management routes - grouped by controller
+    Route::controller(FishBoxController::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::post('/fish-boxes', 'store')->name('fish-boxes.store');
+        Route::put('/fish-boxes/{id}', 'update')->name('fish-boxes.update');
+        Route::delete('/fish-boxes/{id}', 'destroy')->name('fish-boxes.destroy');
+    });
 
     // Sales & Transactions routes
     Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
@@ -58,8 +83,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
 
-    // Broker Inventory routes
-    Route::get('/broker/inventory', [App\Http\Controllers\InventoryController::class, 'brokerIndex'])->name('broker.inventory.index');
 
     // Broker Sales routes
     Route::get('/broker/sales', [App\Http\Controllers\SalesController::class, 'brokerIndex'])->name('broker.sales.index');

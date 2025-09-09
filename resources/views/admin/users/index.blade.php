@@ -7,12 +7,12 @@
     ];
 @endphp
 
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: false }">
+<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true, reportsOpen: false }">
     <!-- Sidebar Component -->
     @include('layouts.partials.sidebar')
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
         <!-- Navbar Component -->
         @include('layouts.partials.navbar')
 
@@ -36,16 +36,20 @@
                 <!-- Tab Navigation -->
                 <div class="bg-white rounded-xl shadow-lg mb-6">
                     <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                        <nav class="-mb-px flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 px-4 md:px-6" aria-label="Tabs">
                             <a href="{{ route('admin.users.index') }}?tab=admins"
-                               class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ request('tab', 'admins') === 'admins' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                                <x-heroicon-o-users class="w-5 h-5 mr-2 inline" />
-                                Admins ({{ $admins->count() }})
+                               class="whitespace-nowrap py-3 md:py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ request('tab', 'admins') === 'admins' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                <div class="flex items-center space-x-2">
+                                    <x-heroicon-o-users class="w-5 h-5" />
+                                    <span>Admins ({{ $admins->count() }})</span>
+                                </div>
                             </a>
                             <a href="{{ route('admin.users.index') }}?tab=brokers"
-                               class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ request('tab') === 'brokers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                                <x-heroicon-o-user-group class="w-5 h-5 mr-2 inline" />
-                                Brokers ({{ $brokers->whereNull('deleted_at')->count() }})
+                               class="whitespace-nowrap py-3 md:py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ request('tab') === 'brokers' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                <div class="flex items-center space-x-2">
+                                    <x-heroicon-o-user-group class="w-5 h-5" />
+                                    <span>Brokers ({{ $brokers->whereNull('deleted_at')->count() }})</span>
+                                </div>
                             </a>
                         </nav>
                     </div>

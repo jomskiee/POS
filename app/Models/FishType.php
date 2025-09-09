@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class FishType extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'name',
+        'description',
+    ];
+
+    /**
+     * Get the fish boxes for this fish type.
+     */
+    public function fishBoxes()
+    {
+        return $this->hasMany(FishBox::class);
+    }
+
+    // =============== DATABASE OPERATIONS =============== //
+
+    /**
+     * Get paginated fish types with search functionality
+     *
+     * @param string|null $search
+     * @param int $perPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public static function getPaginatedWithSearch(?string $search = null, int $perPage = 12): LengthAwarePaginator
+    {
+        $query = static::query();
+
+        // Apply search filter
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Order by creation date and paginate
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+    }
+
+}

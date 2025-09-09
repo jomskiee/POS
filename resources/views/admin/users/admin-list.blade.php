@@ -1,40 +1,40 @@
 <!-- Admin Statistics Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
     <!-- Total Admins Card -->
-    <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="p-3 rounded-full bg-blue-100">
-                <x-heroicon-o-users class="w-6 h-6 text-blue-600" />
+            <div class="p-2 md:p-3 rounded-full bg-blue-100">
+                <x-heroicon-o-users class="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Admins</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $count['totalAdmins'] }}</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Total Admins</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['totalAdmins'] }}</p>
             </div>
         </div>
     </div>
 
     <!-- Active Admins Card -->
-    <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="p-3 rounded-full bg-green-100">
-                <x-heroicon-o-check-circle class="w-6 h-6 text-green-600" />
+            <div class="p-2 md:p-3 rounded-full bg-green-100">
+                <x-heroicon-o-check-circle class="w-5 h-5 md:w-6 md:h-6 text-green-600" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Active Admins</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $count['activeAdmins'] }}</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Active Admins</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['activeAdmins'] }}</p>
             </div>
         </div>
     </div>
 
     <!-- Deactivated Admins Card -->
-    <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
         <div class="flex items-center">
-            <div class="p-3 rounded-full bg-red-100">
-                <x-heroicon-o-x-circle class="w-6 h-6 text-red-600" />
+            <div class="p-2 md:p-3 rounded-full bg-red-100">
+                <x-heroicon-o-x-circle class="w-5 h-5 md:w-6 md:h-6 text-red-600" />
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Deactivated Admins</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $count['deactivatedAdmins'] }}</p>
+            <div class="ml-3 md:ml-4">
+                <p class="text-xs md:text-sm font-medium text-gray-600">Deactivated Admins</p>
+                <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['deactivatedAdmins'] }}</p>
             </div>
         </div>
     </div>

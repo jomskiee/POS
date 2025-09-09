@@ -7,12 +7,12 @@
     ];
 @endphp
 
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: false }">
+<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true, reportsOpen: false }">
     <!-- Broker Sidebar Component -->
     @include('layouts.partials.broker-sidebar')
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
         <!-- Broker Navbar Component -->
         @include('layouts.partials.broker-navbar')
 
@@ -47,7 +47,7 @@
                 <div class="mb-8">
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-8">
-                            <button @click="activeTab = 'products'" 
+                            <button @click="activeTab = 'products'"
                                     :class="activeTab === 'products' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -57,7 +57,7 @@
                                     <span>Product List</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'categories'" 
+                            <button @click="activeTab = 'categories'"
                                     :class="activeTab === 'categories' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -68,7 +68,7 @@
                                 </div>
                             </button>
 
-                            <button @click="activeTab = 'alerts'" 
+                            <button @click="activeTab = 'alerts'"
                                     :class="activeTab === 'alerts' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -78,7 +78,7 @@
                                     <span>Stock Alerts</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'movement'" 
+                            <button @click="activeTab = 'movement'"
                                     :class="activeTab === 'movement' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -88,7 +88,7 @@
                                     <span>Movement Tracking</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'valuation'" 
+                            <button @click="activeTab = 'valuation'"
                                     :class="activeTab === 'valuation' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -129,7 +129,7 @@
             </div>
 
             <!-- Barcode Scanner Modal -->
-            <div x-show="showBarcodeModal" 
+            <div x-show="showBarcodeModal"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
@@ -147,7 +147,7 @@
                             </svg>
                         </button>
                     </div>
-                    
+
                     <div class="space-y-4">
                         <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center">
                             <div class="text-center">
@@ -158,15 +158,15 @@
                                 <p class="text-sm text-gray-400">Barcode scanner integration</p>
                             </div>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Manual Barcode Entry</label>
-                            <input type="text" 
+                            <input type="text"
                                    placeholder="Enter barcode manually"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         </div>
                     </div>
-                    
+
                     <div class="flex items-center justify-end space-x-3 mt-6">
                         <button @click="closeBarcodeModal()"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
@@ -181,7 +181,7 @@
             </div>
 
             <!-- Stock Transfer Modal -->
-            <div x-show="showTransferModal" 
+            <div x-show="showTransferModal"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
@@ -199,7 +199,7 @@
                             </svg>
                         </button>
                     </div>
-                    
+
                     <form @submit.prevent="processTransfer()">
                         <div class="space-y-4">
                             <div>
@@ -211,7 +211,7 @@
                                     <option value="3">Smartphone Case</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">From Location</label>
                                 <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
@@ -221,7 +221,7 @@
                                     <option value="storage">Back Storage</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">To Location</label>
                                 <select required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
@@ -231,16 +231,16 @@
                                     <option value="storage">Back Storage</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-                                <input type="number" 
+                                <input type="number"
                                        min="1"
                                        required
                                        placeholder="Enter quantity"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                                 <textarea rows="3"
@@ -248,14 +248,14 @@
                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-center justify-end space-x-3 mt-6">
-                            <button type="button" 
+                            <button type="button"
                                     @click="closeTransferModal()"
                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                                 Cancel
                             </button>
-                            <button type="submit" 
+                            <button type="submit"
                                     class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
                                 Process Transfer
                             </button>
@@ -273,28 +273,28 @@ function inventoryManagement() {
         activeTab: 'products',
         showBarcodeModal: false,
         showTransferModal: false,
-        
+
         openBarcodeScanner() {
             this.showBarcodeModal = true;
         },
-        
+
         closeBarcodeModal() {
             this.showBarcodeModal = false;
         },
-        
+
         openTransferModal() {
             this.showTransferModal = true;
         },
-        
+
         closeTransferModal() {
             this.showTransferModal = false;
         },
-        
+
         scanBarcode() {
             alert('Barcode scanned successfully!');
             this.closeBarcodeModal();
         },
-        
+
         processTransfer() {
             alert('Stock transfer processed successfully!');
             this.closeTransferModal();

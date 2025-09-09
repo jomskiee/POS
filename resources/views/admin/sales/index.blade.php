@@ -7,12 +7,12 @@
     ];
 @endphp
 
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: false }">
+<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true, reportsOpen: false }">
     <!-- Sidebar Component -->
     @include('layouts.partials.sidebar')
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
         <!-- Navbar Component -->
         @include('layouts.partials.navbar')
 
@@ -27,14 +27,14 @@
                             <p class="text-gray-600 mt-2">Transaction management, payment processing, returns handling, and comprehensive sales analytics</p>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <button @click="openReceiptModal()" 
+                            <button @click="openReceiptModal()"
                                     class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                                 </svg>
                                 <span>Preview Receipt</span>
                             </button>
-                            <button @click="openReturnModal()" 
+                            <button @click="openReturnModal()"
                                     class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
@@ -49,7 +49,7 @@
                 <div class="mb-8">
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex space-x-8">
-                            <button @click="activeTab = 'analysis'" 
+                            <button @click="activeTab = 'analysis'"
                                     :class="activeTab === 'analysis' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -59,7 +59,7 @@
                                     <span>Sales Analysis</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'transactions'" 
+                            <button @click="activeTab = 'transactions'"
                                     :class="activeTab === 'transactions' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -69,7 +69,7 @@
                                     <span>Transaction History</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'transaction-items'" 
+                            <button @click="activeTab = 'transaction-items'"
                                     :class="activeTab === 'transaction-items' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -79,7 +79,7 @@
                                     <span>Transaction List Items</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'payments'" 
+                            <button @click="activeTab = 'payments'"
                                     :class="activeTab === 'payments' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -89,7 +89,7 @@
                                     <span>Payment Methods</span>
                                 </div>
                             </button>
-                            <button @click="activeTab = 'returns'" 
+                            <button @click="activeTab = 'returns'"
                                     :class="activeTab === 'returns' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                                     class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
                                 <div class="flex items-center space-x-2">
@@ -130,7 +130,7 @@
             </div>
 
             <!-- Receipt Preview Modal -->
-            <div x-show="showReceiptModal" 
+            <div x-show="showReceiptModal"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
@@ -148,7 +148,7 @@
                             </svg>
                         </button>
                     </div>
-                    
+
                     <div class="bg-white border border-gray-200 rounded-lg p-4 font-mono text-sm">
                         <div class="text-center mb-4">
                             <h4 class="font-bold">POS SYSTEM</h4>
@@ -156,7 +156,7 @@
                             <p class="text-xs">City, State 12345</p>
                             <p class="text-xs">Phone: (555) 123-4567</p>
                         </div>
-                        
+
                         <div class="border-t border-b border-gray-300 py-2 mb-2">
                             <div class="flex justify-between">
                                 <span>Receipt #:</span>
@@ -171,7 +171,7 @@
                                 <span x-text="new Date().toLocaleTimeString()"></span>
                             </div>
                         </div>
-                        
+
                         <div class="mb-2">
                             <div class="flex justify-between">
                                 <span>Coffee</span>
@@ -182,7 +182,7 @@
                                 <span>$2.25</span>
                             </div>
                         </div>
-                        
+
                         <div class="border-t border-gray-300 pt-2">
                             <div class="flex justify-between">
                                 <span>Subtotal:</span>
@@ -197,13 +197,13 @@
                                 <span>$7.29</span>
                             </div>
                         </div>
-                        
+
                         <div class="text-center mt-4 text-xs">
                             <p>Thank you for your business!</p>
                             <p>Visit us again soon</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-center justify-end space-x-3 mt-4">
                         <button @click="closeReceiptModal()"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
@@ -218,7 +218,7 @@
             </div>
 
             <!-- Return/Refund Modal -->
-            <div x-show="showReturnModal" 
+            <div x-show="showReturnModal"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
@@ -236,23 +236,23 @@
                             </svg>
                         </button>
                     </div>
-                    
+
                     <form @submit.prevent="processReturn()">
                         <div class="space-y-4">
                             <div>
                                 <label for="transaction_id" class="block text-sm font-medium text-gray-700 mb-1">Transaction ID</label>
-                                <input type="text" 
+                                <input type="text"
                                        id="transaction_id"
-                                       x-model="returnForm.transaction_id" 
+                                       x-model="returnForm.transaction_id"
                                        required
                                        placeholder="Enter transaction ID"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
-                            
+
                             <div>
                                 <label for="return_reason" class="block text-sm font-medium text-gray-700 mb-1">Return Reason</label>
                                 <select id="return_reason"
-                                        x-model="returnForm.reason" 
+                                        x-model="returnForm.reason"
                                         required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">Select reason</option>
@@ -263,36 +263,36 @@
                                     <option value="other">Other</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label for="refund_amount" class="block text-sm font-medium text-gray-700 mb-1">Refund Amount</label>
-                                <input type="number" 
+                                <input type="number"
                                        id="refund_amount"
-                                       x-model="returnForm.amount" 
+                                       x-model="returnForm.amount"
                                        step="0.01"
                                        min="0"
                                        required
                                        placeholder="0.00"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
-                            
+
                             <div>
                                 <label for="return_notes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                                 <textarea id="return_notes"
-                                          x-model="returnForm.notes" 
+                                          x-model="returnForm.notes"
                                           rows="3"
                                           placeholder="Additional notes..."
                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-center justify-end space-x-3 mt-6">
-                            <button type="button" 
+                            <button type="button"
                                     @click="closeReturnModal()"
                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                                 Cancel
                             </button>
-                            <button type="submit" 
+                            <button type="submit"
                                     :disabled="returnForm.loading"
                                     class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50">
                                 <span x-show="!returnForm.loading">Process Return</span>
@@ -313,7 +313,7 @@ function salesManagement() {
         activeTab: 'transactions',
         showReceiptModal: false,
         showReturnModal: false,
-        
+
         // Form data
         returnForm: {
             transaction_id: '',
@@ -322,26 +322,26 @@ function salesManagement() {
             notes: '',
             loading: false
         },
-        
+
         // Methods
         openReceiptModal() {
             this.showReceiptModal = true;
         },
-        
+
         closeReceiptModal() {
             this.showReceiptModal = false;
         },
-        
+
         openReturnModal() {
             this.showReturnModal = true;
             this.resetReturnForm();
         },
-        
+
         closeReturnModal() {
             this.showReturnModal = false;
             this.resetReturnForm();
         },
-        
+
         resetReturnForm() {
             this.returnForm = {
                 transaction_id: '',
@@ -351,21 +351,21 @@ function salesManagement() {
                 loading: false
             };
         },
-        
+
         printReceipt() {
             // Simulate printing
             alert('Receipt sent to printer!');
             this.closeReceiptModal();
         },
-        
+
         processReturn() {
             if (!this.returnForm.transaction_id || !this.returnForm.reason || !this.returnForm.amount) {
                 alert('Please fill in all required fields');
                 return;
             }
-            
+
             this.returnForm.loading = true;
-            
+
             // Simulate API call
             setTimeout(() => {
                 alert('Return processed successfully!');
