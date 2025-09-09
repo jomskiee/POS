@@ -11,6 +11,7 @@ use App\Models\Broker;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -206,7 +207,7 @@ class UserManagementController extends Controller
             $user = User::findOrFail($id);
 
             // Prevent admin from deactivating themselves
-            if ($user->id === auth()->user()->id) {
+            if ($user->id === Auth::id()) {
                 return redirect()->back()->with('error', 'You cannot deactivate your own account.');
             }
             $user->updateStatus(UserStatusConstant::DEACTIVATED);

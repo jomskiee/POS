@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\FishTypesController;
+use App\Http\Controllers\Admin\FishBoxController;
+use App\Http\Controllers\Admin\FishManagementController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,12 +56,23 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
+    // Fish Management routes - Main controller that delegates to specific controllers
+    Route::controller(FishManagementController::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/inventory', 'index')->name('inventory.index');
+    });
+
     // Fish Types Management routes - grouped by controller
     Route::controller(FishTypesController::class)->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/inventory', 'index')->name('inventory.index');
         Route::post('/fish-types', 'store')->name('fish-types.store');
         Route::put('/fish-types/{id}', 'update')->name('fish-types.update');
         Route::delete('/fish-types/{id}', 'destroy')->name('fish-types.destroy');
+    });
+
+    // Fish Box Management routes - grouped by controller
+    Route::controller(FishBoxController::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::post('/fish-boxes', 'store')->name('fish-boxes.store');
+        Route::put('/fish-boxes/{id}', 'update')->name('fish-boxes.update');
+        Route::delete('/fish-boxes/{id}', 'destroy')->name('fish-boxes.destroy');
     });
 
     // Sales & Transactions routes

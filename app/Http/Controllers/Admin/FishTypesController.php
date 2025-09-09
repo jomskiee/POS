@@ -12,11 +12,14 @@ use Illuminate\View\View;
 class FishTypesController extends Controller
 {
     /**
-     * @return View
+     * Get data for fish types tab
+     *
+     * @param Request $request
+     * @return array
      */
-    public function index(Request $request): View
+    public function getIndexData(Request $request): array
     {
-        $fishTypes = FishType::all();
+        $fishTypes = FishType::getPaginatedWithSearch($request->get('search'));
         $editingFishType = null;
 
         // Only fetch editing fish type if we're in edit mode
@@ -24,10 +27,8 @@ class FishTypesController extends Controller
             $editingFishType = FishType::find($request->get('edit'));
         }
 
-        return view('admin.inventory.index', compact('fishTypes', 'editingFishType'));
+        return compact('fishTypes', 'editingFishType');
     }
-
-    // ============== CRUD Operations ============== //
 
     /**
      * Store a newly created fish type.

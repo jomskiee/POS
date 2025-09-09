@@ -1,5 +1,5 @@
 <!-- Broker Sidebar Component -->
-<div :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden">
+<div :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white min-h-screen shadow-lg transition-all duration-300 ease-in-out overflow-hidden fixed left-0 top-0 z-40">
     <div class="p-4 border-b">
         <div class="flex items-center space-x-2">
             <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -8,7 +8,7 @@
             <span x-show="sidebarOpen" x-transition class="text-xl font-bold text-gray-800 whitespace-nowrap">Broker Portal</span>
         </div>
     </div>
-    
+
     <!-- Navigation -->
     <nav class="mt-8 space-y-2">
         <!-- MENU Section -->
@@ -20,7 +20,7 @@
 
             <!-- Dashboard -->
             <div>
-                <a href="{{ route('broker.dashboard') }}" 
+                <a href="{{ route('broker.dashboard') }}"
                    class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
                           {{ request()->routeIs('broker.dashboard') ? 'bg-green-100 text-green-700 border-r-4 border-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                     <svg class="mr-3 h-6 w-6 flex-shrink-0 transition-transform duration-200 group-hover:scale-110
@@ -32,10 +32,10 @@
                     <span class="transition-all duration-200" :class="sidebarOpen ? 'opacity-100' : 'opacity-0'">Dashboard</span>
                 </a>
             </div>
-            
+
             <!-- Sales & Analytics -->
             <div>
-                <a href="{{ route('broker.sales.index') }}" 
+                <a href="{{ route('broker.sales.index') }}"
                    class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
                           {{ request()->routeIs('broker.sales.*') ? 'bg-green-100 text-green-700 border-r-4 border-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                     <svg class="mr-3 h-6 w-6 flex-shrink-0 transition-transform duration-200 group-hover:scale-110

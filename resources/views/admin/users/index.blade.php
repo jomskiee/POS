@@ -7,12 +7,12 @@
     ];
 @endphp
 
-<div class="min-h-screen bg-gray-50 flex" x-data="{ sidebarOpen: true, reportsOpen: false }">
+<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true, reportsOpen: false }">
     <!-- Sidebar Component -->
     @include('layouts.partials.sidebar')
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
         <!-- Navbar Component -->
         @include('layouts.partials.navbar')
 

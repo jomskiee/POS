@@ -111,6 +111,49 @@
     </div>
     @endif
 
+    <!-- Fish Types Search -->
+    <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+        <form method="GET" action="{{ route('admin.inventory.index') }}" x-data="{ search: '{{ request('search') }}' }">
+            <input type="hidden" name="tab" value="fishTypes">
+            <div class="flex items-center space-x-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <input type="text"
+                            name="search"
+                            x-model="search"
+                            placeholder="Search fish types..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <x-heroicon-o-magnifying-glass class="h-4 w-4 text-gray-400" />
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <a href="{{ route('admin.inventory.index', ['tab' => 'fishTypes']) }}"
+                       class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                        Clear
+                    </a>
+                    <button type="submit"
+                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Count -->
+    @if($fishTypes->hasPages() || request()->has('search'))
+        <div class="mb-4">
+            <p class="text-sm text-gray-600">
+                Showing {{ $fishTypes->firstItem() ?? 0 }} to {{ $fishTypes->lastItem() ?? 0 }} of {{ $fishTypes->total() }} fish types
+                @if(request()->has('search'))
+                    <span class="text-blue-600">(filtered)</span>
+                @endif
+            </p>
+        </div>
+    @endif
+
     <!-- Fish Types Table -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
         <div class="overflow-x-auto">
@@ -163,4 +206,11 @@
             </table>
         </div>
     </div>
+
+    <!-- Pagination -->
+    @if($fishTypes->hasPages())
+        <div class="mt-8">
+            {{ $fishTypes->appends(request()->query())->links('components.pagination') }}
+        </div>
+    @endif
 </div>
