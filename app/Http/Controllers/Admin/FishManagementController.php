@@ -32,7 +32,7 @@ class FishManagementController extends Controller
 
             case 'movement':
                 $movementController = new MovementTrackingController();
-                $data = $movementController->getIndexData();
+                $data = $movementController->getIndexData($request);
                 break;
 
             default:
