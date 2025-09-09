@@ -158,4 +158,17 @@ class FishBox extends Model
 
         return $qrCode;
     }
+
+    /**
+     * Get available fish boxes for sale
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getAvailableForSale()
+    {
+        return static::with('fishType')
+            ->where('status', FishBoxStatusConstant::IN_STOCK)
+            ->whereNull('current_broker_id')
+            ->get();
+    }
 }

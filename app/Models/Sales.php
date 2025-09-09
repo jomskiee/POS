@@ -74,4 +74,41 @@ class Sales extends Model
         }
         $this->save();
     }
+
+    /**
+     * Update paid amount based on all active payments
+     */
+    public function updatePaidAmount()
+    {
+        $this->paid_amount = $this->salesPayments()
+            ->where('status', 'Active')
+            ->sum('paid_amount');
+        $this->save();
+    }
+
+    /**
+     * Get paginated sales with filters
+     */
+    public static function getPaginatedWithFilters($search = null, $status = null, $brookerId = null)
+    {
+        $query = self::with(['broker', 'salesDetails', 'salesPayments']);
+
+        if ($brookerId) {
+            $query->where('brooker_id', $brookerId);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('buyer_name', 'like', "%{$search}%")
+                  ->orWhere('buyer_contact', 'like', "%{$search}%")
+                  ->orWhere('uuid', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate(15);
+    }
 }
