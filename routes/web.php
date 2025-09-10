@@ -76,7 +76,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 
     // Sales & Transactions routes
-    Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
+    Route::get('/admin/sales', [App\Http\Controllers\SalesManagementController::class, 'index'])->name('admin.sales.index');
 });
 
 // Broker routes
@@ -85,7 +85,8 @@ Route::middleware(['auth', 'broker'])->group(function () {
 
 
     // Broker Sales routes
-    Route::get('/broker/sales', [App\Http\Controllers\SalesController::class, 'brokerIndex'])->name('broker.sales.index');
+    Route::get('/broker/sales&analytics', [App\Http\Controllers\SalesManagementController::class, 'brokerIndex'])->name('broker.sales.index');
+    Route::get('/broker/sales', [App\Http\Controllers\SalesManagementController::class, 'salesList'])->name('broker.sales.list');
 });
 
 // POS Terminal routes (accessible by brokers only)

@@ -79,7 +79,7 @@ class SalesController extends Controller
             }
         });
 
-        return redirect()->route('broker.sales.index')
+        return redirect()->route('broker.sales.list')
             ->with('success', 'Sale created successfully!');
     }
 
@@ -98,7 +98,7 @@ class SalesController extends Controller
 
         // Check if the sale belongs to the current broker
         if ($sale->brooker_id !== $brookerId) {
-            return redirect()->route('broker.sales.index')
+            return redirect()->route('broker.sales.list')
                 ->with('error', 'You are not authorized to update this sale.');
         }
 
@@ -133,7 +133,7 @@ class SalesController extends Controller
             $sale->updatePaymentStatus();
         });
 
-        return redirect()->route('broker.sales.index')
+        return redirect()->route('broker.sales.list')
             ->with('success', 'Sale updated successfully!');
     }
 
@@ -150,7 +150,7 @@ class SalesController extends Controller
 
         // Check if the sale belongs to the current broker
         if ($sale->brooker_id !== $brookerId) {
-            return redirect()->route('broker.sales.index')
+            return redirect()->route('broker.sales.list')
                 ->with('error', 'You are not authorized to delete this sale.');
         }
 
@@ -161,7 +161,7 @@ class SalesController extends Controller
             $sale->delete();
         });
 
-        return redirect()->route('broker.sales.index')
+        return redirect()->route('broker.sales.list')
             ->with('success', 'Sale deleted successfully!');
     }
 
@@ -193,7 +193,7 @@ class SalesController extends Controller
             $sale->updatePaymentStatus();
         });
 
-        return redirect()->route('broker.sales.index')
+        return redirect()->route('broker.sales.list')
             ->with('success', 'Payment recorded successfully!');
     }
 
@@ -210,7 +210,7 @@ class SalesController extends Controller
 
         // Check if the payment belongs to the current broker
         if ($payment->brooker_id !== $brookerId) {
-            return redirect()->route('broker.sales.index')
+            return redirect()->route('broker.sales.list')
                 ->with('error', 'You are not authorized to delete this payment.');
         }
 
@@ -223,7 +223,7 @@ class SalesController extends Controller
             $sale->updatePaymentStatus();
         });
 
-        return redirect()->route('broker.sales.index')
+        return redirect()->route('broker.sales.list')
             ->with('success', 'Payment deleted successfully!');
     }
 
