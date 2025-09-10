@@ -171,4 +171,32 @@ class FishBox extends Model
             ->whereNull('current_broker_id')
             ->get();
     }
+
+    /**
+     * Update fish box broker ID and status
+     *
+     * @param int $fishBoxId
+     * @param int|null $currentBrokerId
+     * @param string $status
+     * @param int $userId
+     * @return bool
+     */
+    public static function updateBrokerAndStatus(int $fishBoxId, ?int $currentBrokerId, string $status, int $userId): bool
+    {
+        $fishBox = static::find($fishBoxId);
+
+        if (!$fishBox) {
+            return false;
+        }
+
+        $fishBox->update([
+            'current_broker_id' => $currentBrokerId,
+            'status' => $status,
+        ]);
+
+        // Create inventory log for the status change
+        InventoryLog::createLogForFishBox($fishBox->id, $status, $userId);
+
+        return true;
+    }
 }

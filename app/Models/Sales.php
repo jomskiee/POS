@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use App\Constants\SalesStatusConstant;
 
 class Sales extends Model
 {
@@ -66,11 +67,11 @@ class Sales extends Model
     public function updatePaymentStatus()
     {
         if ($this->paid_amount <= 0) {
-            $this->status = 'Active';
+            $this->status = SalesStatusConstant::ACTIVE;
         } elseif ($this->paid_amount >= $this->total_amount) {
-            $this->status = 'Paid';
+            $this->status = SalesStatusConstant::PAID;
         } else {
-            $this->status = 'Partially_Paid';
+            $this->status = SalesStatusConstant::PARTIALLY_PAID;
         }
         $this->save();
     }
@@ -110,5 +111,13 @@ class Sales extends Model
         }
 
         return $query->orderBy('created_at', 'desc')->paginate(15);
+    }
+
+    /**
+     * @return void
+     */
+    public function deleteSales(): void
+    {
+        self::update(['status' => SalesStatusConstant::DELETED]);
     }
 }

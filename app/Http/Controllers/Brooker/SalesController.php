@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Brooker;
 
+use App\Constants\FishBoxStatusConstant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SalesRequest;
 use App\Http\Requests\SalesPaymentRequest;
@@ -9,11 +10,14 @@ use App\Models\Sales;
 use App\Models\SalesDetails;
 use App\Models\SalesPayment;
 use App\Models\FishBox;
+use App\Constants\SalesStatusConstant;
+use App\Models\Broker;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SalesController extends Controller
 {
@@ -30,15 +34,21 @@ class SalesController extends Controller
         $brookerId = Auth::id();
 
         $sales = Sales::getPaginatedWithFilters($search, $status, $brookerId);
-
+        $fishBoxes = FishBox::getAvailableForSale();
         $editingSales = null;
+        $viewingSales = null;
 
         // Check if we're in edit mode
         if ($request->get('modal') === 'edit' && $request->has('edit')) {
             $editingSales = Sales::with(['salesDetails', 'salesPayments'])->find($request->get('edit'));
         }
 
-        return compact('sales', 'editingSales');
+        // Check if we're in show mode
+        if ($request->get('modal') === 'show' && $request->has('show')) {
+            $viewingSales = Sales::with(['salesDetails.fishBox.fishType', 'salesPayments'])->find($request->get('show'));
+        }
+
+        return compact('sales', 'fishBoxes', 'editingSales', 'viewingSales');
     }
 
     /**
@@ -51,8 +61,10 @@ class SalesController extends Controller
     {
         $validated = $request->validated();
         $brookerId = Auth::id();
+        $userId = Auth::user()->id;
 
-        DB::transaction(function () use ($validated, $brookerId) {
+
+        DB::transaction(function () use ($validated, $brookerId, $userId) {
             // Create the sale
             $sale = Sales::create([
                 'sales_date' => $validated['sales_date'],
@@ -62,7 +74,7 @@ class SalesController extends Controller
                 'buyer_contact' => $validated['buyer_contact'],
                 'remarks' => $validated['remarks'] ?? null,
                 'details' => $validated['details'] ?? null,
-                'status' => 'Active'
+                'status' => SalesStatusConstant::ACTIVE
             ]);
 
             // Create sales details
@@ -75,6 +87,8 @@ class SalesController extends Controller
                         'item' => $detail['item'],
                         'item_description' => $detail['item_description'] ?? null
                     ]);
+
+                    FishBox::updateBrokerAndStatus($detail['box_id'], $brookerId, FishBoxStatusConstant::SOLD, $userId);
                 }
             }
         });
@@ -154,11 +168,17 @@ class SalesController extends Controller
                 ->with('error', 'You are not authorized to delete this sale.');
         }
 
-        DB::transaction(function () use ($sale) {
-            // Delete related records
-            $sale->salesDetails()->delete();
-            $sale->salesPayments()->delete();
-            $sale->delete();
+        DB::transaction(function () use ($sale, $brookerId) {
+            // Get sales details before deleting
+            $salesDetails = $sale->salesDetails;
+            $userId = Auth::user()->id;
+
+            // Reset fish boxes back to IN_STOCK status
+            foreach ($salesDetails as $detail) {
+                FishBox::updateBrokerAndStatus($detail->box_id, null, FishBoxStatusConstant::IN_STOCK, $userId);
+            }
+
+            $sale->deleteSales();
         });
 
         return redirect()->route('broker.sales.list')

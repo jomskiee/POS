@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\FishTypesController;
 use App\Http\Controllers\Admin\FishBoxController;
 use App\Http\Controllers\Admin\FishManagementController;
+use App\Http\Controllers\Brooker\SalesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -83,10 +84,19 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
 
-
     // Broker Sales routes
     Route::get('/broker/sales&analytics', [App\Http\Controllers\SalesManagementController::class, 'brokerIndex'])->name('broker.sales.index');
     Route::get('/broker/sales', [App\Http\Controllers\SalesManagementController::class, 'salesList'])->name('broker.sales.list');
+
+    //
+    Route::controller(SalesController::class)->prefix('broker')->name('broker.')->group(function () {
+        Route::post('/sales', 'store')->name('sales.store');
+        Route::put('/sales/{id}', 'update')->name('saless.update');
+        Route::delete('/sales/{id}', 'destroy')->name('sales.destroy');
+
+        Route::post('/sales-payments', 'storePayment')->name('sales-payments.store');
+        Route::delete('/sales-payments/{id}', 'destroyPayment')->name('sales-payments.destroy');
+    });
 });
 
 // POS Terminal routes (accessible by brokers only)
