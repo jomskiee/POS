@@ -43,7 +43,7 @@
                         <span class="text-sm font-medium text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                     </div>
                     <span class="hidden sm:inline">{{ auth()->user()->name }}</span>
-                    <x-heroicon-o-chevron-down class="w-4 h-4 hidden sm:block" />
+                    <x-heroicon-o-chevron-down class="w-4 h-4" />
                 </button>
 
                 <!-- Dropdown Menu -->

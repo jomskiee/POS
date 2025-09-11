@@ -1,23 +1,13 @@
-@extends('layouts.app')
-
-@section('content')
 @php
     $breadcrumbs = [
         ['title' => 'Inventory & Stock Management']
     ];
 @endphp
 
-<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true, reportsOpen: false }">
-    <!-- Broker Sidebar Component -->
-    @include('layouts.partials.broker-sidebar')
+@extends('layouts.broker')
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
-        <!-- Broker Navbar Component -->
-        @include('layouts.partials.broker-navbar')
-
-        <!-- Page Content -->
-        <main class="flex-1 overflow-auto p-6" x-data="inventoryManagement()">
+@section('content')
+<div class="w-full" x-data="inventoryManagement()">
             <div class="w-full">
                 <!-- Page Header -->
                 <div class="mb-8">
@@ -263,10 +253,6 @@
                     </form>
                 </div>
             </div>
-        </main>
-    </div>
-</div>
-
 <script>
 function inventoryManagement() {
     return {
