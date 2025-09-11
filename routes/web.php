@@ -83,10 +83,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Broker routes
 Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
-
-    // Broker Sales routes
-    Route::get('/broker/sales&analytics', [App\Http\Controllers\SalesManagementController::class, 'brokerIndex'])->name('broker.sales.index');
-    Route::get('/broker/sales', [App\Http\Controllers\SalesManagementController::class, 'salesList'])->name('broker.sales.list');
+    Route::get('/broker/fish-boxes', [App\Http\Controllers\BrokerDashboardController::class, 'fishBoxes'])->name('broker.sales.fish-boxes');
+    Route::get('/broker/analytics', [App\Http\Controllers\SalesManagementController::class, 'brokerIndex'])->name('broker.sales.index');
+    Route::get('/broker/sales', [App\Http\Controllers\SalesManagementController::class, 'sales'])->name('broker.sales.sales');
 
     //
     Route::controller(SalesController::class)->prefix('broker')->name('broker.')->group(function () {

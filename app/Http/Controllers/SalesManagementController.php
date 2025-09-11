@@ -17,10 +17,10 @@ class SalesManagementController extends Controller
         return view('broker.sales.index');
     }
 
-    public function salesList(Request $request)
+    public function sales(Request $request)
     {
         $salesController = new SalesController();
         $data = $salesController->getIndexData($request);
-        return view('broker.sales.list', $data);
+        return view('broker.sales.sales', $data);
     }
 }

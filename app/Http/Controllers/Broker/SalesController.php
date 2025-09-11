@@ -65,10 +65,12 @@ class SalesController extends Controller
     {
         $search = $request->get('search');
         $status = $request->get('status');
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
         $userId = Auth::id();
         $brokerId = Broker::getBrokerIdByUserId($userId);
 
-        $sales = Sales::getPaginatedWithFilters($search, $status, $brokerId);
+        $sales = Sales::getPaginatedWithFilters($search, $status, $brokerId, $dateFrom, $dateTo);
         $fishBoxes = FishBox::getAvailableForSale();
         $editingSales = null;
         $viewingSales = null;
@@ -128,7 +130,7 @@ class SalesController extends Controller
             }
         });
 
-        return redirect()->route('broker.sales.list')
+        return redirect()->route('broker.sales.sales')
             ->with('success', 'Sale created successfully!');
     }
 
@@ -148,7 +150,7 @@ class SalesController extends Controller
 
         // Check if the sale belongs to the current broker
         if ($sale->broker_id !== $brokerId) {
-            return redirect()->route('broker.sales.list')
+            return redirect()->route('broker.sales.sales')
                 ->with('error', 'You are not authorized to update this sale.');
         }
 
@@ -183,7 +185,7 @@ class SalesController extends Controller
             $sale->updatePaymentStatus();
         });
 
-        return redirect()->route('broker.sales.list')
+        return redirect()->route('broker.sales.sales')
             ->with('success', 'Sale updated successfully!');
     }
 
@@ -201,7 +203,7 @@ class SalesController extends Controller
 
         // Check if the sale belongs to the current broker
         if ($sale->broker_id !== $brokerId) {
-            return redirect()->route('broker.sales.list')
+            return redirect()->route('broker.sales.sales')
                 ->with('error', 'You are not authorized to delete this sale.');
         }
 
@@ -222,7 +224,7 @@ class SalesController extends Controller
             $sale->deleteSales();
         });
 
-        return redirect()->route('broker.sales.list')
+        return redirect()->route('broker.sales.sales')
             ->with('success', 'Sale deleted successfully!');
     }
 
@@ -258,7 +260,7 @@ class SalesController extends Controller
             $broker->addToBalance($sale->paid_amount);
         });
 
-        return redirect()->route('broker.sales.list')
+        return redirect()->route('broker.sales.sales')
             ->with('success', 'Payment recorded successfully!');
     }
 
@@ -276,7 +278,7 @@ class SalesController extends Controller
 
         // Check if the payment belongs to the current broker
         if ($payment->broker_id !== $brokerId) {
-            return redirect()->route('broker.sales.list')
+            return redirect()->route('broker.sales.sales')
                 ->with('error', 'You are not authorized to delete this payment.');
         }
 
@@ -292,7 +294,7 @@ class SalesController extends Controller
             $broker->addToBalance($sale->paid_amount);
         });
 
-        return redirect()->route('broker.sales.list')
+        return redirect()->route('broker.sales.sales')
             ->with('success', 'Payment deleted successfully!');
     }
 

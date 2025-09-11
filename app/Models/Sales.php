@@ -111,10 +111,12 @@ class Sales extends Model
      * @param string|null $search
      * @param string|null $status
      * @param int|null $brokerId
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
      *
      * @return LengthAwarePaginator
      */
-    public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $brokerId) : LengthAwarePaginator
+    public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $brokerId, ?string $dateFrom = null, ?string $dateTo = null) : LengthAwarePaginator
     {
         $query = self::with(['broker', 'salesDetails', 'salesPayments'])
             ->whereIn('status', SalesStatusConstant::getAllActiveStatuses());
@@ -132,6 +134,15 @@ class Sales extends Model
 
         if ($status) {
             $query->where('status', $status);
+        }
+
+        // Date range filtering
+        if ($dateFrom) {
+            $query->whereDate('sales_date', '>=', $dateFrom);
+        }
+
+        if ($dateTo) {
+            $query->whereDate('sales_date', '<=', $dateTo);
         }
 
         return $query->orderBy('created_at', 'desc')->paginate(15);

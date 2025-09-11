@@ -94,7 +94,7 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">My Recent Sales</h3>
-                            <a href="{{ route('broker.sales.list') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
+                            <a href="{{ route('broker.sales.sales') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-4">
                             @foreach ($recentSales as $sale)

@@ -8,6 +8,7 @@ use App\Models\FishType;
 use App\Models\FishBox;
 use App\Models\InventoryLog;
 use App\Http\Requests\FishBoxRequest;
+use App\Models\Broker;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -98,5 +99,26 @@ class FishBoxController extends Controller
 
         return redirect()->route('admin.inventory.index', ['tab' => 'fishBoxes'])
             ->with('success', 'Fish box deleted successfully!');
+    }
+
+
+    public function getBrokerFishBoxData(Request $request): array
+    {
+        $search = $request->get('search');
+        $status = $request->get('status');
+        $fishType = $request->get('fish_type');
+
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
+
+        // If no broker found, return empty pagination
+        if (!$brokerId) {
+            $fishBoxes = FishBox::where('id', 0)->paginate(12);
+            return compact('fishBoxes');
+        }
+
+        $fishBoxes = FishBox::getPaginatedWithFilters($search, $status, $fishType, 12, $brokerId);
+
+        return compact('fishBoxes');
     }
 }

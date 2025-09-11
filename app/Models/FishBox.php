@@ -90,7 +90,7 @@ class FishBox extends Model
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12): LengthAwarePaginator
+    public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12, ?int $brokerId = null): LengthAwarePaginator
     {
         $query = static::with('fishType');
 
@@ -115,8 +115,13 @@ class FishBox extends Model
             $query->where('fish_type_id', $fishTypeId);
         }
 
-        // Order by creation date and paginate
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        // Apply broker filter
+        if ($brokerId) {
+            $query->where('current_broker_id', $brokerId);
+        }
+
+        // Order by creation date and id for consistent pagination
+        return $query->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate($perPage);
     }
 
     /**

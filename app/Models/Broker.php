@@ -140,13 +140,15 @@ class Broker extends Model
         return $this->delete();
     }
 
-    public static function getBrokerIdByUserId($userId) : int
+    public static function getBrokerIdByUserId($userId) : ?int
     {
-        return self::where('user_id', $userId)->first()->id;
+        $broker = self::where('user_id', $userId)->first();
+        return $broker ? $broker->id : null;
     }
 
-    public static function getBrokerBalanceByUserId($userId) : float
+    public static function getBrokerBalanceByUserId($userId) : ?float
     {
-        return self::where('user_id', $userId)->first()->account_balance;
+        $broker = self::where('user_id', $userId)->first();
+        return $broker ? $broker->account_balance : null;
     }
 }

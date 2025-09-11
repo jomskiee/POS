@@ -27,7 +27,7 @@
                             <p class="text-gray-600 mt-2">Track your sales performance and analytics</p>
                         </div>
                         <div class="flex space-x-3">
-                            <a href="{{ route('broker.sales.list', ['modal' => 'create']) }}"
+                            <a href="{{ route('broker.sales.sales', ['modal' => 'create']) }}"
                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
                                 <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -40,21 +40,31 @@
 
                 <!-- Sales Filters -->
                 <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
-                    <form method="GET" action="{{ route('broker.sales.list') }}" x-data="{ search: '{{ request('search') }}', status: '{{ request('status') }}' }">
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-12 md:col-span-5">
+                    <form method="GET" action="{{ route('broker.sales.sales') }}" x-data="{
+                        search: '{{ request('search') }}',
+                        status: '{{ request('status') }}',
+                        dateFrom: '{{ request('date_from') }}',
+                        dateTo: '{{ request('date_to') }}'
+                    }">
+                        <div class="grid grid-cols-12 gap-4 items-end">
+                            <!-- Search Field -->
+                            <div class="col-span-12 md:col-span-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
                                 <div class="relative">
                                     <input type="text"
                                         name="search"
                                         x-model="search"
-                                        placeholder="Search sales..."
+                                        placeholder="Search buyer name or contact..."
                                         class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <x-heroicon-o-magnifying-glass class="h-4 w-4 text-gray-400" />
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Status Filter -->
                             <div class="col-span-6 md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                                 <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">All Status</option>
                                     @foreach(\App\Constants\SalesStatusConstant::getAllStatuses() as $status)
@@ -64,8 +74,28 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-span-12 md:col-span-3 flex justify-end space-x-2">
-                                <a href="{{ route('broker.sales.list') }}"
+
+                            <!-- Date From -->
+                            <div class="col-span-6 md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
+                                <input type="date"
+                                    name="date_from"
+                                    x-model="dateFrom"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <!-- Date To -->
+                            <div class="col-span-6 md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
+                                <input type="date"
+                                    name="date_to"
+                                    x-model="dateTo"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="col-span-12 md:col-span-2 flex justify-end space-x-2">
+                                <a href="{{ route('broker.sales.sales') }}"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                                     Clear
                                 </a>
@@ -82,7 +112,7 @@
                 <div class="mb-4">
                     <p class="text-sm text-gray-600">
                         Showing {{ $sales->firstItem() ?? 0 }} to {{ $sales->lastItem() ?? 0 }} of {{ $sales->total() }} sales
-                        @if(request()->hasAny(['search', 'status']))
+                        @if(request()->hasAny(['search', 'status', 'date_from', 'date_to']))
                             <span class="text-blue-600">(filtered)</span>
                         @endif
                     </p>
@@ -127,17 +157,17 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center space-x-2">
-                                                <a href="{{ route('broker.sales.list', ['modal' => 'show', 'show' => $sale->id]) }}"
+                                                <a href="{{ route('broker.sales.sales', ['modal' => 'show', 'show' => $sale->id]) }}"
                                                    class="text-green-600 hover:text-green-900 transition-colors"
                                                    title="View Sale">
                                                     <x-heroicon-o-eye class="w-5 h-5" />
                                                 </a>
-                                                <a href="{{ route('broker.sales.list', ['modal' => 'edit', 'edit' => $sale->id]) }}"
+                                                <a href="{{ route('broker.sales.sales', ['modal' => 'edit', 'edit' => $sale->id]) }}"
                                                    class="text-blue-600 hover:text-blue-900 transition-colors"
                                                    title="Edit Sale">
                                                     <x-heroicon-o-pencil-square class="w-5 h-5" />
                                                 </a>
-                                                <a href="{{ route('broker.sales.list', ['modal' => 'payment', 'sale' => $sale->id]) }}"
+                                                <a href="{{ route('broker.sales.sales', ['modal' => 'payment', 'sale' => $sale->id]) }}"
                                                    class="text-green-600 hover:text-green-900 transition-colors"
                                                    title="Add Payment">
                                                     <x-heroicon-o-currency-dollar class="w-5 h-5" />
@@ -161,7 +191,7 @@
                                                 <x-heroicon-o-shopping-cart class="w-16 h-16 text-gray-400 mb-4" />
                                                 <h3 class="text-lg font-medium text-gray-900 mb-2">No sales found</h3>
                                                 <p class="text-gray-500 mb-6">Get started by creating your first sale.</p>
-                                                <a href="{{ route('broker.sales.list', ['modal' => 'create']) }}"
+                                                <a href="{{ route('broker.sales.sales', ['modal' => 'create']) }}"
                                                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
                                                     <x-heroicon-o-plus class="w-5 h-5" />
                                                     <span>Create Sale</span>
@@ -198,7 +228,7 @@
             <div class="bg-white px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">Create New Sale</h3>
-                    <a href="{{ route('broker.sales.list') }}"
+                    <a href="{{ route('broker.sales.sales') }}"
                         class="text-gray-400 hover:text-gray-600 transition-colors">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
                     </a>
@@ -327,7 +357,7 @@
 
                     <!-- Modal Footer -->
                     <div class="flex justify-end space-x-3 pt-4">
-                        <a href="{{ route('broker.sales.list') }}"
+                        <a href="{{ route('broker.sales.sales') }}"
                             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                             Cancel
                         </a>
@@ -355,7 +385,7 @@
             <div class="bg-white px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">Edit Sale</h3>
-                    <a href="{{ route('broker.sales.list') }}"
+                    <a href="{{ route('broker.sales.sales') }}"
                         class="text-gray-400 hover:text-gray-600 transition-colors">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
                     </a>
@@ -488,7 +518,7 @@
 
                     <!-- Modal Footer -->
                     <div class="flex justify-end space-x-3 pt-4">
-                        <a href="{{ route('broker.sales.list') }}"
+                        <a href="{{ route('broker.sales.sales') }}"
                             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                             Cancel
                         </a>
@@ -516,7 +546,7 @@
             <div class="bg-white px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">Add Payment</h3>
-                    <a href="{{ route('broker.sales.list') }}"
+                    <a href="{{ route('broker.sales.sales') }}"
                         class="text-gray-400 hover:text-gray-600 transition-colors">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
                     </a>
@@ -576,7 +606,7 @@
 
                     <!-- Modal Footer -->
                     <div class="flex justify-end space-x-3 pt-4">
-                        <a href="{{ route('broker.sales.list') }}"
+                        <a href="{{ route('broker.sales.sales') }}"
                             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                             Cancel
                         </a>
@@ -612,7 +642,7 @@
                             <p class="text-blue-100 text-sm">Sale #{{ $viewingSales->id }} - {{ $viewingSales->sales_date->format('M d, Y') }}</p>
                         </div>
                     </div>
-                    <a href="{{ route('broker.sales.list') }}"
+                    <a href="{{ route('broker.sales.sales') }}"
                         class="text-white hover:text-blue-200 transition-colors p-2 hover:bg-white hover:bg-opacity-20 rounded-lg">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
                     </a>
@@ -906,7 +936,7 @@
                         </div>
                         <h4 class="text-lg font-medium text-gray-900 mb-2">No Payment History</h4>
                         <p class="text-gray-500 mb-4">This sale doesn't have any payment records yet.</p>
-                        <a href="{{ route('broker.sales.list', ['modal' => 'payment', 'sale' => $viewingSales->id]) }}"
+                        <a href="{{ route('broker.sales.sales', ['modal' => 'payment', 'sale' => $viewingSales->id]) }}"
                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
                             <x-heroicon-o-plus class="w-4 h-4 mr-2" />
                             Add Payment
@@ -919,7 +949,7 @@
             <!-- Modal Footer -->
             <div class="bg-white px-8 py-6 border-t border-gray-200 flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('broker.sales.list', ['modal' => 'payment', 'sale' => $viewingSales->id]) }}"
+                    <a href="{{ route('broker.sales.sales', ['modal' => 'payment', 'sale' => $viewingSales->id]) }}"
                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
                         <x-heroicon-o-plus class="w-4 h-4 mr-2" />
                         Add Payment
@@ -931,11 +961,11 @@
                     @endif
                 </div>
                 <div class="flex items-center space-x-3">
-                    <a href="{{ route('broker.sales.list') }}"
+                    <a href="{{ route('broker.sales.sales') }}"
                         class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         Close
                     </a>
-                    <a href="{{ route('broker.sales.list', ['modal' => 'edit', 'edit' => $viewingSales->id]) }}"
+                    <a href="{{ route('broker.sales.sales', ['modal' => 'edit', 'edit' => $viewingSales->id]) }}"
                         class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
                         <x-heroicon-o-pencil-square class="w-4 h-4 mr-2" />
                         Edit Sale
