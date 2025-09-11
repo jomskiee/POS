@@ -1,6 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('content')
 @php
     $breadcrumbs = [
         ['title' => 'User Management', 'url' => route('admin.users.index')],
@@ -8,18 +7,8 @@
     ];
 @endphp
 
-<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true, reportsOpen: false }">
-    <!-- Sidebar Component -->
-    @include('layouts.partials.sidebar')
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
-        <!-- Navbar Component -->
-        @include('layouts.partials.navbar')
-
-        <!-- Page Content -->
-        <main class="flex-1 overflow-auto p-6">
-            <div class="w-full max-w-2xl mx-auto">
+@section('content')
+<div class="w-full max-w-2xl mx-auto">
                 <!-- Page Header -->
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
@@ -169,7 +158,4 @@
                     </form>
                 </div>
             </div>
-        </main>
-    </div>
-</div>
 @endsection

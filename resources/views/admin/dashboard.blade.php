@@ -1,18 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true, reportsOpen: false }">
-    <!-- Sidebar Component -->
-    @include('layouts.partials.sidebar')
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out md:ml-0 min-h-screen" :style="window.innerWidth >= 768 ? (sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;') : 'margin-left: 0;'">
-        <!-- Navbar Component -->
-        @include('layouts.partials.navbar')
-
-        <!-- Page Content -->
-        <main class="flex-1 overflow-auto p-6 pb-24 md:pb-6">
-            <div class="w-full">
+<div class="w-full">
                 <!-- Page Header -->
                 <div class="mb-8">
                     <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -219,13 +208,4 @@
                     </div>
                 </div>
             </div>
-        </main>
-
-        <!-- Desktop Footer -->
-        @include('layouts.partials.desktop-footer')
-    </div>
-
-    <!-- Mobile Footer Sidebar -->
-    @include('layouts.partials.mobile-footer-sidebar')
-</div>
 @endsection
