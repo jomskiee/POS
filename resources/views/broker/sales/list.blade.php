@@ -364,7 +364,7 @@
 
             <!-- Modal Body -->
             <div class="bg-white px-6 py-6">
-                <form action="{{ route('broker.saless.update', $editingSales->id) }}" method="POST" class="space-y-6">
+                <form action="{{ route('broker.sales.update', $editingSales->id) }}" method="POST" class="space-y-6" x-data="editSaleForm()" x-init="initializeEditForm()">
                     @csrf
                     @method('PUT')
 
@@ -435,6 +435,53 @@
                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                   placeholder="Enter any additional remarks">{{ old('remarks', $editingSales->remarks) }}</textarea>
                         @error('remarks')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Sales Details -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Sales Details <span class="text-red-500">*</span>
+                        </label>
+                        <div class="space-y-4" x-ref="salesDetailsContainer">
+                            <template x-for="(detail, index) in salesDetails" :key="index">
+                                <div class="flex items-end space-x-4 p-4 border border-gray-200 rounded-lg">
+                                    <div class="flex-1">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Fish Box</label>
+                                        <select :name="`sales_details[${index}][box_id]`"
+                                                x-model="detail.box_id"
+                                                @change="updateSelectedBoxes(); updateItemFromFishBox(index)"
+                                                required
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <option value="">Select Fish Box</option>
+                                            <template x-for="fishBox in getAvailableFishBoxes(index)" :key="fishBox.id">
+                                                <option :value="fishBox.id" x-text="fishBox.name + ' (' + fishBox.fish_type.name + ')'"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <!-- Hidden Item field - automatically populated with fish type name -->
+                                    <input type="hidden" :name="`sales_details[${index}][item]`" x-model="detail.item">
+                                    <div class="flex-1">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                        <input type="text" :name="`sales_details[${index}][item_description]`"
+                                               x-model="detail.item_description"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                               placeholder="Item description">
+                                    </div>
+                                    <button type="button" @click="removeSalesDetail(index)"
+                                            class="text-red-600 hover:text-red-800 transition-colors">
+                                        <x-heroicon-o-trash class="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        <button type="button" @click="addSalesDetail()"
+                                class="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            <x-heroicon-o-plus class="w-4 h-4 mr-2 inline" />
+                            Add Sales Detail
+                        </button>
+                        @error('sales_details')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -910,6 +957,76 @@ function saleForm() {
         selectedBoxes: new Set(),
 
         initializeForm() {
+            // Initialize selected boxes set
+            this.updateSelectedBoxes();
+        },
+
+        addSalesDetail() {
+            this.salesDetails.push({ box_id: '', item: '', item_description: '' });
+        },
+
+        removeSalesDetail(index) {
+            if (this.salesDetails.length > 1) {
+                // Remove the box_id from selected boxes before removing the detail
+                const boxId = this.salesDetails[index].box_id;
+                if (boxId) {
+                    this.selectedBoxes.delete(boxId);
+                }
+                this.salesDetails.splice(index, 1);
+                this.updateSelectedBoxes();
+            }
+        },
+
+        updateSelectedBoxes() {
+            // Clear the set
+            this.selectedBoxes.clear();
+
+            // Add all currently selected box IDs
+            this.salesDetails.forEach(detail => {
+                if (detail.box_id) {
+                    this.selectedBoxes.add(detail.box_id);
+                }
+            });
+        },
+
+        updateItemFromFishBox(index) {
+            const selectedBoxId = this.salesDetails[index].box_id;
+            if (selectedBoxId) {
+                // Find the selected fish box
+                const selectedFishBox = this.fishBoxes.find(fishBox => fishBox.id == selectedBoxId);
+                if (selectedFishBox) {
+                    // Set the item name to the fish type name
+                    this.salesDetails[index].item = selectedFishBox.fish_type.name;
+                }
+            } else {
+                // Clear the item if no fish box is selected
+                this.salesDetails[index].item = '';
+            }
+        },
+
+        getAvailableFishBoxes(currentIndex) {
+            // Get the currently selected box for this index
+            const currentBoxId = this.salesDetails[currentIndex].box_id;
+
+            return this.fishBoxes.filter(fishBox => {
+                // Always include the currently selected box for this index
+                if (fishBox.id == currentBoxId) {
+                    return true;
+                }
+                // Exclude boxes that are selected in other details
+                return !this.selectedBoxes.has(fishBox.id);
+            });
+        }
+    }
+}
+
+function editSaleForm() {
+    return {
+        salesDetails: @json($editingSales->salesDetails ?? []),
+        fishBoxes: @json($fishBoxes ?? []),
+        selectedBoxes: new Set(),
+
+        initializeEditForm() {
             // Initialize selected boxes set
             this.updateSelectedBoxes();
         },

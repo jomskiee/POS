@@ -91,7 +91,7 @@ Route::middleware(['auth', 'broker'])->group(function () {
     //
     Route::controller(SalesController::class)->prefix('broker')->name('broker.')->group(function () {
         Route::post('/sales', 'store')->name('sales.store');
-        Route::put('/sales/{id}', 'update')->name('saless.update');
+        Route::put('/sales/{id}', 'update')->name('sales.update');
         Route::delete('/sales/{id}', 'destroy')->name('sales.destroy');
 
         Route::post('/sales-payments', 'storePayment')->name('sales-payments.store');
