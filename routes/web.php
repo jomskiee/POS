@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\FishTypesController;
 use App\Http\Controllers\Admin\FishBoxController;
 use App\Http\Controllers\Admin\FishManagementController;
-use App\Http\Controllers\Brooker\SalesController;
+use App\Http\Controllers\Broker\SalesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 

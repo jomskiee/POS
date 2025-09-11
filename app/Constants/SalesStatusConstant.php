@@ -22,6 +22,15 @@ class SalesStatusConstant
         ];
     }
 
+    public static function getAllActiveStatuses(): array
+    {
+        return [
+            self::ACTIVE,
+            self::PARTIALLY_PAID,
+            self::PAID,
+        ];
+    }
+
     /**
      * Get status display name
      *

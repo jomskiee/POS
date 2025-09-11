@@ -115,10 +115,10 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            ${{ number_format($sale->total_amount, 2) }}
+                                            ₱{{ number_format($sale->total_amount, 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            ${{ number_format($sale->paid_amount, 2) }}
+                                            ₱{{ number_format($sale->paid_amount, 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ \App\Constants\SalesStatusConstant::getStatusColorClasses($sale->status) }}">
@@ -679,14 +679,14 @@
                                     <x-heroicon-o-banknotes class="w-4 h-4 mr-2" />
                                     Total Amount
                                 </span>
-                                <span class="text-lg font-bold text-gray-900">${{ number_format($viewingSales->total_amount, 2) }}</span>
+                                <span class="text-lg font-bold text-gray-900">₱{{ number_format($viewingSales->total_amount, 2) }}</span>
                             </div>
                             <div class="flex items-center justify-between py-2 border-b border-gray-100">
                                 <span class="text-sm text-gray-600 flex items-center">
                                     <x-heroicon-o-check-circle class="w-4 h-4 mr-2" />
                                     Paid Amount
                                 </span>
-                                <span class="text-lg font-bold text-green-600">${{ number_format($viewingSales->paid_amount, 2) }}</span>
+                                <span class="text-lg font-bold text-green-600">₱{{ number_format($viewingSales->paid_amount, 2) }}</span>
                             </div>
                             <div class="flex items-center justify-between py-2">
                                 <span class="text-sm text-gray-600 flex items-center">
@@ -694,7 +694,7 @@
                                     Remaining
                                 </span>
                                 <span class="text-lg font-bold {{ $viewingSales->remaining_amount > 0 ? 'text-orange-600' : 'text-green-600' }}">
-                                    ${{ number_format($viewingSales->remaining_amount, 2) }}
+                                    ₱{{ number_format($viewingSales->remaining_amount, 2) }}
                                 </span>
                             </div>
                         </div>
@@ -859,7 +859,7 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-lg font-bold text-green-600">
-                                                    ${{ number_format($payment->paid_amount, 2) }}
+                                                    ₱{{ number_format($payment->paid_amount, 2) }}
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
@@ -926,7 +926,7 @@
                     </a>
                     @if($viewingSales->status !== \App\Constants\SalesStatusConstant::PAID)
                         <span class="text-sm text-gray-500">
-                            Outstanding: <span class="font-semibold text-orange-600">${{ number_format($viewingSales->remaining_amount, 2) }}</span>
+                            Outstanding: <span class="font-semibold text-orange-600">₱{{ number_format($viewingSales->remaining_amount, 2) }}</span>
                         </span>
                     @endif
                 </div>

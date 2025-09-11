@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Brooker;
+namespace App\Http\Controllers\Broker;
 
 use App\Constants\FishBoxStatusConstant;
 use App\Http\Controllers\Controller;
@@ -12,6 +12,7 @@ use App\Models\SalesPayment;
 use App\Models\FishBox;
 use App\Constants\SalesStatusConstant;
 use App\Models\Broker;
+use App\Models\InventoryLog;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -21,6 +22,38 @@ use Illuminate\Support\Facades\Log;
 
 class SalesController extends Controller
 {
+
+    public function getDashboardData(): array
+    {
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
+
+        $salesToday = Sales::getTotalSalesToday($brokerId);
+        $salesBalance = Sales::getTotalSalesBalance($brokerId);
+        $ordersToday = Sales::getTotalOrdersToday($brokerId);
+        $paidAmountToday = Sales::getTotalPaidAmountToday($brokerId);
+        $paidAmountYesterday = Sales::getTotalPaidAmountYesterday($brokerId);
+
+        $totalFishBoxes = FishBox::getTotalFishBoxes($brokerId);
+
+        if ($paidAmountYesterday > 0) {
+            $growthPercent = (($paidAmountToday - $paidAmountYesterday) / $paidAmountYesterday) * 100;
+        } else {
+            $growthPercent = 0; // or handle differently if yesterday was 0
+        }
+
+        $paidAmountGrowthPercent = round($growthPercent, 2) . '%';
+
+
+
+        $recentSales = Sales::getRecentSales(4, $brokerId);
+
+        Log::info($recentSales);
+
+
+        return compact('ordersToday', 'salesToday', 'salesBalance', 'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes');
+    }
+
     /**
      * Get data for sales index
      *
@@ -31,9 +64,10 @@ class SalesController extends Controller
     {
         $search = $request->get('search');
         $status = $request->get('status');
-        $brookerId = Auth::id();
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
 
-        $sales = Sales::getPaginatedWithFilters($search, $status, $brookerId);
+        $sales = Sales::getPaginatedWithFilters($search, $status, $brokerId);
         $fishBoxes = FishBox::getAvailableForSale();
         $editingSales = null;
         $viewingSales = null;
@@ -60,15 +94,15 @@ class SalesController extends Controller
     public function store(SalesRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $brookerId = Auth::id();
-        $userId = Auth::user()->id;
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
 
 
-        DB::transaction(function () use ($validated, $brookerId, $userId) {
+        DB::transaction(function () use ($validated, $brokerId, $userId) {
             // Create the sale
             $sale = Sales::create([
                 'sales_date' => $validated['sales_date'],
-                'brooker_id' => $brookerId,
+                'broker_id' => $brokerId,
                 'total_amount' => $validated['total_amount'],
                 'buyer_name' => $validated['buyer_name'],
                 'buyer_contact' => $validated['buyer_contact'],
@@ -82,13 +116,13 @@ class SalesController extends Controller
                 foreach ($validated['sales_details'] as $detail) {
                     SalesDetails::create([
                         'sales_id' => $sale->id,
-                        'brooker_id' => $brookerId,
+                        'broker_id' => $brokerId,
                         'box_id' => $detail['box_id'],
                         'item' => $detail['item'],
                         'item_description' => $detail['item_description'] ?? null
                     ]);
 
-                    FishBox::updateBrokerAndStatus($detail['box_id'], $brookerId, FishBoxStatusConstant::SOLD, $userId);
+                    FishBox::updateBrokerAndStatus($detail['box_id'], $brokerId, FishBoxStatusConstant::SOLD, $userId);
                 }
             }
         });
@@ -108,15 +142,16 @@ class SalesController extends Controller
     {
         $sale = Sales::findOrFail($id);
         $validated = $request->validated();
-        $brookerId = Auth::id();
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
 
         // Check if the sale belongs to the current broker
-        if ($sale->brooker_id !== $brookerId) {
+        if ($sale->broker_id !== $brokerId) {
             return redirect()->route('broker.sales.list')
                 ->with('error', 'You are not authorized to update this sale.');
         }
 
-        DB::transaction(function () use ($sale, $validated, $brookerId) {
+        DB::transaction(function () use ($sale, $validated, $brokerId) {
             // Update the sale
             $sale->update([
                 'sales_date' => $validated['sales_date'],
@@ -134,7 +169,7 @@ class SalesController extends Controller
                 foreach ($validated['sales_details'] as $detail) {
                     SalesDetails::create([
                         'sales_id' => $sale->id,
-                        'brooker_id' => $brookerId,
+                        'broker_id' => $brokerId,
                         'box_id' => $detail['box_id'],
                         'item' => $detail['item'],
                         'item_description' => $detail['item_description'] ?? null
@@ -160,15 +195,16 @@ class SalesController extends Controller
     public function destroy($id): RedirectResponse
     {
         $sale = Sales::findOrFail($id);
-        $brookerId = Auth::id();
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
 
         // Check if the sale belongs to the current broker
-        if ($sale->brooker_id !== $brookerId) {
+        if ($sale->broker_id !== $brokerId) {
             return redirect()->route('broker.sales.list')
                 ->with('error', 'You are not authorized to delete this sale.');
         }
 
-        DB::transaction(function () use ($sale, $brookerId) {
+        DB::transaction(function () use ($sale, $brokerId) {
             // Get sales details before deleting
             $salesDetails = $sale->salesDetails;
             $userId = Auth::user()->id;
@@ -176,7 +212,11 @@ class SalesController extends Controller
             // Reset fish boxes back to IN_STOCK status
             foreach ($salesDetails as $detail) {
                 FishBox::updateBrokerAndStatus($detail->box_id, null, FishBoxStatusConstant::IN_STOCK, $userId);
+                InventoryLog::deleteLogForFishBox($detail->box_id, $userId, $sale->created_at);
             }
+
+            $broker = Broker::where('user_id', $userId)->first();
+            $broker->minusFromBalance($sale->paid_amount);
 
             $sale->deleteSales();
         });
@@ -194,13 +234,14 @@ class SalesController extends Controller
     public function storePayment(SalesPaymentRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $brookerId = Auth::id();
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
 
-        DB::transaction(function () use ($validated, $brookerId) {
+        DB::transaction(function () use ($validated, $brokerId, $userId) {
             // Create the payment
             $payment = SalesPayment::create([
                 'sales_id' => $validated['sales_id'],
-                'brooker_id' => $brookerId,
+                'broker_id' => $brokerId,
                 'paid_amount' => $validated['paid_amount'],
                 'payment_date' => $validated['payment_date'],
                 'payment_method' => $validated['payment_method'],
@@ -211,6 +252,9 @@ class SalesController extends Controller
             $sale = Sales::findOrFail($validated['sales_id']);
             $sale->updatePaidAmount();
             $sale->updatePaymentStatus();
+
+            $broker = Broker::where('user_id', $userId)->first();
+            $broker->addToBalance($sale->paid_amount);
         });
 
         return redirect()->route('broker.sales.list')
@@ -226,21 +270,25 @@ class SalesController extends Controller
     public function destroyPayment($id): RedirectResponse
     {
         $payment = SalesPayment::findOrFail($id);
-        $brookerId = Auth::id();
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
 
         // Check if the payment belongs to the current broker
-        if ($payment->brooker_id !== $brookerId) {
+        if ($payment->broker_id !== $brokerId) {
             return redirect()->route('broker.sales.list')
                 ->with('error', 'You are not authorized to delete this payment.');
         }
 
-        DB::transaction(function () use ($payment) {
+        DB::transaction(function () use ($payment, $userId) {
             $sale = $payment->sales;
             $payment->delete();
 
             // Update the sales paid amount and status
             $sale->updatePaidAmount();
             $sale->updatePaymentStatus();
+
+            $broker = Broker::where('user_id', $userId)->first();
+            $broker->addToBalance($sale->paid_amount);
         });
 
         return redirect()->route('broker.sales.list')

@@ -199,4 +199,16 @@ class FishBox extends Model
 
         return true;
     }
+
+
+    public static function getTotalFishBoxes(?int $brokerId): int
+    {
+        $query = static::where('status', FishBoxStatusConstant::SOLD);
+
+        if ($brokerId) {
+            $query->where('current_broker_id', $brokerId);
+        }
+
+        return $query->count();
+    }
 }

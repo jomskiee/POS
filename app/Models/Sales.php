@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use App\Constants\SalesStatusConstant;
+use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sales extends Model
 {
@@ -14,7 +19,7 @@ class Sales extends Model
     protected $fillable = [
         'uuid',
         'sales_date',
-        'brooker_id',
+        'broker_id',
         'total_amount',
         'paid_amount',
         'buyer_name',
@@ -43,28 +48,43 @@ class Sales extends Model
     }
 
     // Relationships
-    public function broker()
+    /**
+     * @return BelongsTo
+     */
+    public function broker() : BelongsTo
     {
-        return $this->belongsTo(Broker::class, 'brooker_id');
+        return $this->belongsTo(Broker::class, 'broker_id');
     }
 
-    public function salesDetails()
+    /**
+     * @return HasMany
+     */
+    public function salesDetails() : HasMany
     {
         return $this->hasMany(SalesDetails::class, 'sales_id');
     }
 
-    public function salesPayments()
+    /**
+     * @return HasMany
+     */
+    public function salesPayments() : HasMany
     {
         return $this->hasMany(SalesPayment::class, 'sales_id');
     }
 
     // Helper methods
-    public function getRemainingAmountAttribute()
+    /**
+     * @return float
+     */
+    public function getRemainingAmountAttribute() : float
     {
         return $this->total_amount - $this->paid_amount;
     }
 
-    public function updatePaymentStatus()
+    /**
+     * @return void
+     */
+    public function updatePaymentStatus() : void
     {
         if ($this->paid_amount <= 0) {
             $this->status = SalesStatusConstant::ACTIVE;
@@ -77,9 +97,9 @@ class Sales extends Model
     }
 
     /**
-     * Update paid amount based on all active payments
+     * @return void
      */
-    public function updatePaidAmount()
+    public function updatePaidAmount() : void
     {
         $this->paid_amount = $this->salesPayments()
             ->where('status', 'Active')
@@ -88,21 +108,25 @@ class Sales extends Model
     }
 
     /**
-     * Get paginated sales with filters
+     * @param null $search
+     * @param null $status
+     * @param int|null $brokerId
+     *
+     * @return LengthAwarePaginator
      */
-    public static function getPaginatedWithFilters($search = null, $status = null, $brookerId = null)
+    public static function getPaginatedWithFilters($search = null, $status = null, ?int $brokerId) : LengthAwarePaginator
     {
-        $query = self::with(['broker', 'salesDetails', 'salesPayments']);
+        $query = self::with(['broker', 'salesDetails', 'salesPayments'])
+            ->whereIn('status', SalesStatusConstant::getAllActiveStatuses());
 
-        if ($brookerId) {
-            $query->where('brooker_id', $brookerId);
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
         }
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('buyer_name', 'like', "%{$search}%")
-                  ->orWhere('buyer_contact', 'like', "%{$search}%")
-                  ->orWhere('uuid', 'like', "%{$search}%");
+                  ->orWhere('buyer_contact', 'like', "%{$search}%");
             });
         }
 
@@ -119,5 +143,126 @@ class Sales extends Model
     public function deleteSales(): void
     {
         self::update(['status' => SalesStatusConstant::DELETED]);
+    }
+
+    /**
+     * @param int|null $brokerId
+     *
+     * @return float
+     */
+    public static function getTotalSalesToday(?int $brokerId): float
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', today());
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        return $query->sum('paid_amount');
+    }
+
+    /**
+     * @param int|null $brokerId
+     *
+     * @return float
+     */
+    public static function getTotalPaidAmountToday(?int $brokerId): float
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', today());
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        return $query->sum('paid_amount');
+    }
+
+    /**
+     * @param int|null $brokerId
+     *
+     * @return float
+     */
+    public static function getTotalPaidAmountYesterday(?int $brokerId): float
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', Carbon::yesterday());
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        return $query->sum('paid_amount');
+    }
+
+    /**
+     * @param int $limit
+     * @param int|null $brokerId
+     *
+     * @return Collection
+     */
+    public static function getRecentSales($limit = 4, ?int $brokerId): Collection
+    {
+        $query = self::with(['broker', 'salesDetails'])
+            ->whereIn('status', SalesStatusConstant::getAllActiveStatuses());
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        $sales = $query->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+
+        // Add formatted items to each sale
+        $sales->each(function ($sale) {
+            $sale->formatted_items = $sale->getFormattedItems();
+        });
+
+        return $sales;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedItems(): string
+    {
+        return $this->salesDetails->pluck('item')->implode(', ');
+    }
+
+
+    /**
+     * @param int|null $brokerId
+     *
+     * @return float
+     */
+    public static function getTotalSalesBalance(?int $brokerId): float
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses());
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        return $query->selectRaw('SUM(total_amount - paid_amount) as balance')
+            ->value('balance') ?? 0;
+    }
+
+    /**
+     * @param int|null $brokerId
+     *
+     * @return int
+     */
+    public static function getTotalOrdersToday(?int $brokerId): int
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', today());
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        return $query->count();
     }
 }

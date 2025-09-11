@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Brooker\SalesController;
+use App\Http\Controllers\Broker\SalesController;
 use Illuminate\Http\Request;
 
 class SalesManagementController extends Controller

@@ -11,7 +11,7 @@ class SalesDetails extends Model
 
     protected $fillable = [
         'sales_id',
-        'brooker_id',
+        'broker_id',
         'box_id',
         'item',
         'item_description'
@@ -25,7 +25,7 @@ class SalesDetails extends Model
 
     public function broker()
     {
-        return $this->belongsTo(Broker::class, 'brooker_id');
+        return $this->belongsTo(Broker::class, 'broker_id');
     }
 
     public function fishBox()

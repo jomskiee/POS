@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->datetime('sales_date');
-            $table->unsignedBigInteger('brooker_id');
+            $table->unsignedBigInteger('broker_id');
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->decimal('paid_amount', 10, 2)->default(0);
             $table->string('buyer_name');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->enum('status', ['Deleted', 'Active', 'Partially_Paid', 'Paid'])->default('Active');
             $table->timestamps();
 
-            $table->foreign('brooker_id')->references('id')->on('brokers')->onDelete('cascade');
+            $table->foreign('broker_id')->references('id')->on('brokers')->onDelete('cascade');
         });
     }
 

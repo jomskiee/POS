@@ -7,7 +7,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-            
+
             <!-- Breadcrumbs -->
             <nav class="text-sm">
                 <ol class="flex items-center space-x-2">
@@ -31,7 +31,7 @@
                 </ol>
             </nav>
         </div>
-        
+
         <div class="flex items-center space-x-4">
             <!-- POS Terminal Button -->
             <a href="{{ route('pos.terminal') }}" class="hidden md:inline-flex bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
@@ -40,21 +40,16 @@
                 </svg>
                 POS Terminal
             </a>
-            
+
             <!-- Quick Actions -->
             <div class="hidden md:flex items-center space-x-2">
-                <button class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Quick Sale">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </button>
-                <button class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Inventory Check">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
+                <button class="bg-gray-50 text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <p class="flex items-center space-x-1 text-red-700 font-normal">
+                        <span class="text-s">Balance : ₱ {{ \App\Models\Broker::getBrokerBalanceByUserId(auth()->user()->id) }}</span>
+                    </p>
                 </button>
             </div>
-            
+
             <!-- Notifications -->
             <button class="text-gray-500 hover:text-gray-700 relative transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,7 +57,7 @@
                 </svg>
                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">2</span>
             </button>
-            
+
             <!-- User Dropdown -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 transition-colors">
@@ -74,9 +69,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </button>
-                
+
                 <!-- Dropdown Menu -->
-                <div x-show="open" @click.away="open = false" 
+                <div x-show="open" @click.away="open = false"
                      x-transition:enter="transition ease-out duration-100"
                      x-transition:enter-start="transform opacity-0 scale-95"
                      x-transition:enter-end="transform opacity-100 scale-100"
