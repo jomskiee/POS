@@ -108,13 +108,13 @@ class Sales extends Model
     }
 
     /**
-     * @param null $search
-     * @param null $status
+     * @param string|null $search
+     * @param string|null $status
      * @param int|null $brokerId
      *
      * @return LengthAwarePaginator
      */
-    public static function getPaginatedWithFilters($search = null, $status = null, ?int $brokerId) : LengthAwarePaginator
+    public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $brokerId) : LengthAwarePaginator
     {
         $query = self::with(['broker', 'salesDetails', 'salesPayments'])
             ->whereIn('status', SalesStatusConstant::getAllActiveStatuses());
@@ -264,5 +264,46 @@ class Sales extends Model
         }
 
         return $query->count();
+    }
+
+    /**
+     * Get daily sales data for the last 7 days including today
+     *
+     * @param int|null $brokerId
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getDailySalesLast7Days(?int $brokerId): \Illuminate\Support\Collection
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', '>=', Carbon::now()->subDays(6))
+            ->whereDate('sales_date', '<=', Carbon::now());
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        $dailySales = $query->selectRaw('DATE(sales_date) as date, SUM(paid_amount) as total_sales')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Create array for last 7 days with default values
+        $last7Days = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->format('Y-m-d');
+            $dayName = Carbon::now()->subDays($i)->format('D');
+
+            $salesData = $dailySales->where('date', $date)->first();
+            $totalSales = $salesData ? (float) $salesData->total_sales : 0;
+
+            $last7Days[] = [
+                'date' => $date,
+                'day' => $dayName,
+                'sales' => $totalSales
+            ];
+        }
+
+        return collect($last7Days);
     }
 }

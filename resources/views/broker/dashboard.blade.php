@@ -123,22 +123,37 @@
                     <!-- My Sales Performance -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">My Sales Performance</h3>
-                        <div class="h-64 bg-gradient-to-br from-green-50 to-teal-100 rounded-lg flex items-center justify-center">
-                            <div class="text-center">
-                                <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                                </svg>
-                                <p class="text-gray-600 font-medium">Performance Chart</p>
-                                <p class="text-gray-500 text-sm">Weekly sales comparison</p>
-                            </div>
+                        <div class="h-64 flex items-end justify-between space-x-2">
+                            @php
+                                $maxSales = $dailySalesData->max('sales');
+                                $thisWeekTotal = $dailySalesData->sum('sales');
+                                $lastWeekTotal = 0; // You can implement this if you have historical data
+                                $growthPercent = $lastWeekTotal > 0 ? (($thisWeekTotal - $lastWeekTotal) / $lastWeekTotal) * 100 : 0;
+                            @endphp
+                            @foreach($dailySalesData as $dayData)
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-full bg-green-200 rounded-t relative"
+                                         style="height: {{ $maxSales > 0 ? ($dayData['sales'] / $maxSales) * 240 : 0 }}px">
+                                        <div class="w-full bg-green-600 rounded-t absolute bottom-0"
+                                             style="height: {{ $maxSales > 0 ? ($dayData['sales'] / $maxSales) * 240 : 0 }}px">
+                                        </div>
+                                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">
+                                            ₱{{ number_format($dayData['sales'], 0) }}
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-500 mt-2">{{ $dayData['day'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                         <div class="mt-4 grid grid-cols-2 gap-4">
                             <div class="text-center">
-                                <p class="text-2xl font-bold text-gray-900">$1,456</p>
+                                <p class="text-2xl font-bold text-gray-900">₱{{ number_format($thisWeekTotal, 0) }}</p>
                                 <p class="text-sm text-gray-500">This Week</p>
                             </div>
                             <div class="text-center">
-                                <p class="text-2xl font-bold text-green-600">+8.3%</p>
+                                <p class="text-2xl font-bold {{ $growthPercent >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    {{ $growthPercent >= 0 ? '+' : '' }}{{ number_format($growthPercent, 1) }}%
+                                </p>
                                 <p class="text-sm text-gray-500">Growth</p>
                             </div>
                         </div>

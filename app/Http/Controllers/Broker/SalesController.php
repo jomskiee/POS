@@ -47,11 +47,12 @@ class SalesController extends Controller
 
 
         $recentSales = Sales::getRecentSales(4, $brokerId);
+        $dailySalesData = Sales::getDailySalesLast7Days($brokerId);
 
         Log::info($recentSales);
 
 
-        return compact('ordersToday', 'salesToday', 'salesBalance', 'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes');
+        return compact('ordersToday', 'salesToday', 'salesBalance', 'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes', 'dailySalesData');
     }
 
     /**
