@@ -21,19 +21,6 @@
     <!-- Compiled CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
-    <!-- Tailwind CSS CDN for development -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
-                    }
-                }
-            }
-        }
-    </script>
 
     <!-- Alpine.js for interactive components -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
