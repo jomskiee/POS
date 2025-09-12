@@ -25,6 +25,8 @@ class FishBox extends Model
         'qr_code' => 'string',
     ];
 
+    protected $appends = ['buyer_contacts', 'buyer_names'];
+
     // ============== RELATIONS ============== //
     /**
      * Get the fish type that owns the fish box.
@@ -48,6 +50,33 @@ class FishBox extends Model
     public function inventoryLogs()
     {
         return $this->hasMany(InventoryLog::class);
+    }
+
+    /**
+     * Get the sales details for this fish box.
+     */
+    public function salesDetails()
+    {
+        return $this->hasMany(SalesDetails::class, 'box_id');
+    }
+
+    /**
+     * Get the sales that include this fish box.
+     */
+    public function sales()
+    {
+        return $this->belongsToMany(Sales::class, 'sales_details', 'box_id', 'sales_id')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the latest sale for this fish box.
+     */
+    public function latestSale()
+    {
+        return $this->belongsToMany(Sales::class, 'sales_details', 'box_id', 'sales_id')
+                    ->withTimestamps()
+                    ->latest('sales.created_at');
     }
 
     // ============== DATABASE OPERATIONS ============== //
@@ -92,7 +121,7 @@ class FishBox extends Model
      */
     public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12, ?int $brokerId = null): LengthAwarePaginator
     {
-        $query = static::with('fishType');
+        $query = static::with(['fishType', 'currentBroker', 'latestSale', 'salesDetails']);
 
         // Apply search filter
         if ($search) {
@@ -215,5 +244,27 @@ class FishBox extends Model
         }
 
         return $query->count();
+    }
+
+    /**
+     * Get buyer contact for the latest sale of this fish box
+     *
+     * @return string|null
+     */
+    public function getBuyerContactsAttribute()
+    {
+        $latestSale = $this->latestSale->first();
+        return $latestSale ? $latestSale->buyer_contact : null;
+    }
+
+    /**
+     * Get buyer name for the latest sale of this fish box
+     *
+     * @return string|null
+     */
+    public function getBuyerNamesAttribute()
+    {
+        $latestSale = $this->latestSale->first();
+        return $latestSale ? $latestSale->buyer_name : null;
     }
 }

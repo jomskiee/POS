@@ -3,7 +3,7 @@
 @section('content')
 @php
     $breadcrumbs = [
-        ['title' => 'Sales Management']
+        ['title' => 'Fish Boxes Management']
     ];
 @endphp
 
@@ -23,7 +23,7 @@
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Fish Boxes</h1>
+                            <h1 class="text-3xl font-bold text-gray-900">Fish Boxes Management</h1>
                             <p class="text-gray-600 mt-2">Track your fish boxes</p>
                         </div>
                         <div class="flex space-x-3">
@@ -119,7 +119,8 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QR Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer Contact</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Type</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
@@ -132,15 +133,11 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ $fishBox->name }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <code class="text-xs bg-gray-100 px-2 py-1 rounded font-mono">{{ Str::limit($fishBox->qr_code, 20) }}</code>
-                                                <button onclick="copyToClipboard('{{ $fishBox->qr_code }}')"
-                                                        class="ml-2 text-gray-400 hover:text-gray-600 transition-colors"
-                                                        title="Copy QR Code">
-                                                    <x-heroicon-o-clipboard class="w-4 h-4" />
-                                                </button>
-                                            </div>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ $fishBox->buyer_names }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ $fishBox->buyer_contacts }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $fishBox->fishType->name }}

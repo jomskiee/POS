@@ -43,11 +43,11 @@
 
             <!-- Quick Actions -->
             <div class="hidden md:flex items-center space-x-2">
-                <button class="bg-gray-50 text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                <div class="bg-gray-50 text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                     <p class="flex items-center space-x-1 text-red-700 font-normal">
                         <span class="text-s">Balance : ₱ {{ \App\Models\Broker::getBrokerBalanceByUserId(auth()->user()->id) }}</span>
                     </p>
-                </button>
+                </div>
             </div>
 
             <!-- Notifications -->

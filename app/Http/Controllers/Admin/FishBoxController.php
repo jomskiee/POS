@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FishBoxController extends Controller
 {
@@ -113,11 +114,13 @@ class FishBoxController extends Controller
 
         // If no broker found, return empty pagination
         if (!$brokerId) {
-            $fishBoxes = FishBox::where('id', 0)->paginate(12);
+            $fishBoxes = FishBox::where('id', operator: 0)->paginate(12);
             return compact('fishBoxes');
         }
 
         $fishBoxes = FishBox::getPaginatedWithFilters($search, $status, $fishType, 12, $brokerId);
+
+        Log::info($fishBoxes);
 
         return compact('fishBoxes');
     }
