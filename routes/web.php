@@ -87,6 +87,11 @@ Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/analytics', [App\Http\Controllers\SalesManagementController::class, 'brokerIndex'])->name('broker.sales.index');
     Route::get('/broker/sales', [App\Http\Controllers\SalesManagementController::class, 'sales'])->name('broker.sales.sales');
 
+    // Fish Box Management routes for brokers
+    Route::controller(\App\Http\Controllers\Admin\FishBoxController::class)->prefix('broker')->name('broker.')->group(function () {
+        Route::post('/fish-boxes/update-status', 'updateStatus')->name('fish-boxes.update-status');
+    });
+
     //
     Route::controller(SalesController::class)->prefix('broker')->name('broker.')->group(function () {
         Route::post('/sales', 'store')->name('sales.store');

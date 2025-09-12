@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Zxing\QrReader;
 
 class FishBoxController extends Controller
 {
@@ -123,5 +124,83 @@ class FishBoxController extends Controller
         Log::info($fishBoxes);
 
         return compact('fishBoxes');
+    }
+
+    /**
+     * Update fish box status by scanning/uploading QR code
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function updateStatus(Request $request): RedirectResponse
+    {
+        // Validate the request - handle both text input and file upload
+        if ($request->hasFile('qr_code')) {
+            // File upload validation
+            $request->validate([
+                'qr_code' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            try {
+                // Store the uploaded QR code image
+                $path = $request->file('qr_code')->store('qr_codes', 'public');
+                $imagePath = storage_path('app/public/' . $path);
+
+                // Read QR code from the uploaded image
+                $qrCodeReader = new QrReader($imagePath);
+                $qrCodeValue = $qrCodeReader->text();
+
+                if (empty($qrCodeValue)) {
+                    // Clean up the uploaded file
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+                    return back()->withErrors(['qr_code' => 'No QR code found in the uploaded image. Please try a different image.']);
+                }
+
+                // Clean up the uploaded file after processing
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+
+            } catch (\Exception $e) {
+                Log::error('QR Code image processing error: ' . $e->getMessage());
+                return back()->withErrors(['qr_code' => 'Error processing QR code image. Please try again.']);
+            }
+        } else {
+            // Text input validation
+            $request->validate([
+                'qr_code' => 'required|string|max:255',
+            ]);
+
+            $qrCodeValue = $request->input('qr_code');
+        }
+
+        try {
+
+            $fishBox = FishBox::where('qr_code', $qrCodeValue)->first();
+
+            if (!$fishBox) {
+                return back()->withErrors(['qr_code' => 'Invalid QR code. Fish box not found.']);
+            }
+
+            // Check if the fish box belongs to the current broker
+            $userId = Auth::id();
+            $brokerId = \App\Models\Broker::getBrokerIdByUserId($userId);
+
+            if ($fishBox->current_broker_id !== $brokerId) {
+                return back()->withErrors(['qr_code' => 'This fish box is not assigned to you.']);
+            }
+
+            // Update the fish box status based on current status
+            $newStatus = FishBoxStatusConstant::RETURNED;
+            $fishBox->status = $newStatus;
+            $fishBox->save();
+
+            // Create inventory log for the status change
+            InventoryLog::createLogForFishBox($fishBox->id, $newStatus, Auth::id());
+
+            return back()->with('success', "Fish box '{$fishBox->name}' status updated to '{$newStatus}' successfully.");
+
+        } catch (\Exception $e) {
+            Log::error('QR Code processing error: ' . $e->getMessage());
+            return back()->withErrors(['qr_code' => 'Error processing QR code. Please try again.']);
+        }
     }
 }
