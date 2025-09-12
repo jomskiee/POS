@@ -36,9 +36,6 @@ class SalesRequest extends FormRequest
             'sales_details.*.item_description' => 'nullable|string',
         ];
 
-        if ($isUpdate) {
-            $rules['sales_id'] = 'required|exists:sales,id';
-        }
 
         return $rules;
     }

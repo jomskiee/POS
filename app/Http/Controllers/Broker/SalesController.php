@@ -44,13 +44,8 @@ class SalesController extends Controller
 
         $paidAmountGrowthPercent = round($growthPercent, 2) . '%';
 
-
-
         $recentSales = Sales::getRecentSales(4, $brokerId);
         $dailySalesData = Sales::getDailySalesLast7Days($brokerId);
-
-        Log::info($recentSales);
-
 
         return compact('ordersToday', 'salesToday', 'salesBalance', 'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes', 'dailySalesData');
     }
@@ -77,12 +72,39 @@ class SalesController extends Controller
 
         // Check if we're in edit mode
         if ($request->get('modal') === 'edit' && $request->has('edit')) {
-            $editingSales = Sales::with(['salesDetails', 'salesPayments'])->find($request->get('edit'));
+            $editingSales = Sales::with(['salesDetails.fishBox.fishType', 'salesPayments'])->find($request->get('edit'));
+
+            // Check if the sales record exists and belongs to the current broker
+            if ($editingSales) {
+                $userId = Auth::id();
+                $brokerId = Broker::getBrokerIdByUserId($userId);
+
+                if ($editingSales->broker_id !== $brokerId) {
+                    $editingSales = null; // Reset to null if not authorized
+                }
+            }
+
+            // For editing, include the fish boxes that are already selected in the sales details
+            if ($editingSales && $editingSales->salesDetails->count() > 0) {
+                $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->toArray();
+                $selectedFishBoxes = FishBox::with('fishType')->whereIn('id', $selectedBoxIds)->get();
+                $fishBoxes = $fishBoxes->merge($selectedFishBoxes)->unique('id');
+            }
         }
 
         // Check if we're in show mode
         if ($request->get('modal') === 'show' && $request->has('show')) {
             $viewingSales = Sales::with(['salesDetails.fishBox.fishType', 'salesPayments'])->find($request->get('show'));
+
+            // Check if the sales record exists and belongs to the current broker
+            if ($viewingSales) {
+                $userId = Auth::id();
+                $brokerId = Broker::getBrokerIdByUserId($userId);
+
+                if ($viewingSales->broker_id !== $brokerId) {
+                    $viewingSales = null; // Reset to null if not authorized
+                }
+            }
         }
 
         return compact('sales', 'fishBoxes', 'editingSales', 'viewingSales');
@@ -165,6 +187,16 @@ class SalesController extends Controller
                 'details' => $validated['details'] ?? null,
             ]);
 
+            // Get old sales details before deleting
+            $oldSalesDetails = $sale->salesDetails;
+            $userId = Auth::user()->id;
+
+            // Reset fish boxes back to IN_STOCK status for old sales details
+            foreach ($oldSalesDetails as $detail) {
+                FishBox::updateBrokerAndStatus($detail->box_id, null, FishBoxStatusConstant::IN_STOCK, $userId);
+                InventoryLog::deleteLogForFishBox($detail->box_id, $userId, $sale->created_at);
+            }
+
             // Update sales details - delete existing and create new ones
             $sale->salesDetails()->delete();
 
@@ -177,6 +209,8 @@ class SalesController extends Controller
                         'item' => $detail['item'],
                         'item_description' => $detail['item_description'] ?? null
                     ]);
+
+                    FishBox::updateBrokerAndStatus($detail['box_id'], $brokerId, FishBoxStatusConstant::SOLD, $userId);
                 }
             }
 

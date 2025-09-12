@@ -145,7 +145,15 @@ class Sales extends Model
             $query->whereDate('sales_date', '<=', $dateTo);
         }
 
-        return $query->orderBy('created_at', 'desc')->paginate(15);
+
+        $sales = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        // Add formatted items to each sale
+        $sales->getCollection()->each(function ($sale) {
+            $sale->formatted_items = $sale->getFormattedItems();
+        });
+
+        return $sales;
     }
 
     /**

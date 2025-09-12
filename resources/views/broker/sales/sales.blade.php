@@ -125,6 +125,7 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid Amount</th>
@@ -137,6 +138,9 @@
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $sale->sales_date->format('M d, Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $sale->formatted_items }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div>
@@ -162,6 +166,7 @@
                                                    title="View Sale">
                                                     <x-heroicon-o-eye class="w-5 h-5" />
                                                 </a>
+                                                @if($sale->status !== \App\Constants\SalesStatusConstant::PAID)
                                                 <a href="{{ route('broker.sales.sales', ['modal' => 'edit', 'edit' => $sale->id]) }}"
                                                    class="text-blue-600 hover:text-blue-900 transition-colors"
                                                    title="Edit Sale">
@@ -172,6 +177,7 @@
                                                    title="Add Payment">
                                                     <x-heroicon-o-currency-dollar class="w-5 h-5" />
                                                 </a>
+                                                @endif
                                                 <form action="{{ route('broker.sales.destroy', $sale->id) }}" method="POST" class="inline-block" data-swal="delete">
                                                     @csrf
                                                     @method('DELETE')
@@ -227,7 +233,7 @@
             <!-- Modal Header -->
             <div class="bg-white px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900">Create New Sale</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Create Sale</h3>
                     <a href="{{ route('broker.sales.sales') }}"
                         class="text-gray-400 hover:text-gray-600 transition-colors">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
@@ -321,14 +327,14 @@
                                 <div class="flex items-end space-x-4 p-4 border border-gray-200 rounded-lg">
                                     <div class="flex-1">
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Fish Box</label>
-                                        <select :name="`sales_details[${index}][box_id]`"
+                                            <select :name="`sales_details[${index}][box_id]`"
                                                 x-model="detail.box_id"
-                                                @change="updateSelectedBoxes(); updateItemFromFishBox(index)"
+                                                @change="updateItemFromFishBox(index)"
                                                 required
                                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                             <option value="">Select Fish Box</option>
                                             <template x-for="fishBox in getAvailableFishBoxes(index)" :key="fishBox.id">
-                                                <option :value="fishBox.id" x-text="fishBox.name + ' (' + fishBox.fish_type.name + ')'"></option>
+                                                <option :value="String(fishBox.id)" x-text="fishBox.name + ' (' + fishBox.fish_type.name + ')'"></option>
                                             </template>
                                         </select>
                                     </div>
@@ -374,7 +380,8 @@
 @endif
 
 <!-- Edit Sale Modal -->
-@if(request('modal') === 'edit' && $editingSales)
+@if(request('modal') === 'edit')
+    @if($editingSales)
 <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
@@ -394,7 +401,7 @@
 
             <!-- Modal Body -->
             <div class="bg-white px-6 py-6">
-                <form action="{{ route('broker.sales.update', $editingSales->id) }}" method="POST" class="space-y-6" x-data="editSaleForm()" x-init="initializeEditForm()">
+                <form action="{{ route('broker.sales.update', $editingSales->id) }}" method="POST" class="space-y-6" x-data="editSaleForm()" x-init="initializeEditForm()" @submit="updateFormValues()">
                     @csrf
                     @method('PUT')
 
@@ -405,7 +412,7 @@
                                 Sales Date <span class="text-red-500">*</span>
                             </label>
                             <input type="date" id="sales_date" name="sales_date" required
-                                   value="{{ old('sales_date', $editingSales->sales_date->format('Y-m-d')) }}"
+                                   x-model="salesDate"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                             @error('sales_date')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -418,7 +425,7 @@
                             </label>
                             <input type="number" id="total_amount" name="total_amount" required
                                    step="0.01" min="0"
-                                   value="{{ old('total_amount', $editingSales->total_amount) }}"
+                                   x-model="totalAmount"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="0.00">
                             @error('total_amount')
@@ -434,7 +441,7 @@
                                 Buyer Name <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="buyer_name" name="buyer_name" required
-                                   value="{{ old('buyer_name', $editingSales->buyer_name) }}"
+                                   x-model="buyerName"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="Enter buyer name">
                             @error('buyer_name')
@@ -447,7 +454,7 @@
                                 Buyer Contact <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="buyer_contact" name="buyer_contact" required
-                                   value="{{ old('buyer_contact', $editingSales->buyer_contact) }}"
+                                   x-model="buyerContact"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="Enter buyer contact">
                             @error('buyer_contact')
@@ -462,8 +469,9 @@
                             Remarks
                         </label>
                         <textarea id="remarks" name="remarks" rows="3"
+                                  x-model="remarks"
                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                  placeholder="Enter any additional remarks">{{ old('remarks', $editingSales->remarks) }}</textarea>
+                                  placeholder="Enter any additional remarks"></textarea>
                         @error('remarks')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -479,14 +487,14 @@
                                 <div class="flex items-end space-x-4 p-4 border border-gray-200 rounded-lg">
                                     <div class="flex-1">
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Fish Box</label>
-                                        <select :name="`sales_details[${index}][box_id]`"
+                                            <select :name="`sales_details[${index}][box_id]`"
                                                 x-model="detail.box_id"
-                                                @change="updateSelectedBoxes(); updateItemFromFishBox(index)"
+                                                @change="updateItemFromFishBox(index)"
                                                 required
                                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                             <option value="">Select Fish Box</option>
                                             <template x-for="fishBox in getAvailableFishBoxes(index)" :key="fishBox.id">
-                                                <option :value="fishBox.id" x-text="fishBox.name + ' (' + fishBox.fish_type.name + ')'"></option>
+                                                <option :value="String(fishBox.id)" x-text="fishBox.name + ' (' + fishBox.fish_type.name + ')'"></option>
                                             </template>
                                         </select>
                                     </div>
@@ -532,6 +540,32 @@
         </div>
     </div>
 </div>
+    @else
+    <!-- Sales record not found -->
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-6 py-6">
+                    <div class="text-center">
+                        <div class="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4">
+                            <x-heroicon-o-exclamation-triangle class="w-8 h-8 text-red-600" />
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Sale Not Found</h3>
+                        <p class="text-gray-500 mb-6">The sale you're trying to edit could not be found or you don't have permission to access it.</p>
+                        <a href="{{ route('broker.sales.sales') }}"
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                            <x-heroicon-o-arrow-left class="w-4 h-4 mr-2" />
+                            Back to Sales
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 @endif
 
 <!-- Add Payment Modal -->
@@ -984,11 +1018,9 @@ function saleForm() {
             { box_id: '', item: '', item_description: '' }
         ],
         fishBoxes: @json($fishBoxes ?? []),
-        selectedBoxes: new Set(),
 
         initializeForm() {
-            // Initialize selected boxes set
-            this.updateSelectedBoxes();
+            // Initialize form
         },
 
         addSalesDetail() {
@@ -997,27 +1029,10 @@ function saleForm() {
 
         removeSalesDetail(index) {
             if (this.salesDetails.length > 1) {
-                // Remove the box_id from selected boxes before removing the detail
-                const boxId = this.salesDetails[index].box_id;
-                if (boxId) {
-                    this.selectedBoxes.delete(boxId);
-                }
                 this.salesDetails.splice(index, 1);
-                this.updateSelectedBoxes();
             }
         },
 
-        updateSelectedBoxes() {
-            // Clear the set
-            this.selectedBoxes.clear();
-
-            // Add all currently selected box IDs
-            this.salesDetails.forEach(detail => {
-                if (detail.box_id) {
-                    this.selectedBoxes.add(detail.box_id);
-                }
-            });
-        },
 
         updateItemFromFishBox(index) {
             const selectedBoxId = this.salesDetails[index].box_id;
@@ -1038,27 +1053,68 @@ function saleForm() {
             // Get the currently selected box for this index
             const currentBoxId = this.salesDetails[currentIndex].box_id;
 
-            return this.fishBoxes.filter(fishBox => {
+            // Get all currently selected box IDs (excluding the current one)
+            const otherSelectedBoxIds = this.salesDetails
+                .map((detail, index) => index !== currentIndex ? String(detail.box_id) : null)
+                .filter(boxId => boxId && boxId !== '');
+
+
+            const availableBoxes = this.fishBoxes.filter(fishBox => {
                 // Always include the currently selected box for this index
-                if (fishBox.id == currentBoxId) {
+                if (String(fishBox.id) === String(currentBoxId)) {
                     return true;
                 }
                 // Exclude boxes that are selected in other details
-                return !this.selectedBoxes.has(fishBox.id);
+                const isExcluded = otherSelectedBoxIds.includes(String(fishBox.id));
+                return !isExcluded;
             });
+
+            return availableBoxes;
         }
     }
 }
 
 function editSaleForm() {
     return {
-        salesDetails: @json($editingSales->salesDetails ?? []),
+        salesDate: '{{ $editingSales ? $editingSales->sales_date->format('Y-m-d') : '' }}',
+        totalAmount: {{ $editingSales ? $editingSales->total_amount : 0 }},
+        buyerName: '{{ $editingSales ? $editingSales->buyer_name : '' }}',
+        buyerContact: '{{ $editingSales ? $editingSales->buyer_contact : '' }}',
+        remarks: '{{ $editingSales ? ($editingSales->remarks ?? '') : '' }}',
+        salesDetails: @json($editingSales ? $editingSales->salesDetails->map(function($detail) {
+            return [
+                'box_id' => (string)$detail->box_id,
+                'item' => $detail->item,
+                'item_description' => $detail->item_description ?? ''
+            ];
+        }) : []),
         fishBoxes: @json($fishBoxes ?? []),
-        selectedBoxes: new Set(),
 
         initializeEditForm() {
-            // Initialize selected boxes set
-            this.updateSelectedBoxes();
+            // Force Alpine.js to re-evaluate the model binding
+            this.$nextTick(() => {
+                this.salesDetails.forEach((detail, index) => {
+                    // Update item names for existing details
+                    this.updateItemFromFishBox(index);
+                });
+
+                // Try to manually set the select values
+                this.salesDetails.forEach((detail, index) => {
+                    const selectElement = document.querySelector(`select[name="sales_details[${index}][box_id]"]`);
+                    if (selectElement && detail.box_id) {
+                        selectElement.value = detail.box_id;
+                    }
+                });
+            });
+        },
+
+        updateFormValues() {
+            // Update form field values with Alpine.js data before submission
+            document.querySelector('input[name="sales_date"]').value = this.salesDate;
+            document.querySelector('input[name="total_amount"]').value = this.totalAmount;
+            document.querySelector('input[name="buyer_name"]').value = this.buyerName;
+            document.querySelector('input[name="buyer_contact"]').value = this.buyerContact;
+            document.querySelector('textarea[name="remarks"]').value = this.remarks;
         },
 
         addSalesDetail() {
@@ -1067,27 +1123,10 @@ function editSaleForm() {
 
         removeSalesDetail(index) {
             if (this.salesDetails.length > 1) {
-                // Remove the box_id from selected boxes before removing the detail
-                const boxId = this.salesDetails[index].box_id;
-                if (boxId) {
-                    this.selectedBoxes.delete(boxId);
-                }
                 this.salesDetails.splice(index, 1);
-                this.updateSelectedBoxes();
             }
         },
 
-        updateSelectedBoxes() {
-            // Clear the set
-            this.selectedBoxes.clear();
-
-            // Add all currently selected box IDs
-            this.salesDetails.forEach(detail => {
-                if (detail.box_id) {
-                    this.selectedBoxes.add(detail.box_id);
-                }
-            });
-        },
 
         updateItemFromFishBox(index) {
             const selectedBoxId = this.salesDetails[index].box_id;
@@ -1108,14 +1147,23 @@ function editSaleForm() {
             // Get the currently selected box for this index
             const currentBoxId = this.salesDetails[currentIndex].box_id;
 
-            return this.fishBoxes.filter(fishBox => {
+            // Get all currently selected box IDs (excluding the current one)
+            const otherSelectedBoxIds = this.salesDetails
+                .map((detail, index) => index !== currentIndex ? String(detail.box_id) : null)
+                .filter(boxId => boxId && boxId !== '');
+
+
+            const availableBoxes = this.fishBoxes.filter(fishBox => {
                 // Always include the currently selected box for this index
-                if (fishBox.id == currentBoxId) {
+                if (String(fishBox.id) === String(currentBoxId)) {
                     return true;
                 }
                 // Exclude boxes that are selected in other details
-                return !this.selectedBoxes.has(fishBox.id);
+                const isExcluded = otherSelectedBoxIds.includes(String(fishBox.id));
+                return !isExcluded;
             });
+
+            return availableBoxes;
         }
     }
 }

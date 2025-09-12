@@ -92,7 +92,6 @@ Route::middleware(['auth', 'broker'])->group(function () {
         Route::post('/sales', 'store')->name('sales.store');
         Route::put('/sales/{id}', 'update')->name('sales.update');
         Route::delete('/sales/{id}', 'destroy')->name('sales.destroy');
-
         Route::post('/sales-payments', 'storePayment')->name('sales-payments.store');
         Route::delete('/sales-payments/{id}', 'destroyPayment')->name('sales-payments.destroy');
     });
