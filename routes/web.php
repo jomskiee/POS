@@ -90,6 +90,7 @@ Route::middleware(['auth', 'broker'])->group(function () {
     // Fish Box Management routes for brokers
     Route::controller(\App\Http\Controllers\Admin\FishBoxController::class)->prefix('broker')->name('broker.')->group(function () {
         Route::post('/fish-boxes/update-status', 'updateStatus')->name('fish-boxes.update-status');
+        Route::patch('/fish-boxes/{id}/mark-missing', 'markAsMissing')->name('fish-boxes.mark-missing');
     });
 
     //

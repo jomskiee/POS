@@ -33,7 +33,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 </svg>
-                                Scan with Camera
+                                Scan QR to Return
                             </button>
 
                             <!-- Upload QR Image Button -->
@@ -41,22 +41,15 @@
                                 <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                                 </svg>
-                                Upload QR Image
+                                Upload QR to Return
                             </button>
 
-                            <!-- Manual QR Code Input -->
-                            <button id="manualQRBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                </svg>
-                                Enter Manually
-                            </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Success/Error Messages -->
-                @if(session('success'))
+                <!-- @if(session('success'))
                     <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
                         {{ session('success') }}
                     </div>
@@ -70,7 +63,7 @@
                             @endforeach
                         </ul>
                     </div>
-                @endif
+                @endif -->
 
                 <!-- Fish Box Filters -->
                 <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
@@ -177,7 +170,7 @@
                                             {{ $fishBox->fishType->name }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $fishBox->status === 'In Stock' ? 'bg-green-100 text-green-800' : ($fishBox->status === 'Sold' ? 'bg-blue-100 text-blue-800' : ($fishBox->status === 'Returned' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')) }}">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $fishBox->status === 'In Stock' ? 'bg-green-100 text-green-800' : ($fishBox->status === 'Sold' ? 'bg-blue-100 text-blue-800' : ($fishBox->status === 'Returned' ? 'bg-yellow-100 text-yellow-800' : ($fishBox->status === 'Missing' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))) }}">
                                                 {{ $fishBox->status }}
                                             </span>
                                         </td>
@@ -186,18 +179,13 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center space-x-2">
-                                                <button onclick="showQRCode('{{ $fishBox->qr_code }}', '{{ $fishBox->name }}')"
-                                                        class="text-blue-600 hover:text-blue-900 transition-colors"
-                                                        title="View QR Code">
-                                                    <x-heroicon-o-qr-code class="w-5 h-5" />
-                                                </button>
-                                                @if($fishBox->status === 'In Stock')
                                                 <button data-fish-box-id="{{ $fishBox->id }}"
-                                                        class="mark-as-sold-btn text-green-600 hover:text-green-900 transition-colors"
-                                                        title="Mark as Sold">
-                                                    <x-heroicon-o-check-circle class="w-5 h-5" />
+                                                        class="mark-as-missing-btn text-red-600 hover:text-red-900 transition-colors"
+                                                        title="Mark as Missing">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                                    </svg>
                                                 </button>
-                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -311,35 +299,38 @@
     </div>
 </div>
 
-<!-- Manual QR Input Modal -->
-<div id="manualQRModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+
+<!-- Missing Confirmation Modal -->
+<div id="missingConfirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Enter QR Code</h3>
-                <button id="closeManualQRModal" class="text-gray-400 hover:text-gray-600">
+                <h3 class="text-lg font-medium text-gray-900">Confirm Action</h3>
+                <button id="closeMissingConfirmModal" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
-            <form id="manualQRForm" action="{{ route('broker.fish-boxes.update-status') }}" method="POST">
-                @csrf
-                <div class="mb-4">
-                    <label for="manual_qr_code" class="block text-sm font-medium text-gray-700 mb-2">QR Code</label>
-                    <input type="text" name="qr_code" id="manual_qr_code"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                           placeholder="Enter QR code manually" required>
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
                 </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" id="cancelManualQR" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                        Cancel
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Mark Fish Box as Missing</h3>
+                <p class="text-sm text-gray-500 mb-6">
+                    Are you sure you want to mark this fish box as missing? This action cannot be undone.
+                </p>
+                <div class="flex justify-center space-x-3">
+                    <button id="cancelMissingConfirm" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                        No, Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                        Update Status
+                    <button id="confirmMissing" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        Yes, Mark as Missing
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -381,10 +372,6 @@ function openUploadQR() {
     document.getElementById('uploadQRModal').classList.remove('hidden');
 }
 
-// Open Manual QR Input Modal
-function openManualQRInput() {
-    document.getElementById('manualQRModal').classList.remove('hidden');
-}
 
 // Start QR Scanner
 function startQRScanner() {
@@ -493,13 +480,20 @@ document.getElementById('closeQrModal').addEventListener('click', function() {
     document.getElementById('qrModal').classList.add('hidden');
 });
 
-// Mark fish box as sold
-function markAsSold(fishBoxId) {
-    if (confirm('Are you sure you want to mark this fish box as sold?')) {
+// Mark fish box as missing
+let currentFishBoxId = null;
+
+function markAsMissing(fishBoxId) {
+    currentFishBoxId = fishBoxId;
+    document.getElementById('missingConfirmModal').classList.remove('hidden');
+}
+
+function confirmMarkAsMissing() {
+    if (currentFishBoxId) {
         // Create a form to submit the request
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/broker/fish-boxes/${fishBoxId}/mark-sold`;
+        form.action = `/broker/fish-boxes/${currentFishBoxId}/mark-missing`;
 
         // Add CSRF token
         const csrfToken = document.createElement('input');
@@ -520,11 +514,11 @@ function markAsSold(fishBoxId) {
     }
 }
 
-// Handle mark as sold button clicks
+// Handle mark as missing button clicks
 document.addEventListener('click', function(e) {
-    if (e.target.closest('.mark-as-sold-btn')) {
-        const fishBoxId = e.target.closest('.mark-as-sold-btn').getAttribute('data-fish-box-id');
-        markAsSold(fishBoxId);
+    if (e.target.closest('.mark-as-missing-btn')) {
+        const fishBoxId = e.target.closest('.mark-as-missing-btn').getAttribute('data-fish-box-id');
+        markAsMissing(fishBoxId);
     }
 });
 
@@ -558,14 +552,19 @@ document.getElementById('cancelUploadQR').addEventListener('click', function() {
     document.getElementById('uploadQRModal').classList.add('hidden');
 });
 
-// Manual QR Modal Event Listeners
-document.getElementById('closeManualQRModal').addEventListener('click', function() {
-    document.getElementById('manualQRModal').classList.add('hidden');
+// Missing Confirmation Modal Event Listeners
+document.getElementById('closeMissingConfirmModal').addEventListener('click', function() {
+    document.getElementById('missingConfirmModal').classList.add('hidden');
 });
 
-document.getElementById('cancelManualQR').addEventListener('click', function() {
-    document.getElementById('manualQRModal').classList.add('hidden');
+document.getElementById('cancelMissingConfirm').addEventListener('click', function() {
+    document.getElementById('missingConfirmModal').classList.add('hidden');
 });
+
+document.getElementById('confirmMissing').addEventListener('click', function() {
+    confirmMarkAsMissing();
+});
+
 
 // Close modals when clicking outside
 document.getElementById('qrScannerModal').addEventListener('click', function(e) {
@@ -581,11 +580,12 @@ document.getElementById('uploadQRModal').addEventListener('click', function(e) {
     }
 });
 
-document.getElementById('manualQRModal').addEventListener('click', function(e) {
+document.getElementById('missingConfirmModal').addEventListener('click', function(e) {
     if (e.target === this) {
         this.classList.add('hidden');
     }
 });
+
 
 // Add event listeners for the main buttons
 document.addEventListener('DOMContentLoaded', function() {
@@ -605,12 +605,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Manual QR Input Button
-    const manualQRBtn = document.getElementById('manualQRBtn');
-    if (manualQRBtn) {
-        manualQRBtn.addEventListener('click', function() {
-            openManualQRInput();
-        });
-    }
 });
 </script>

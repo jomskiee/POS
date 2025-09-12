@@ -164,12 +164,7 @@ class FishBoxController extends Controller
                 return back()->withErrors(['qr_code' => 'Error processing QR code image. Please try again.']);
             }
         } else {
-            // Text input validation
-            $request->validate([
-                'qr_code' => 'required|string|max:255',
-            ]);
-
-            $qrCodeValue = $request->input('qr_code');
+            return back()->withErrors(['qr_code' => 'Please upload a QR code image or use the camera scanner.']);
         }
 
         try {
@@ -201,6 +196,40 @@ class FishBoxController extends Controller
         } catch (\Exception $e) {
             Log::error('QR Code processing error: ' . $e->getMessage());
             return back()->withErrors(['qr_code' => 'Error processing QR code. Please try again.']);
+        }
+    }
+
+    /**
+     * Mark fish box as missing
+     *
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function markAsMissing($id): RedirectResponse
+    {
+        try {
+            $fishBox = FishBox::findOrFail($id);
+
+            // Check if the fish box belongs to the current broker
+            $userId = Auth::id();
+            $brokerId = \App\Models\Broker::getBrokerIdByUserId($userId);
+
+            if ($fishBox->current_broker_id !== $brokerId) {
+                return back()->withErrors(['error' => 'This fish box is not assigned to you.']);
+            }
+
+            // Update the fish box status to Missing
+            $fishBox->status = FishBoxStatusConstant::MISSING;
+            $fishBox->save();
+
+            // Create inventory log for the status change
+            InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::MISSING, Auth::id());
+
+            return back()->with('success', "Fish box '{$fishBox->name}' has been marked as missing.");
+
+        } catch (\Exception $e) {
+            Log::error('Mark as missing error: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Error marking fish box as missing. Please try again.']);
         }
     }
 }
