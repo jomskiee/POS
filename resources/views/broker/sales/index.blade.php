@@ -1,23 +1,12 @@
-@extends('layouts.app')
-
-@section('content')
 @php
     $breadcrumbs = [
         ['title' => 'Sales & Analytics']
     ];
 @endphp
 
-<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true }">
-    <!-- Broker Sidebar Component -->
-    @include('layouts.partials.broker-sidebar')
+@extends('layouts.broker')
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
-        <!-- Broker Navbar Component -->
-        @include('layouts.partials.broker-navbar')
-
-        <!-- Page Content -->
-        <main class="flex-1 overflow-auto p-6">
+@section('content')
             <div class="w-full">
                 <!-- Page Header -->
                 <div class="mb-8">
@@ -210,7 +199,4 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-</div>
 @endsection

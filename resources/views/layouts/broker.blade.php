@@ -12,7 +12,7 @@
     <meta name="flash-warning" content="{{ session('warning') }}">
     <meta name="flash-info" content="{{ session('info') }}">
 
-    <title>{{ config('app.name', 'POS System') }}</title>
+    <title>{{ config('app.name', 'POS System') }} - Broker</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -20,6 +20,7 @@
 
     <!-- Compiled CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
 
     <!-- Alpine.js for interactive components -->
@@ -29,6 +30,26 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
 <body class="bg-gray-50 font-sans">
-    @yield('content')
+    <div class="min-h-screen bg-gray-50" x-data="{ reportsOpen: false, sidebarOpen: true }" @toggle-sidebar.window="sidebarOpen = !sidebarOpen">
+        <!-- Sidebar Component -->
+        @include('layouts.partials.broker-sidebar')
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out md:ml-0 min-h-screen main-content" :class="sidebarOpen ? 'md:ml-64' : 'md:ml-16'">
+            <!-- Navbar Component -->
+            @include('layouts.partials.broker-navbar')
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-auto p-6 pb-24 md:pb-6">
+                @yield('content')
+            </main>
+
+            <!-- Desktop Footer -->
+            @include('layouts.partials.desktop-footer')
+        </div>
+
+        <!-- Mobile Footer Sidebar -->
+        @include('layouts.partials.broker-mobile-footer-sidebar')
+    </div>
 </body>
 </html>

@@ -1,23 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.broker')
 
 @section('content')
-@php
-    $breadcrumbs = [
-        ['title' => 'Sales Management']
-    ];
-@endphp
-
-<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true }">
-    <!-- Broker Sidebar Component -->
-    @include('layouts.partials.broker-sidebar')
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
-        <!-- Broker Navbar Component -->
-        @include('layouts.partials.broker-navbar')
-
-        <!-- Page Content -->
-        <main class="flex-1 overflow-auto p-6">
             <div class="w-full">
                 <!-- Page Header -->
                 <div class="mb-8">
@@ -218,9 +201,6 @@
                     </div>
                 @endif
             </div>
-        </main>
-    </div>
-</div>
 
 <!-- Create Sale Modal -->
 @if(request('modal') === 'create')

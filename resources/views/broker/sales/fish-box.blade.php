@@ -1,223 +1,186 @@
-@extends('layouts.app')
+@extends('layouts.broker')
 
 @section('content')
-@php
-    $breadcrumbs = [
-        ['title' => 'Fish Boxes Management']
-    ];
-@endphp
-
-<div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: true }">
-    <!-- Broker Sidebar Component -->
-    @include('layouts.partials.broker-sidebar')
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :style="sidebarOpen ? 'margin-left: 16rem;' : 'margin-left: 4rem;'">
-        <!-- Broker Navbar Component -->
-        @include('layouts.partials.broker-navbar')
-
-        <!-- Page Content -->
-        <main class="flex-1 overflow-auto p-6">
-            <div class="w-full">
-                <!-- Page Header -->
-                <div class="mb-8">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Fish Boxes Management</h1>
-                            <p class="text-gray-600 mt-2">Track your fish boxes</p>
-                        </div>
-                        <div class="flex space-x-3">
-                            <!-- Camera QR Scanner Button -->
-                            <button id="scanQRBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                                Scan QR to Return
-                            </button>
-
-                            <!-- Upload QR Image Button -->
-                            <button id="uploadQRBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                </svg>
-                                Upload QR to Return
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Success/Error Messages -->
-                <!-- @if(session('success'))
-                    <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if($errors->any())
-                    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                        <ul class="list-disc list-inside">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif -->
-
-                <!-- Fish Box Filters -->
-                <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
-                    <form method="GET" action="{{ route('broker.sales.fish-boxes') }}" x-data="{
-                        search: '{{ request('search') }}',
-                        status: '{{ request('status') }}',
-                        fishType: '{{ request('fish_type') }}'
-                    }">
-                        <div class="grid grid-cols-12 gap-4 items-end">
-                            <!-- Search Field -->
-                            <div class="col-span-12 md:col-span-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                                <div class="relative">
-                                    <input type="text"
-                                        name="search"
-                                        x-model="search"
-                                        placeholder="Search fish box name, QR code, or fish type..."
-                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <x-heroicon-o-magnifying-glass class="h-4 w-4 text-gray-400" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Status Filter -->
-                            <div class="col-span-6 md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">All Status</option>
-                                    @foreach(\App\Constants\FishBoxStatusConstant::getAllStatuses() as $status)
-                                        <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
-                                            {{ $status }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- Fish Type Filter -->
-                            <div class="col-span-6 md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Fish Type</label>
-                                <select name="fish_type" x-model="fishType" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">All Fish Types</option>
-                                    @foreach(\App\Models\FishType::all() as $fishType)
-                                        <option value="{{ $fishType->id }}" {{ request('fish_type') == $fishType->id ? 'selected' : '' }}>
-                                            {{ $fishType->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="col-span-12 md:col-span-4 flex justify-end space-x-2">
-                                <a href="{{ route('broker.sales.fish-boxes') }}"
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                                    Clear
-                                </a>
-                                <button type="submit"
-                                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
-                                    Apply
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Results Count -->
-                <div class="mb-4">
-                    <p class="text-sm text-gray-600">
-                        Showing {{ $fishBoxes->firstItem() ?? 0 }} to {{ $fishBoxes->lastItem() ?? 0 }} of {{ $fishBoxes->total() }} fish boxes
-                        @if(request()->hasAny(['search', 'status', 'fish_type']))
-                            <span class="text-blue-600">(filtered)</span>
-                        @endif
-                    </p>
-                </div>
-
-                <!-- Fish Boxes Table -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer Contact</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Type</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                @forelse($fishBoxes as $fishBox)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $fishBox->name }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $fishBox->buyer_names }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $fishBox->buyer_contacts }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $fishBox->fishType->name }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $fishBox->status === 'In Stock' ? 'bg-green-100 text-green-800' : ($fishBox->status === 'Sold' ? 'bg-blue-100 text-blue-800' : ($fishBox->status === 'Returned' ? 'bg-yellow-100 text-yellow-800' : ($fishBox->status === 'Missing' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))) }}">
-                                                {{ $fishBox->status }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $fishBox->created_at->format('M d, Y') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex items-center space-x-2">
-                                                <button data-fish-box-id="{{ $fishBox->id }}"
-                                                        class="mark-as-missing-btn text-red-600 hover:text-red-900 transition-colors"
-                                                        title="Mark as Missing">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="px-6 py-12 text-center">
-                                            <div class="flex flex-col items-center">
-                                                <x-heroicon-o-cube class="w-16 h-16 text-gray-400 mb-4" />
-                                                <h3 class="text-lg font-medium text-gray-900 mb-2">No fish boxes found</h3>
-                                                <p class="text-gray-500 mb-6">You don't have any fish boxes assigned to you yet.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Pagination -->
-                @if($fishBoxes->hasPages())
-                    <div class="mt-8">
-                        {{ $fishBoxes->appends(request()->query())->links('components.pagination') }}
-                    </div>
-                @endif
+<div class="w-full">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Fish Boxes Management</h1>
+                <p class="text-gray-600 mt-2">Track your fish boxes</p>
             </div>
-        </main>
+            <div class="flex space-x-3">
+                <!-- Camera QR Scanner Button -->
+                <button id="scanQRBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                    <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Scan QR to Return
+                </button>
+
+                <!-- Upload QR Image Button -->
+                <button id="uploadQRBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                    <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    Upload QR to Return
+                </button>
+
+            </div>
+        </div>
     </div>
+
+    <!-- Fish Box Filters -->
+    <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+        <form method="GET" action="{{ route('broker.sales.fish-boxes') }}" x-data="{
+            search: '{{ request('search') }}',
+            status: '{{ request('status') }}',
+            fishType: '{{ request('fish_type') }}'
+        }">
+            <div class="grid grid-cols-12 gap-4 items-end">
+                <!-- Search Field -->
+                <div class="col-span-12 md:col-span-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <div class="relative">
+                        <input type="text"
+                            name="search"
+                            x-model="search"
+                            placeholder="Search fish box name, QR code, or fish type..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <x-heroicon-o-magnifying-glass class="h-4 w-4 text-gray-400" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="col-span-6 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Status</option>
+                        @foreach(\App\Constants\FishBoxStatusConstant::getAllStatuses() as $status)
+                            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
+                                {{ $status }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Fish Type Filter -->
+                <div class="col-span-6 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fish Type</label>
+                    <select name="fish_type" x-model="fishType" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Fish Types</option>
+                        @foreach(\App\Models\FishType::all() as $fishType)
+                            <option value="{{ $fishType->id }}" {{ request('fish_type') == $fishType->id ? 'selected' : '' }}>
+                                {{ $fishType->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-span-12 md:col-span-4 flex justify-end space-x-2">
+                    <a href="{{ route('broker.sales.fish-boxes') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                        Clear
+                    </a>
+                    <button type="submit"
+                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                        Apply
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Count -->
+    <div class="mb-4">
+        <p class="text-sm text-gray-600">
+            Showing {{ $fishBoxes->firstItem() ?? 0 }} to {{ $fishBoxes->lastItem() ?? 0 }} of {{ $fishBoxes->total() }} fish boxes
+            @if(request()->hasAny(['search', 'status', 'fish_type']))
+                <span class="text-blue-600">(filtered)</span>
+            @endif
+        </p>
+    </div>
+
+    <!-- Fish Boxes Table -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer Contact</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @forelse($fishBoxes as $fishBox)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ $fishBox->name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ $fishBox->buyer_names }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ $fishBox->buyer_contacts }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $fishBox->fishType->name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $fishBox->status === 'In Stock' ? 'bg-green-100 text-green-800' : ($fishBox->status === 'Sold' ? 'bg-blue-100 text-blue-800' : ($fishBox->status === 'Returned' ? 'bg-yellow-100 text-yellow-800' : ($fishBox->status === 'Missing' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))) }}">
+                                    {{ $fishBox->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $fishBox->created_at->format('M d, Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex items-center space-x-2">
+                                    <button data-fish-box-id="{{ $fishBox->id }}"
+                                            class="mark-as-missing-btn text-red-600 hover:text-red-900 transition-colors"
+                                            title="Mark as Missing">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <x-heroicon-o-cube class="w-16 h-16 text-gray-400 mb-4" />
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">No fish boxes found</h3>
+                                    <p class="text-gray-500 mb-6">You don't have any fish boxes assigned to you yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if($fishBoxes->hasPages())
+        <div class="mt-8">
+            {{ $fishBoxes->appends(request()->query())->links('components.pagination') }}
+        </div>
+    @endif
 </div>
 
 <!-- QR Code Modal -->
-<div id="qrModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+<div id="qrModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[60]">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
@@ -238,7 +201,7 @@
 </div>
 
 <!-- QR Scanner Modal -->
-<div id="qrScannerModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+<div id="qrScannerModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[60]">
     <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
@@ -266,7 +229,7 @@
 </div>
 
 <!-- Upload QR Image Modal -->
-<div id="uploadQRModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+<div id="uploadQRModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[60]">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
@@ -301,7 +264,7 @@
 
 
 <!-- Missing Confirmation Modal -->
-<div id="missingConfirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+<div id="missingConfirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[60]">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
@@ -335,7 +298,8 @@
     </div>
 </div>
 
-<!-- Include HTML5 QR Code Scanner -->
+
+ <!-- Include HTML5 QR Code Scanner -->
 <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 
 <script>
@@ -607,3 +571,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+
+@endsection

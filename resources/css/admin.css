@@ -1,0 +1,20 @@
+/* Admin Sidebar Responsive Styles */
+@media (min-width: 768px) {
+    .main-content {
+        transition: margin-left 0.3s ease-in-out;
+    }
+}
+
+/* Icon margin based on sidebar state */
+.w-64 .sidebar-icon {
+    margin-right: 0.75rem !important;
+}
+
+.w-16 .sidebar-icon {
+    margin-right: 0 !important;
+}
+
+/* Ensure icons are centered when collapsed */
+.w-16 .group {
+    justify-content: center !important;
+}
