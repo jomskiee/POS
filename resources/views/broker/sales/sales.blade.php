@@ -4,17 +4,15 @@
             <div class="w-full">
                 <!-- Page Header -->
                 <div class="mb-8">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Sales Management</h1>
-                            <p class="text-gray-600 mt-2">Track your sales performance and analytics</p>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="flex-1">
+                            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Sales Management</h1>
+                            <p class="text-gray-600 mt-2 text-sm sm:text-base">Create, edit, and manage your sales transactions</p>
                         </div>
                         <div class="flex space-x-3">
                             <a href="{{ route('broker.sales.sales', ['modal' => 'create']) }}"
-                               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
+                               class="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center w-full sm:w-auto">
+                                <x-heroicon-o-plus class="w-4 h-4 mr-2" />
                                 New Sale
                             </a>
                         </div>
@@ -50,9 +48,9 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                                 <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">All Status</option>
-                                    @foreach(\App\Constants\SalesStatusConstant::getAllStatuses() as $status)
+                                    @foreach($salesStatusesWithDisplayNames as $status => $displayName)
                                         <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
-                                            {{ \App\Constants\SalesStatusConstant::getDisplayName($status) }}
+                                            {{ $displayName }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -138,8 +136,8 @@
                                             ₱{{ number_format($sale->paid_amount, 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ \App\Constants\SalesStatusConstant::getStatusColorClasses($sale->status) }}">
-                                                {{ \App\Constants\SalesStatusConstant::getDisplayName($sale->status) }}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $salesStatusesWithColorClasses[$sale->status] }}">
+                                                {{ $salesStatusesWithDisplayNames[$sale->status] }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -702,8 +700,8 @@
                                     <x-heroicon-o-flag class="w-4 h-4 mr-2" />
                                     Status
                                 </span>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ \App\Constants\SalesStatusConstant::getStatusColorClasses($viewingSales->status) }}">
-                                    {{ \App\Constants\SalesStatusConstant::getDisplayName($viewingSales->status) }}
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $salesStatusesWithColorClasses[$viewingSales->status] }}">
+                                    {{ $salesStatusesWithDisplayNames[$viewingSales->status] }}
                                 </span>
                             </div>
                         </div>

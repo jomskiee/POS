@@ -4,27 +4,16 @@
 <div class="w-full">
     <!-- Page Header -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Fish Boxes Management</h1>
-                <p class="text-gray-600 mt-2">Track your fish boxes</p>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex-1">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Fish Boxes</h1>
+                <p class="text-gray-600 mt-2 text-sm sm:text-base">Return and track your assigned fish boxes</p>
             </div>
             <div class="flex space-x-3">
                 <!-- Camera QR Scanner Button -->
-                <button id="scanQRBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                    <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
+                <button id="scanQRBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center w-full sm:w-auto">
+                    <x-heroicon-o-camera class="w-4 h-4 mr-2" />
                     Scan QR to Return
-                </button>
-
-                <!-- Upload QR Image Button -->
-                <button id="uploadQRBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                    <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                    </svg>
-                    Upload QR to Return
                 </button>
 
             </div>
@@ -148,9 +137,7 @@
                                     <button data-fish-box-id="{{ $fishBox->id }}"
                                             class="mark-as-missing-btn text-red-600 hover:text-red-900 transition-colors"
                                             title="Mark as Missing">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                        </svg>
+                                        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
                                     </button>
                                 </div>
                             </td>
@@ -207,9 +194,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium text-gray-900">Scan QR Code</h3>
                 <button id="closeQrScannerModal" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                    <x-heroicon-o-x-mark class="w-6 h-6" />
                 </button>
             </div>
             <div class="text-center">
@@ -228,41 +213,6 @@
     </div>
 </div>
 
-<!-- Upload QR Image Modal -->
-<div id="uploadQRModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[60]">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Upload QR Code Image</h3>
-                <button id="closeUploadQRModal" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            <form id="uploadQRForm" action="{{ route('broker.fish-boxes.update-status') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="mb-4">
-                    <label for="qr_image" class="block text-sm font-medium text-gray-700 mb-2">QR Code Image</label>
-                    <input type="file" name="qr_code" id="qr_image" accept="image/*"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                           required>
-                    <p class="text-xs text-gray-500 mt-1">Supported formats: JPG, PNG, GIF (Max: 2MB)</p>
-                </div>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" id="cancelUploadQR" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Process Image
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
 <!-- Missing Confirmation Modal -->
 <div id="missingConfirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[60]">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
@@ -270,16 +220,12 @@
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium text-gray-900">Confirm Action</h3>
                 <button id="closeMissingConfirmModal" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                    <x-heroicon-o-x-mark class="w-6 h-6" />
                 </button>
             </div>
             <div class="text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
+                    <x-heroicon-o-exclamation-triangle class="h-6 w-6 text-red-600" />
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Mark Fish Box as Missing</h3>
                 <p class="text-sm text-gray-500 mb-6">
@@ -329,11 +275,6 @@ function copyToClipboard(text) {
 function openQRScanner() {
     document.getElementById('qrScannerModal').classList.remove('hidden');
     startQRScanner();
-}
-
-// Open Upload QR Image Modal
-function openUploadQR() {
-    document.getElementById('uploadQRModal').classList.remove('hidden');
 }
 
 
@@ -507,14 +448,6 @@ document.getElementById('stopScanner').addEventListener('click', function() {
     stopQRScanner();
 });
 
-// Upload QR Modal Event Listeners
-document.getElementById('closeUploadQRModal').addEventListener('click', function() {
-    document.getElementById('uploadQRModal').classList.add('hidden');
-});
-
-document.getElementById('cancelUploadQR').addEventListener('click', function() {
-    document.getElementById('uploadQRModal').classList.add('hidden');
-});
 
 // Missing Confirmation Modal Event Listeners
 document.getElementById('closeMissingConfirmModal').addEventListener('click', function() {
@@ -537,13 +470,6 @@ document.getElementById('qrScannerModal').addEventListener('click', function(e) 
         this.classList.add('hidden');
     }
 });
-
-document.getElementById('uploadQRModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.classList.add('hidden');
-    }
-});
-
 document.getElementById('missingConfirmModal').addEventListener('click', function(e) {
     if (e.target === this) {
         this.classList.add('hidden');
@@ -561,13 +487,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Upload QR Image Button
-    const uploadQRBtn = document.getElementById('uploadQRBtn');
-    if (uploadQRBtn) {
-        uploadQRBtn.addEventListener('click', function() {
-            openUploadQR();
-        });
-    }
 
 });
 </script>

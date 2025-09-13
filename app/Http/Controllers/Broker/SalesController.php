@@ -70,6 +70,15 @@ class SalesController extends Controller
         $editingSales = null;
         $viewingSales = null;
 
+        $salesStatuses = SalesStatusConstant::getAllStatuses();
+        $salesStatusesWithDisplayNames = collect($salesStatuses)->mapWithKeys(function ($status) {
+            return [$status => SalesStatusConstant::getDisplayName($status)];
+        });
+        $salesStatusesWithColorClasses = collect($salesStatuses)->mapWithKeys(function ($status) {
+            return [$status => SalesStatusConstant::getStatusColorClasses($status)];
+        });
+
+
         // Check if we're in edit mode
         if ($request->get('modal') === 'edit' && $request->has('edit')) {
             $editingSales = Sales::with(['salesDetails.fishBox.fishType', 'salesPayments'])->find($request->get('edit'));
@@ -107,7 +116,11 @@ class SalesController extends Controller
             }
         }
 
-        return compact('sales', 'fishBoxes', 'editingSales', 'viewingSales');
+        return compact('sales',
+            'fishBoxes', 'editingSales',
+            'viewingSales', 'salesStatuses',
+            'salesStatusesWithDisplayNames', 'salesStatusesWithColorClasses'
+        );
     }
 
     /**
