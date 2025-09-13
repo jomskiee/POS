@@ -87,11 +87,3 @@ Route::middleware(['auth', 'broker'])->group(function () {
     // Broker Sales routes
     Route::get('/broker/sales', [App\Http\Controllers\SalesController::class, 'brokerIndex'])->name('broker.sales.index');
 });
-
-// POS Terminal routes (accessible by brokers only)
-Route::middleware(['auth', 'broker'])->group(function () {
-    Route::get('/pos/terminal', [App\Http\Controllers\POSTerminalController::class, 'index'])->name('pos.terminal');
-    Route::post('/pos/add-to-cart', [App\Http\Controllers\POSTerminalController::class, 'addToCart'])->name('pos.add-to-cart');
-    Route::post('/pos/remove-from-cart', [App\Http\Controllers\POSTerminalController::class, 'removeFromCart'])->name('pos.remove-from-cart');
-    Route::post('/pos/process-transaction', [App\Http\Controllers\POSTerminalController::class, 'processTransaction'])->name('pos.process-transaction');
-});

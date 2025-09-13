@@ -3,5 +3,6 @@
     "/js/user.js": "/js/user.js",
     "/js/inventory.js": "/js/inventory.js",
     "/js/qr-code.js": "/js/qr-code.js",
+    "/css/admin.css": "/css/admin.css",
     "/css/app.css": "/css/app.css"
 }
