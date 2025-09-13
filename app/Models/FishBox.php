@@ -25,6 +25,8 @@ class FishBox extends Model
         'qr_code' => 'string',
     ];
 
+    protected $appends = ['buyer_contacts', 'buyer_names'];
+
     // ============== RELATIONS ============== //
     /**
      * Get the fish type that owns the fish box.
@@ -48,6 +50,33 @@ class FishBox extends Model
     public function inventoryLogs()
     {
         return $this->hasMany(InventoryLog::class);
+    }
+
+    /**
+     * Get the sales details for this fish box.
+     */
+    public function salesDetails()
+    {
+        return $this->hasMany(SalesDetails::class, 'box_id');
+    }
+
+    /**
+     * Get the sales that include this fish box.
+     */
+    public function sales()
+    {
+        return $this->belongsToMany(Sales::class, 'sales_details', 'box_id', 'sales_id')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the latest sale for this fish box.
+     */
+    public function latestSale()
+    {
+        return $this->belongsToMany(Sales::class, 'sales_details', 'box_id', 'sales_id')
+                    ->withTimestamps()
+                    ->latest('sales.created_at');
     }
 
     // ============== DATABASE OPERATIONS ============== //
@@ -90,9 +119,9 @@ class FishBox extends Model
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12): LengthAwarePaginator
+    public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12, ?int $brokerId = null): LengthAwarePaginator
     {
-        $query = static::with('fishType');
+        $query = static::with(['fishType', 'currentBroker', 'latestSale', 'salesDetails']);
 
         // Apply search filter
         if ($search) {
@@ -115,8 +144,13 @@ class FishBox extends Model
             $query->where('fish_type_id', $fishTypeId);
         }
 
-        // Order by creation date and paginate
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        // Apply broker filter
+        if ($brokerId) {
+            $query->where('current_broker_id', $brokerId);
+        }
+
+        // Order by creation date and id for consistent pagination
+        return $query->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate($perPage);
     }
 
     /**
@@ -157,5 +191,80 @@ class FishBox extends Model
         } while ($exists);
 
         return $qrCode;
+    }
+
+    /**
+     * Get available fish boxes for sale
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getAvailableForSale()
+    {
+        return static::with('fishType')
+            ->where('status', FishBoxStatusConstant::IN_STOCK)
+            ->whereNull('current_broker_id')
+            ->get();
+    }
+
+    /**
+     * Update fish box broker ID and status
+     *
+     * @param int $fishBoxId
+     * @param int|null $currentBrokerId
+     * @param string $status
+     * @param int $userId
+     * @return bool
+     */
+    public static function updateBrokerAndStatus(int $fishBoxId, ?int $currentBrokerId, string $status, int $userId): bool
+    {
+        $fishBox = static::find($fishBoxId);
+
+        if (!$fishBox) {
+            return false;
+        }
+
+        $fishBox->update([
+            'current_broker_id' => $currentBrokerId,
+            'status' => $status,
+        ]);
+
+        // Create inventory log for the status change
+        InventoryLog::createLogForFishBox($fishBox->id, $status, $userId);
+
+        return true;
+    }
+
+
+    public static function getTotalFishBoxes(?int $brokerId): int
+    {
+        $query = static::where('status', FishBoxStatusConstant::SOLD);
+
+        if ($brokerId) {
+            $query->where('current_broker_id', $brokerId);
+        }
+
+        return $query->count();
+    }
+
+    /**
+     * Get buyer contact for the latest sale of this fish box
+     *
+     * @return string|null
+     */
+    public function getBuyerContactsAttribute()
+    {
+        $latestSale = $this->latestSale->first();
+        return $latestSale ? $latestSale->buyer_contact : null;
+    }
+
+    /**
+     * Get buyer name for the latest sale of this fish box
+     *
+     * @return string|null
+     */
+    public function getBuyerNamesAttribute()
+    {
+        $latestSale = $this->latestSale->first();
+        return $latestSale ? $latestSale->buyer_name : null;
     }
 }

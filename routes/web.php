@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\FishTypesController;
 use App\Http\Controllers\Admin\FishBoxController;
 use App\Http\Controllers\Admin\FishManagementController;
+use App\Http\Controllers\Broker\SalesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -76,14 +77,28 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 
     // Sales & Transactions routes
-    Route::get('/admin/sales', [App\Http\Controllers\SalesController::class, 'index'])->name('admin.sales.index');
+    Route::get('/admin/sales', [App\Http\Controllers\SalesManagementController::class, 'index'])->name('admin.sales.index');
 });
 
 // Broker routes
 Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
+    Route::get('/broker/fish-boxes', [App\Http\Controllers\BrokerDashboardController::class, 'fishBoxes'])->name('broker.sales.fish-boxes');
+    Route::get('/broker/analytics', [App\Http\Controllers\SalesManagementController::class, 'brokerIndex'])->name('broker.sales.index');
+    Route::get('/broker/sales', [App\Http\Controllers\SalesManagementController::class, 'sales'])->name('broker.sales.sales');
 
+    // Fish Box Management routes for brokers
+    Route::controller(\App\Http\Controllers\Admin\FishBoxController::class)->prefix('broker')->name('broker.')->group(function () {
+        Route::post('/fish-boxes/update-status', 'updateStatus')->name('fish-boxes.update-status');
+        Route::patch('/fish-boxes/{id}/mark-missing', 'markAsMissing')->name('fish-boxes.mark-missing');
+    });
 
-    // Broker Sales routes
-    Route::get('/broker/sales', [App\Http\Controllers\SalesController::class, 'brokerIndex'])->name('broker.sales.index');
+    //
+    Route::controller(SalesController::class)->prefix('broker')->name('broker.')->group(function () {
+        Route::post('/sales', 'store')->name('sales.store');
+        Route::put('/sales/{id}', 'update')->name('sales.update');
+        Route::delete('/sales/{id}', 'destroy')->name('sales.destroy');
+        Route::post('/sales-payments', 'storePayment')->name('sales-payments.store');
+        Route::delete('/sales-payments/{id}', 'destroyPayment')->name('sales-payments.destroy');
+    });
 });

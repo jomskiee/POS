@@ -36,6 +36,23 @@
         </div>
 
         <div class="flex items-center space-x-4">
+            <!-- New Sale Button -->
+            <a href="{{ route('broker.sales.sales', ['modal' => 'create']) }}" class="hidden md:flex bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                New Sale
+            </a>
+
+
+            <!-- Quick Actions -->
+            <div class="flex items-center space-x-2">
+                <div class="bg-green-50 text-green-700 hover:text-green-800 p-2 rounded-lg hover:bg-green-100 transition-colors">
+                    <p class="flex items-center space-x-1 text-green-700 font-normal">
+                        <span class="text-sm">Balance : ₱ {{ auth()->user()->broker_balance }}</span>
+                    </p>
+                </div>
+            </div>
             <!-- User Dropdown -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 transition-colors">
@@ -64,14 +81,6 @@
                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <x-heroicon-o-user class="w-4 h-4 mr-3" />
                             Profile
-                        </a>
-                        <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <x-heroicon-o-chart-bar class="w-4 h-4 mr-3" />
-                            My Sales
-                        </a>
-                        <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <x-heroicon-o-cog-6-tooth class="w-4 h-4 mr-3" />
-                            Settings
                         </a>
                         <hr class="my-1">
                         <form method="POST" action="{{ route('logout') }}">

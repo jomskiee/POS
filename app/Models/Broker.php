@@ -124,6 +124,11 @@ class Broker extends Model
         $this->increment('account_balance', $amount);
     }
 
+    public function minusFromBalance($amount)
+    {
+        $this->decrement('account_balance', $amount);
+    }
+
     /**
      * Delete broker and deactivate user
      */
@@ -133,5 +138,17 @@ class Broker extends Model
         $this->user->update(['status' => UserStatusConstant::DEACTIVATED]);
 
         return $this->delete();
+    }
+
+    public static function getBrokerIdByUserId($userId) : ?int
+    {
+        $broker = self::where('user_id', $userId)->first();
+        return $broker ? $broker->id : null;
+    }
+
+    public static function getBrokerBalanceByUserId($userId) : ?float
+    {
+        $broker = self::where('user_id', $userId)->first();
+        return $broker ? $broker->account_balance : null;
     }
 }

@@ -15,8 +15,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-green-100 text-sm font-medium">My Orders Today</p>
-                                <p class="text-3xl font-bold">12</p>
-                                <p class="text-green-100 text-sm">+3 from yesterday</p>
+                                <p class="text-3xl font-bold"> {{ $ordersToday   }}</p>
                             </div>
                             <div class="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,8 +30,12 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-blue-100 text-sm font-medium">My Sales Today</p>
-                                <p class="text-3xl font-bold">$1,234</p>
-                                <p class="text-blue-100 text-sm">+12.5% from yesterday</p>
+                                <p class="text-3xl font-bold">₱ {{ $salesToday }}</p>
+                                <p class="text-blue-100 text-sm">
+                                    @if($paidAmountGrowthPercent > 0)
+                                    +{{ $paidAmountGrowthPercent }} from yesterday
+                                    @endif
+                                </p>
                             </div>
                             <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -47,9 +50,8 @@
                     <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-purple-100 text-sm font-medium">My Commission</p>
-                                <p class="text-3xl font-bold">$156</p>
-                                <p class="text-purple-100 text-sm">This month</p>
+                                <p class="text-purple-100 text-sm font-medium">Payment to Collect</p>
+                                <p class="text-3xl font-bold">₱ {{ $salesBalance }}</p>
                             </div>
                             <div class="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,9 +65,8 @@
                     <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-orange-100 text-sm font-medium">Pending Tasks</p>
-                                <p class="text-3xl font-bold">5</p>
-                                <p class="text-orange-100 text-sm">Due today</p>
+                                <p class="text-orange-100 text-sm font-medium">Total Fish Boxes</p>
+                                <p class="text-3xl font-bold"> {{ $totalFishBoxes }}</p>
                             </div>
                             <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,164 +82,68 @@
                     <!-- My Recent Orders -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">My Recent Orders</h3>
-                            <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
+                            <h3 class="text-lg font-semibold text-gray-900">My Recent Sales</h3>
+                            <a href="{{ route('broker.sales.sales') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-4">
+                            @foreach ($recentSales as $sale)
                             <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
                                 <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                    <span class="text-green-600 font-semibold text-sm">#101</span>
+                                    <span class="text-green-600 font-semibold text-sm"> #{{ $sale->id }}</span>
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Coffee & Pastry</p>
-                                    <p class="text-xs text-gray-500">Just completed • Table 5</p>
+                                    <p class="text-sm font-medium text-gray-900"> {{ $sale->buyer_name }} ({{ $sale->formatted_items }})</p>
+                                    @if($sale->status === \App\Constants\SalesStatusConstant::PAID)
+                                        <p class="text-xs text-gray-500">Fully Paid  •</p>
+                                    @elseif($sale->status === \App\Constants\SalesStatusConstant::PARTIALLY_PAID)
+                                        <p class="text-xs text-gray-500">Partially Paid  • Balance: {{ $sale->total_amount - $sale->paid_amount }}</p>
+                                    @else
+                                        <p class="text-xs text-gray-500">Pending Payment  • Balance: {{ $sale->total_amount }}</p>
+                                    @endif
+                                    <!-- <p class="text-xs text-gray-500">Just completed • Table 5</p> -->
                                 </div>
-                                <span class="text-sm font-semibold text-gray-900">$24.50</span>
+                                <span class="text-sm font-semibold text-gray-900">₱ {{ $sale->paid_amount }}</span>
                             </div>
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <span class="text-blue-600 font-semibold text-sm">#102</span>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Lunch Combo</p>
-                                    <p class="text-xs text-gray-500">15 min ago • Take away</p>
-                                </div>
-                                <span class="text-sm font-semibold text-gray-900">$18.75</span>
-                            </div>
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                    <span class="text-purple-600 font-semibold text-sm">#103</span>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Beverages</p>
-                                    <p class="text-xs text-gray-500">30 min ago • Table 2</p>
-                                </div>
-                                <span class="text-sm font-semibold text-gray-900">$12.25</span>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
+
 
                     <!-- My Sales Performance -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">My Sales Performance</h3>
-                        <div class="h-64 bg-gradient-to-br from-green-50 to-teal-100 rounded-lg flex items-center justify-center">
-                            <div class="text-center">
-                                <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                                </svg>
-                                <p class="text-gray-600 font-medium">Performance Chart</p>
-                                <p class="text-gray-500 text-sm">Weekly sales comparison</p>
-                            </div>
+                        <div class="h-64 flex items-end justify-between space-x-2">
+                            @php
+                                $maxSales = $dailySalesData->max('sales');
+                                $thisWeekTotal = $dailySalesData->sum('sales');
+                                $lastWeekTotal = 0; // You can implement this if you have historical data
+                                $growthPercent = $lastWeekTotal > 0 ? (($thisWeekTotal - $lastWeekTotal) / $lastWeekTotal) * 100 : 0;
+                            @endphp
+                            @foreach($dailySalesData as $dayData)
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-full bg-green-200 rounded-t relative"
+                                         style="height: {{ $maxSales > 0 ? ($dayData['sales'] / $maxSales) * 240 : 0 }}px">
+                                        <div class="w-full bg-green-600 rounded-t absolute bottom-0"
+                                             style="height: {{ $maxSales > 0 ? ($dayData['sales'] / $maxSales) * 240 : 0 }}px">
+                                        </div>
+                                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">
+                                            ₱{{ number_format($dayData['sales'], 0) }}
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-500 mt-2">{{ $dayData['day'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                         <div class="mt-4 grid grid-cols-2 gap-4">
                             <div class="text-center">
-                                <p class="text-2xl font-bold text-gray-900">$1,456</p>
+                                <p class="text-2xl font-bold text-gray-900">₱{{ number_format($thisWeekTotal, 0) }}</p>
                                 <p class="text-sm text-gray-500">This Week</p>
                             </div>
                             <div class="text-center">
-                                <p class="text-2xl font-bold text-green-600">+8.3%</p>
+                                <p class="text-2xl font-bold {{ $growthPercent >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    {{ $growthPercent >= 0 ? '+' : '' }}{{ number_format($growthPercent, 1) }}%
+                                </p>
                                 <p class="text-sm text-gray-500">Growth</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Additional Sections Grid -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Today's Tasks -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">Today's Tasks</h3>
-                            <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full">5 Pending</span>
-                        </div>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">Stock Check - Coffee Beans</p>
-                                        <p class="text-xs text-gray-500">Completed at 9:00 AM</p>
-                                    </div>
-                                </div>
-                                <span class="text-green-600 text-xs font-medium">Done</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">Clean Equipment</p>
-                                        <p class="text-xs text-gray-500">Due at 2:00 PM</p>
-                                    </div>
-                                </div>
-                                <span class="text-orange-600 text-xs font-medium">Pending</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">Submit Daily Report</p>
-                                        <p class="text-xs text-gray-500">Due at 6:00 PM</p>
-                                    </div>
-                                </div>
-                                <span class="text-blue-600 text-xs font-medium">Pending</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Stock Alerts -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">Stock Alerts</h3>
-                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">3 Items Low</span>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.464 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Espresso Beans</p>
-                                    <p class="text-xs text-gray-500">Only 2 kg left</p>
-                                </div>
-                                <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Notify</button>
-                            </div>
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.464 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Milk</p>
-                                    <p class="text-xs text-gray-500">5 liters remaining</p>
-                                </div>
-                                <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Notify</button>
-                            </div>
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.464 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Sugar Packets</p>
-                                    <p class="text-xs text-gray-500">15 packets left</p>
-                                </div>
-                                <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Notify</button>
                             </div>
                         </div>
                     </div>

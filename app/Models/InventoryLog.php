@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Constants\InventoryLogActionConstant;
 use App\Constants\FishBoxStatusConstant;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -168,5 +169,24 @@ class InventoryLog extends Model
             default:
                 return InventoryLogActionConstant::STOCKED; // Default fallback
         }
+    }
+
+    /**
+     * @param int $fishBoxId
+     * @param int $userId
+     * @param Carbon $createdAt
+     *
+     * @return int
+     */
+    public static function deleteLogForFishBox(int $fishBoxId, int $userId, Carbon $createdAt): int
+    {
+        $from = $createdAt->copy()->subMinute();
+        $to = $createdAt->copy()->addMinute();
+
+        return static::where('fish_box_id', $fishBoxId)
+            ->where('user_id', $userId)
+            ->where('action', InventoryLogActionConstant::SOLD)
+            ->whereBetween('created_at', [$from, $to])
+            ->delete();
     }
 }

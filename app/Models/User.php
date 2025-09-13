@@ -55,6 +55,15 @@ class User extends Authenticatable
     // ============== Accessors ============== //
 
     /**
+     * Get the broker's account balance
+     * @return float|null
+     */
+    public function getBrokerBalanceAttribute(): ?float
+    {
+        return $this->broker?->account_balance;
+    }
+
+    /**
      * @return bool
      */
     public function isBroker(): bool
