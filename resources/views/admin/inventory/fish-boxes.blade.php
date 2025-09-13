@@ -195,15 +195,21 @@
                             title="Edit Fish Box">
                             <x-heroicon-o-pencil-square class="w-6 h-6" />
                         </a>
-                        <form action="{{ route('admin.fish-boxes.destroy', $fishBox->id) }}" method="POST" class="inline-block" data-swal="delete">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    class="text-gray-400 hover:text-red-600 transition-colors"
-                                    title="Delete Fish Box">
+                        @if($fishBox->can_delete)
+                            <form action="{{ route('admin.fish-boxes.destroy', $fishBox->id) }}" method="POST" class="inline-block" data-swal="delete">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="text-gray-400 hover:text-red-600 transition-colors"
+                                        title="Delete Fish Box">
+                                    <x-heroicon-o-trash class="w-6 h-6" />
+                                </button>
+                            </form>
+                        @else
+                            <button type="button" class="text-gray-400 cursor-not-allowed" title="Cannot delete: Fish box is {{ $fishBox->status }}">
                                 <x-heroicon-o-trash class="w-6 h-6" />
                             </button>
-                        </form>
+                        @endif
                     </div>
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $fishBox->name }}</h3>

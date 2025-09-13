@@ -7,7 +7,7 @@
                 <x-heroicon-o-users class="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
             </div>
             <div class="ml-3 md:ml-4">
-                <p class="text-xs md:text-sm font-medium text-gray-600">Total Admins</p>
+                <p class="text-xs md:text-sm font-medium text-gray-600">Total LEEO</p>
                 <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['totalAdmins'] }}</p>
             </div>
         </div>
@@ -20,7 +20,7 @@
                 <x-heroicon-o-check-circle class="w-5 h-5 md:w-6 md:h-6 text-green-600" />
             </div>
             <div class="ml-3 md:ml-4">
-                <p class="text-xs md:text-sm font-medium text-gray-600">Active Admins</p>
+                <p class="text-xs md:text-sm font-medium text-gray-600">Active LEEO</p>
                 <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['activeAdmins'] }}</p>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 <x-heroicon-o-x-circle class="w-5 h-5 md:w-6 md:h-6 text-red-600" />
             </div>
             <div class="ml-3 md:ml-4">
-                <p class="text-xs md:text-sm font-medium text-gray-600">Deactivated Admins</p>
+                <p class="text-xs md:text-sm font-medium text-gray-600">Deactivated LEEO</p>
                 <p class="text-xl md:text-2xl font-bold text-gray-900">{{ $count['deactivatedAdmins'] }}</p>
             </div>
         </div>
@@ -45,7 +45,7 @@
     <!-- Admin Users Table -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Admin Users</h3>
+            <h3 class="text-lg font-semibold text-gray-900">LEEO Users</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">

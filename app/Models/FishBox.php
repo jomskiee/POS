@@ -121,7 +121,12 @@ class FishBox extends Model
      */
     public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12, ?int $brokerId = null): LengthAwarePaginator
     {
-        $query = static::with(['fishType', 'currentBroker', 'latestSale', 'salesDetails']);
+        $query = static::with(['fishType', 'currentBroker', 'latestSale', 'salesDetails'])
+            ->select('fish_boxes.*')
+            ->selectRaw('NOT (status = ? OR status = ?) as can_delete', [
+                FishBoxStatusConstant::SOLD,
+                FishBoxStatusConstant::RETURNED
+            ]);
 
         // Apply search filter
         if ($search) {

@@ -187,13 +187,19 @@
                                        class="text-blue-600 hover:text-blue-900 transition-colors">
                                         <x-heroicon-o-pencil-square class="w-6 h-6" />
                                     </a>
-                                    <form action="{{ route('admin.fish-types.destroy', $fishType->id) }}" method="POST" class="inline" data-swal="delete" data-record-name="{{ $fishType->name }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 transition-colors">
+                                    @if($fishType->is_used)
+                                        <button type="button" class="text-gray-400 cursor-not-allowed" title="Cannot delete: Fish type is in use">
                                             <x-heroicon-o-trash class="w-6 h-6" />
                                         </button>
-                                    </form>
+                                    @else
+                                        <form action="{{ route('admin.fish-types.destroy', $fishType->id) }}" method="POST" class="inline" data-swal="delete" data-record-name="{{ $fishType->name }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900 transition-colors">
+                                                <x-heroicon-o-trash class="w-6 h-6" />
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

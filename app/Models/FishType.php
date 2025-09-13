@@ -36,7 +36,9 @@ class FishType extends Model
      */
     public static function getPaginatedWithSearch(?string $search = null, int $perPage = 12): LengthAwarePaginator
     {
-        $query = static::query();
+        $query = static::query()
+            ->select('fish_types.*')
+            ->selectRaw('EXISTS(SELECT 1 FROM fish_boxes WHERE fish_boxes.fish_type_id = fish_types.id) as is_used');
 
         // Apply search filter
         if ($search) {
