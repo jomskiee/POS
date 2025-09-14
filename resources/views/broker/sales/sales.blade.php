@@ -306,9 +306,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="buyer_name" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Name <span class="text-red-500">*</span>
+                                Buyer Name
                             </label>
-                            <input type="text" id="buyer_name" name="buyer_name" required
+                            <input type="text" id="buyer_name" name="buyer_name"
                                    value="{{ old('buyer_name') }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="Enter buyer name">
@@ -319,9 +319,9 @@
 
                         <div>
                             <label for="buyer_contact" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Contact <span class="text-red-500">*</span>
+                                Buyer Contact
                             </label>
-                            <input type="text" id="buyer_contact" name="buyer_contact" required
+                            <input type="text" id="buyer_contact" name="buyer_contact"
                                    value="{{ old('buyer_contact') }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="Enter buyer contact">
@@ -468,9 +468,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="buyer_name" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Name <span class="text-red-500">*</span>
+                                Buyer Name
                             </label>
-                            <input type="text" id="buyer_name" name="buyer_name" required
+                            <input type="text" id="buyer_name" name="buyer_name"
                                    x-model="buyerName"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="Enter buyer name">
@@ -481,9 +481,9 @@
 
                         <div>
                             <label for="buyer_contact" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Contact <span class="text-red-500">*</span>
+                                Buyer Contact
                             </label>
-                            <input type="text" id="buyer_contact" name="buyer_contact" required
+                            <input type="text" id="buyer_contact" name="buyer_contact"
                                    x-model="buyerContact"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="Enter buyer contact">

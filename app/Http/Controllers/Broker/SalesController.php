@@ -209,8 +209,8 @@ class SalesController extends Controller
                 'sales_date' => $validated['sales_date'],
                 'broker_id' => $brokerId,
                 'total_amount' => $validated['total_amount'],
-                'buyer_name' => $validated['buyer_name'],
-                'buyer_contact' => $validated['buyer_contact'],
+                'buyer_name' => $validated['buyer_name'] ?? null,
+                'buyer_contact' => $validated['buyer_contact'] ?? null,
                 'remarks' => $validated['remarks'] ?? null,
                 'details' => $validated['details'] ?? null,
                 'status' => SalesStatusConstant::ACTIVE
@@ -261,8 +261,8 @@ class SalesController extends Controller
             $sale->update([
                 'sales_date' => $validated['sales_date'],
                 'total_amount' => $validated['total_amount'],
-                'buyer_name' => $validated['buyer_name'],
-                'buyer_contact' => $validated['buyer_contact'],
+                'buyer_name' => $validated['buyer_name'] ?? null,
+                'buyer_contact' => $validated['buyer_contact'] ?? null,
                 'remarks' => $validated['remarks'] ?? null,
                 'details' => $validated['details'] ?? null,
             ]);

@@ -134,11 +134,18 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <button data-fish-box-id="{{ $fishBox->id }}"
-                                            class="mark-as-missing-btn text-red-600 hover:text-red-900 transition-colors"
-                                            title="Mark as Missing">
-                                        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
-                                    </button>
+                                    <form method="POST" action="/broker/fish-boxes/{{ $fishBox->id }}/mark-missing"
+                                          data-swal="mark-missing"
+                                          data-record-name="{{ $fishBox->name }}"
+                                          class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                                class="text-red-600 hover:text-red-900 transition-colors"
+                                                title="Mark as Missing">
+                                            <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -213,36 +220,6 @@
     </div>
 </div>
 
-<!-- Missing Confirmation Modal -->
-<div id="missingConfirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[60]">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Confirm Action</h3>
-                <button id="closeMissingConfirmModal" class="text-gray-400 hover:text-gray-600">
-                    <x-heroicon-o-x-mark class="w-6 h-6" />
-                </button>
-            </div>
-            <div class="text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                    <x-heroicon-o-exclamation-triangle class="h-6 w-6 text-red-600" />
-                </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Mark Fish Box as Missing</h3>
-                <p class="text-sm text-gray-500 mb-6">
-                    Are you sure you want to mark this fish box as missing? This action cannot be undone.
-                </p>
-                <div class="flex justify-center space-x-3">
-                    <button id="cancelMissingConfirm" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
-                        No, Cancel
-                    </button>
-                    <button id="confirmMissing" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                        Yes, Mark as Missing
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
  <!-- Include HTML5 QR Code Scanner -->
@@ -385,47 +362,6 @@ document.getElementById('closeQrModal').addEventListener('click', function() {
     document.getElementById('qrModal').classList.add('hidden');
 });
 
-// Mark fish box as missing
-let currentFishBoxId = null;
-
-function markAsMissing(fishBoxId) {
-    currentFishBoxId = fishBoxId;
-    document.getElementById('missingConfirmModal').classList.remove('hidden');
-}
-
-function confirmMarkAsMissing() {
-    if (currentFishBoxId) {
-        // Create a form to submit the request
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/broker/fish-boxes/${currentFishBoxId}/mark-missing`;
-
-        // Add CSRF token
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = '{{ csrf_token() }}';
-        form.appendChild(csrfToken);
-
-        // Add method override
-        const methodField = document.createElement('input');
-        methodField.type = 'hidden';
-        methodField.name = '_method';
-        methodField.value = 'PATCH';
-        form.appendChild(methodField);
-
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
-// Handle mark as missing button clicks
-document.addEventListener('click', function(e) {
-    if (e.target.closest('.mark-as-missing-btn')) {
-        const fishBoxId = e.target.closest('.mark-as-missing-btn').getAttribute('data-fish-box-id');
-        markAsMissing(fishBoxId);
-    }
-});
 
 // Close modal when clicking outside
 document.getElementById('qrModal').addEventListener('click', function(e) {
@@ -449,29 +385,12 @@ document.getElementById('stopScanner').addEventListener('click', function() {
 });
 
 
-// Missing Confirmation Modal Event Listeners
-document.getElementById('closeMissingConfirmModal').addEventListener('click', function() {
-    document.getElementById('missingConfirmModal').classList.add('hidden');
-});
-
-document.getElementById('cancelMissingConfirm').addEventListener('click', function() {
-    document.getElementById('missingConfirmModal').classList.add('hidden');
-});
-
-document.getElementById('confirmMissing').addEventListener('click', function() {
-    confirmMarkAsMissing();
-});
 
 
 // Close modals when clicking outside
 document.getElementById('qrScannerModal').addEventListener('click', function(e) {
     if (e.target === this) {
         stopQRScanner();
-        this.classList.add('hidden');
-    }
-});
-document.getElementById('missingConfirmModal').addEventListener('click', function(e) {
-    if (e.target === this) {
         this.classList.add('hidden');
     }
 });

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('broker_id');
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->decimal('paid_amount', 10, 2)->default(0);
-            $table->string('buyer_name');
-            $table->string('buyer_contact');
+            $table->string('buyer_name')->nullable();
+            $table->string('buyer_contact')->nullable();
             $table->text('remarks')->nullable();
             $table->json('details')->nullable();
             $table->enum('status', ['Deleted', 'Active', 'Partially_Paid', 'Paid'])->default('Active');
