@@ -147,6 +147,11 @@
                                                    title="View Sale">
                                                     <x-heroicon-o-eye class="w-5 h-5" />
                                                 </a>
+                                                <a href="{{ route('broker.sales.sales', ['modal' => 'print', 'print' => $sale->id]) }}"
+                                                   class="text-purple-600 hover:text-purple-900 transition-colors"
+                                                   title="Print Receipt">
+                                                    <x-heroicon-o-printer class="w-5 h-5" />
+                                                </a>
                                                 @if($sale->status !== \App\Constants\SalesStatusConstant::PAID)
                                                 <a href="{{ route('broker.sales.sales', ['modal' => 'edit', 'edit' => $sale->id]) }}"
                                                    class="text-blue-600 hover:text-blue-900 transition-colors"
@@ -253,48 +258,6 @@
                         </div>
                     </div>
 
-                    <!-- Buyer Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="buyer_name" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Name <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="buyer_name" name="buyer_name" required
-                                   value="{{ old('buyer_name') }}"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                   placeholder="Enter buyer name">
-                            @error('buyer_name')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="buyer_contact" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Contact <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="buyer_contact" name="buyer_contact" required
-                                   value="{{ old('buyer_contact') }}"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                   placeholder="Enter buyer contact">
-                            @error('buyer_contact')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Remarks -->
-                    <div>
-                        <label for="remarks" class="block text-sm font-medium text-gray-700 mb-2">
-                            Remarks
-                        </label>
-                        <textarea id="remarks" name="remarks" rows="3"
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                  placeholder="Enter any additional remarks">{{ old('remarks') }}</textarea>
-                        @error('remarks')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <!-- Sales Details -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -337,6 +300,48 @@
                             <x-heroicon-o-plus class="w-4 h-4 mr-2 inline" />
                             Add Sales Detail
                         </button>
+                    </div>
+
+                    <!-- Buyer Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="buyer_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                Buyer Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="buyer_name" name="buyer_name" required
+                                   value="{{ old('buyer_name') }}"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter buyer name">
+                            @error('buyer_name')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="buyer_contact" class="block text-sm font-medium text-gray-700 mb-2">
+                                Buyer Contact <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="buyer_contact" name="buyer_contact" required
+                                   value="{{ old('buyer_contact') }}"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter buyer contact">
+                            @error('buyer_contact')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div>
+                        <label for="remarks" class="block text-sm font-medium text-gray-700 mb-2">
+                            Remarks
+                        </label>
+                        <textarea id="remarks" name="remarks" rows="3"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                  placeholder="Enter any additional remarks">{{ old('remarks') }}</textarea>
+                        @error('remarks')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Modal Footer -->
@@ -412,49 +417,6 @@
                         </div>
                     </div>
 
-                    <!-- Buyer Information -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="buyer_name" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Name <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="buyer_name" name="buyer_name" required
-                                   x-model="buyerName"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                   placeholder="Enter buyer name">
-                            @error('buyer_name')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="buyer_contact" class="block text-sm font-medium text-gray-700 mb-2">
-                                Buyer Contact <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="buyer_contact" name="buyer_contact" required
-                                   x-model="buyerContact"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                   placeholder="Enter buyer contact">
-                            @error('buyer_contact')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Remarks -->
-                    <div>
-                        <label for="remarks" class="block text-sm font-medium text-gray-700 mb-2">
-                            Remarks
-                        </label>
-                        <textarea id="remarks" name="remarks" rows="3"
-                                  x-model="remarks"
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                  placeholder="Enter any additional remarks"></textarea>
-                        @error('remarks')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <!-- Sales Details -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -498,6 +460,49 @@
                             Add Sales Detail
                         </button>
                         @error('sales_details')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Buyer Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="buyer_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                Buyer Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="buyer_name" name="buyer_name" required
+                                   x-model="buyerName"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter buyer name">
+                            @error('buyer_name')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="buyer_contact" class="block text-sm font-medium text-gray-700 mb-2">
+                                Buyer Contact <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="buyer_contact" name="buyer_contact" required
+                                   x-model="buyerContact"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter buyer contact">
+                            @error('buyer_contact')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div>
+                        <label for="remarks" class="block text-sm font-medium text-gray-700 mb-2">
+                            Remarks
+                        </label>
+                        <textarea id="remarks" name="remarks" rows="3"
+                                  x-model="remarks"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                  placeholder="Enter any additional remarks"></textarea>
+                        @error('remarks')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -548,6 +553,7 @@
 
 <!-- Add Payment Modal -->
 @if(request('modal') === 'payment')
+    @if($saleForPayment)
 <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
@@ -567,7 +573,26 @@
 
             <!-- Modal Body -->
             <div class="bg-white px-6 py-6">
-                <form action="{{ route('broker.sales-payments.store') }}" method="POST" class="space-y-6">
+                <!-- Balance Summary -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">Payment Summary</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Total Bill:</span>
+                            <span class="text-sm font-bold text-gray-900">₱{{ number_format($saleForPayment->total_amount, 2) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">To Pay Total:</span>
+                            <span class="text-sm font-bold text-green-600">₱{{ number_format($saleForPayment->paid_amount, 2) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t pt-2">
+                            <span class="text-sm text-gray-600">Running Balance:</span>
+                            <span class="text-sm font-bold text-orange-600">₱{{ number_format($saleForPayment->remaining_amount, 2) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form action="{{ route('broker.sales-payments.store') }}" method="POST" class="space-y-6" x-data="paymentForm()" x-init="initializePaymentForm()">
                     @csrf
 
                     <input type="hidden" name="sales_id" value="{{ request('sale') }}">
@@ -577,10 +602,15 @@
                             Paid Amount <span class="text-red-500">*</span>
                         </label>
                         <input type="number" id="paid_amount" name="paid_amount" required
-                               step="0.01" min="0.01"
-                               value="{{ old('paid_amount') }}"
+                               step="0.01" min="0.01" :max="maxPaymentAmount"
+                               x-model="paidAmount"
+                               @input="validatePaymentAmount()"
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="0.00">
+                        <div class="mt-1 text-xs text-gray-500">
+                            Maximum payment: ₱<span x-text="maxPaymentAmount.toFixed(2)"></span>
+                        </div>
+                        <div x-show="paymentError" class="mt-1 text-sm text-red-600" x-text="paymentError"></div>
                         @error('paid_amount')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -622,8 +652,8 @@
                             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                             Cancel
                         </a>
-                        <button type="submit"
-                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                        <button type="submit" :disabled="paymentError || paidAmount <= 0"
+                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
                             Add Payment
                         </button>
                     </div>
@@ -632,6 +662,206 @@
         </div>
     </div>
 </div>
+    @else
+    <!-- Sale not found for payment -->
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-6 py-6">
+                    <div class="text-center">
+                        <div class="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4">
+                            <x-heroicon-o-exclamation-triangle class="w-8 h-8 text-red-600" />
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Sale Not Found</h3>
+                        <p class="text-gray-500 mb-6">The sale you're trying to add payment for could not be found or you don't have permission to access it.</p>
+                        <a href="{{ route('broker.sales.sales') }}"
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                            <x-heroicon-o-arrow-left class="w-4 h-4 mr-2" />
+                            Back to Sales
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+@endif
+
+<!-- Print Receipt Modal -->
+@if(request('modal') === 'print')
+    @if($printingSales)
+<div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+            <!-- Modal Header -->
+            <div class="bg-white px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Print Receipt</h3>
+                    <div class="flex items-center space-x-3">
+                        <!-- <button onclick="printReceipt()"
+                                class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                            <x-heroicon-o-printer class="w-4 h-4 mr-2" />
+                            Print
+                        </button> -->
+                        <a href="{{ route('broker.sales.sales') }}"
+                            class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <x-heroicon-o-x-mark class="w-6 h-6" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Receipt Content -->
+            <div class="bg-white px-6 py-6" id="receipt-content">
+                <div class="max-w-md mx-auto bg-white">
+                    <!-- Company Header -->
+                    <div class="text-center border-b border-gray-200 pb-4 mb-4">
+                        <h1 class="text-2xl font-bold text-gray-900">Fish Box POS</h1>
+                        <p class="text-sm text-gray-600">Sales Receipt</p>
+                        <p class="text-xs text-gray-500">Receipt #{{ $printingSales->id }}</p>
+                    </div>
+
+                    <!-- Sale Information -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Date:</span>
+                            <span class="font-medium">{{ $printingSales->sales_date->format('M d, Y g:i A') }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Buyer:</span>
+                            <span class="font-medium">{{ $printingSales->buyer_name }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Contact:</span>
+                            <span class="font-medium">{{ $printingSales->buyer_contact }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Status:</span>
+                            <span class="font-medium {{ $salesStatusesWithColorClasses[$printingSales->status] }}">
+                                {{ $salesStatusesWithDisplayNames[$printingSales->status] }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Items -->
+                    <div class="border-t border-gray-200 pt-4 mb-4">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Items Sold</h3>
+                        <div class="space-y-2">
+                            @foreach($printingSales->salesDetails as $detail)
+                                <div class="flex justify-between items-start text-sm">
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-900">{{ $detail->item }}</div>
+                                        @if($detail->fishBox)
+                                            <div class="text-xs text-gray-500">{{ $detail->fishBox->name }}</div>
+                                        @endif
+                                        @if($detail->item_description)
+                                            <div class="text-xs text-gray-500">{{ $detail->item_description }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Payment History -->
+                    @if($printingSales->salesPayments->count() > 0)
+                    <div class="border-t border-gray-200 pt-4 mb-4">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Payment History</h3>
+                        <div class="space-y-2">
+                            @foreach($printingSales->salesPayments as $payment)
+                                <div class="flex justify-between items-center text-xs">
+                                    <div>
+                                        <div class="font-medium">{{ $payment->payment_date->format('M d, Y') }}</div>
+                                        <div class="text-gray-500">{{ $payment->payment_method }}</div>
+                                    </div>
+                                    <div class="font-semibold text-green-600">₱{{ number_format($payment->paid_amount, 2) }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Payment Summary -->
+                    <div class="border-t border-gray-200 pt-4 mb-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Total Amount:</span>
+                                <span class="font-semibold">₱{{ number_format($printingSales->total_amount, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Paid Amount:</span>
+                                <span class="font-semibold text-green-600">₱{{ number_format($printingSales->paid_amount, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm border-t pt-2">
+                                <span class="text-gray-600 font-semibold">Remaining Balance:</span>
+                                <span class="font-bold text-orange-600">₱{{ number_format($printingSales->remaining_amount, 2) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remarks -->
+                    @if($printingSales->remarks)
+                    <div class="border-t border-gray-200 pt-4 mb-4">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-2">Remarks</h3>
+                        <p class="text-xs text-gray-600">{{ $printingSales->remarks }}</p>
+                    </div>
+                    @endif
+
+                    <!-- Footer -->
+                    <div class="border-t border-gray-200 pt-4 text-center">
+                        <p class="text-xs text-gray-500">Thank you for your business!</p>
+                        <p class="text-xs text-gray-400 mt-1">Generated on {{ now()->format('M d, Y g:i A') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+                <a href="{{ route('broker.sales.sales') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                    Close
+                </a>
+                <button onclick="printReceipt()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                    <x-heroicon-o-printer class="w-4 h-4 mr-2 inline" />
+                    Print Receipt
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    @else
+    <!-- Sale not found for printing -->
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-6 py-6">
+                    <div class="text-center">
+                        <div class="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4">
+                            <x-heroicon-o-exclamation-triangle class="w-8 h-8 text-red-600" />
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Sale Not Found</h3>
+                        <p class="text-gray-500 mb-6">The sale you're trying to print could not be found or you don't have permission to access it.</p>
+                        <a href="{{ route('broker.sales.sales') }}"
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                            <x-heroicon-o-arrow-left class="w-4 h-4 mr-2" />
+                            Back to Sales
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 @endif
 
 <!-- Show Sales Modal -->
@@ -923,7 +1153,7 @@
                                                 <form action="{{ route('broker.sales-payments.destroy', $payment->id) }}"
                                                       method="POST"
                                                       class="inline"
-                                                      onsubmit="return confirm('Are you sure you want to delete this payment? This action cannot be undone.')">
+                                                      data-swal="delete">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
@@ -1145,5 +1375,260 @@ function editSaleForm() {
         }
     }
 }
+
+function paymentForm() {
+    return {
+        paidAmount: 0,
+        maxPaymentAmount: {{ $saleForPayment ? $saleForPayment->remaining_amount : 0 }},
+        paymentError: '',
+
+        initializePaymentForm() {
+            // Initialize form
+        },
+
+        validatePaymentAmount() {
+            this.paymentError = '';
+
+            if (this.paidAmount > this.maxPaymentAmount) {
+                this.paymentError = 'Payment amount cannot exceed the remaining balance of ₱' + this.maxPaymentAmount.toFixed(2);
+                return false;
+            }
+
+            if (this.paidAmount <= 0) {
+                this.paymentError = 'Payment amount must be greater than 0';
+                return false;
+            }
+
+            return true;
+        }
+    }
+}
+
+function printReceipt() {
+    // Get the receipt content
+    const receiptContent = document.getElementById('receipt-content');
+
+    if (!receiptContent) {
+        alert('Receipt content not found!');
+        return;
+    }
+
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank', 'width=600,height=800,scrollbars=yes,resizable=yes');
+
+    if (!printWindow) {
+        alert('Please allow popups for this site to print receipts.');
+        return;
+    }
+
+    // Get the actual content from the modal
+    const modalContent = receiptContent.innerHTML;
+
+    // Write the receipt content to the new window
+    const receiptHtml = '<!DOCTYPE html>' +
+        '<html>' +
+        '<head>' +
+        '<title>Receipt #{{ $printingSales ? $printingSales->id : "" }}</title>' +
+        '<meta charset="utf-8">' +
+        '<style>' +
+        '* { margin: 0; padding: 0; box-sizing: border-box; }' +
+        'body { font-family: "Courier New", monospace; font-size: 12px; line-height: 1.4; margin: 0; padding: 20px; background: white; color: black; }' +
+        '.receipt { max-width: 300px; margin: 0 auto; background: white; }' +
+        '.header { text-align: center; border-bottom: 1px solid #000; padding-bottom: 10px; margin-bottom: 15px; }' +
+        '.header h1 { font-size: 18px; font-weight: bold; margin: 0 0 5px 0; }' +
+        '.header p { margin: 0; font-size: 10px; }' +
+        '.section { margin-bottom: 15px; }' +
+        '.section-title { font-weight: bold; margin-bottom: 8px; font-size: 11px; }' +
+        '.row { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 10px; }' +
+        '.item { margin-bottom: 5px; font-size: 10px; }' +
+        '.item-name { font-weight: bold; }' +
+        '.item-details { font-size: 9px; color: #666; margin-left: 10px; }' +
+        '.total-row { border-top: 1px solid #000; padding-top: 5px; font-weight: bold; }' +
+        '.footer { text-align: center; border-top: 1px solid #000; padding-top: 10px; margin-top: 15px; font-size: 9px; }' +
+        '.payment-history { font-size: 9px; }' +
+        '.payment-item { display: flex; justify-content: space-between; margin-bottom: 3px; }' +
+        '.space-y-2 > * + * { margin-top: 0.5rem; }' +
+        '.space-y-3 > * + * { margin-top: 0.75rem; }' +
+        '.space-y-4 > * + * { margin-top: 1rem; }' +
+        '.grid { display: grid; }' +
+        '.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }' +
+        '.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }' +
+        '.gap-6 { gap: 1.5rem; }' +
+        '.md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }' +
+        '@media (min-width: 768px) { .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }' +
+        '.mb-2 { margin-bottom: 0.5rem; }' +
+        '.mb-3 { margin-bottom: 0.75rem; }' +
+        '.mb-4 { margin-bottom: 1rem; }' +
+        '.mb-6 { margin-bottom: 1.5rem; }' +
+        '.mb-8 { margin-bottom: 2rem; }' +
+        '.pt-2 { padding-top: 0.5rem; }' +
+        '.pt-4 { padding-top: 1rem; }' +
+        '.pb-4 { padding-bottom: 1rem; }' +
+        '.px-4 { padding-left: 1rem; padding-right: 1rem; }' +
+        '.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }' +
+        '.py-4 { padding-top: 1rem; padding-bottom: 1rem; }' +
+        '.py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }' +
+        '.text-center { text-align: center; }' +
+        '.text-sm { font-size: 0.875rem; }' +
+        '.text-xs { font-size: 0.75rem; }' +
+        '.text-lg { font-size: 1.125rem; }' +
+        '.text-xl { font-size: 1.25rem; }' +
+        '.text-2xl { font-size: 1.5rem; }' +
+        '.font-bold { font-weight: 700; }' +
+        '.font-semibold { font-weight: 600; }' +
+        '.font-medium { font-weight: 500; }' +
+        '.text-gray-600 { color: #4b5563; }' +
+        '.text-gray-900 { color: #111827; }' +
+        '.text-green-600 { color: #059669; }' +
+        '.text-orange-600 { color: #ea580c; }' +
+        '.text-blue-600 { color: #2563eb; }' +
+        '.text-purple-600 { color: #9333ea; }' +
+        '.text-red-600 { color: #dc2626; }' +
+        '.text-yellow-600 { color: #d97706; }' +
+        '.text-indigo-600 { color: #4f46e5; }' +
+        '.text-emerald-600 { color: #059669; }' +
+        '.border-b { border-bottom-width: 1px; }' +
+        '.border-t { border-top-width: 1px; }' +
+        '.border-gray-200 { border-color: #e5e7eb; }' +
+        '.rounded-lg { border-radius: 0.5rem; }' +
+        '.rounded-xl { border-radius: 0.75rem; }' +
+        '.rounded-full { border-radius: 9999px; }' +
+        '.bg-gray-50 { background-color: #f9fafb; }' +
+        '.bg-gray-100 { background-color: #f3f4f6; }' +
+        '.bg-blue-100 { background-color: #dbeafe; }' +
+        '.bg-green-100 { background-color: #dcfce7; }' +
+        '.bg-yellow-100 { background-color: #fef3c7; }' +
+        '.bg-orange-100 { background-color: #fed7aa; }' +
+        '.bg-purple-100 { background-color: #e9d5ff; }' +
+        '.bg-red-100 { background-color: #fee2e2; }' +
+        '.bg-indigo-100 { background-color: #e0e7ff; }' +
+        '.bg-emerald-100 { background-color: #d1fae5; }' +
+        '.inline-flex { display: inline-flex; }' +
+        '.items-center { align-items: center; }' +
+        '.justify-between { justify-content: space-between; }' +
+        '.justify-end { justify-content: flex-end; }' +
+        '.flex { display: flex; }' +
+        '.flex-1 { flex: 1 1 0%; }' +
+        '.w-4 { width: 1rem; }' +
+        '.w-5 { width: 1.25rem; }' +
+        '.w-6 { width: 1.5rem; }' +
+        '.w-8 { width: 2rem; }' +
+        '.w-12 { width: 3rem; }' +
+        '.w-16 { width: 4rem; }' +
+        '.h-4 { height: 1rem; }' +
+        '.h-5 { height: 1.25rem; }' +
+        '.h-6 { height: 1.5rem; }' +
+        '.h-8 { height: 2rem; }' +
+        '.h-12 { height: 3rem; }' +
+        '.h-16 { height: 4rem; }' +
+        '.mr-1 { margin-right: 0.25rem; }' +
+        '.mr-2 { margin-right: 0.5rem; }' +
+        '.mr-3 { margin-right: 0.75rem; }' +
+        '.ml-2 { margin-left: 0.5rem; }' +
+        '.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }' +
+        '.px-2\\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }' +
+        '.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }' +
+        '.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }' +
+        '.px-8 { padding-left: 2rem; padding-right: 2rem; }' +
+        '.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }' +
+        '.py-0\\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }' +
+        '.py-1\\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }' +
+        '.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }' +
+        '.py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }' +
+        '.py-8 { padding-top: 2rem; padding-bottom: 2rem; }' +
+        '.py-12 { padding-top: 3rem; padding-bottom: 3rem; }' +
+        '.p-1 { padding: 0.25rem; }' +
+        '.p-1\\.5 { padding: 0.375rem; }' +
+        '.p-2 { padding: 0.5rem; }' +
+        '.p-4 { padding: 1rem; }' +
+        '.p-6 { padding: 1.5rem; }' +
+        '.p-8 { padding: 2rem; }' +
+        '.max-w-md { max-width: 28rem; }' +
+        '.mx-auto { margin-left: auto; margin-right: auto; }' +
+        '.whitespace-nowrap { white-space: nowrap; }' +
+        '.divide-y > * + * { border-top-width: 1px; }' +
+        '.divide-gray-200 > * + * { border-color: #e5e7eb; }' +
+        '.hover\\:bg-gray-50:hover { background-color: #f9fafb; }' +
+        '.hover\\:bg-gray-100:hover { background-color: #f3f4f6; }' +
+        '.hover\\:bg-blue-50:hover { background-color: #eff6ff; }' +
+        '.hover\\:bg-green-50:hover { background-color: #f0fdf4; }' +
+        '.hover\\:bg-red-50:hover { background-color: #fef2f2; }' +
+        '.hover\\:text-green-900:hover { color: #14532d; }' +
+        '.hover\\:text-blue-900:hover { color: #1e3a8a; }' +
+        '.hover\\:text-purple-900:hover { color: #581c87; }' +
+        '.hover\\:text-red-900:hover { color: #7f1d1d; }' +
+        '.hover\\:text-gray-600:hover { color: #4b5563; }' +
+        '.transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }' +
+        '.shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }' +
+        '.shadow-lg { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }' +
+        '.border { border-width: 1px; }' +
+        '.border-l-4 { border-left-width: 4px; }' +
+        '.border-yellow-400 { border-color: #facc15; }' +
+        '.overflow-hidden { overflow: hidden; }' +
+        '.overflow-x-auto { overflow-x: auto; }' +
+        '.overflow-y-auto { overflow-y: auto; }' +
+        '.min-w-full { min-width: 100%; }' +
+        '.min-w-0 { min-width: 0px; }' +
+        '.max-h-\\[70vh\\] { max-height: 70vh; }' +
+        '.bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }' +
+        '.from-blue-600 { --tw-gradient-from: #2563eb; --tw-gradient-to: rgb(37 99 235 / 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }' +
+        '.to-blue-700 { --tw-gradient-to: #1d4ed8; }' +
+        '.text-white { color: #ffffff; }' +
+        '.text-blue-100 { color: #dbeafe; }' +
+        '.text-blue-800 { color: #1e40af; }' +
+        '.text-green-800 { color: #14532d; }' +
+        '.text-yellow-800 { color: #92400e; }' +
+        '.text-orange-800 { color: #9a3412; }' +
+        '.text-purple-800 { color: #6b21a8; }' +
+        '.text-red-800 { color: #991b1b; }' +
+        '.text-indigo-800 { color: #3730a3; }' +
+        '.text-emerald-800 { color: #065f46; }' +
+        '.text-gray-500 { color: #6b7280; }' +
+        '.text-gray-400 { color: #9ca3af; }' +
+        '.text-gray-700 { color: #374151; }' +
+        '.text-gray-900 { color: #111827; }' +
+        '.bg-white { background-color: #ffffff; }' +
+        '.bg-gray-50 { background-color: #f9fafb; }' +
+        '.bg-gray-100 { background-color: #f3f4f6; }' +
+        '.bg-blue-100 { background-color: #dbeafe; }' +
+        '.bg-green-100 { background-color: #dcfce7; }' +
+        '.bg-yellow-100 { background-color: #fef3c7; }' +
+        '.bg-orange-100 { background-color: #fed7aa; }' +
+        '.bg-purple-100 { background-color: #e9d5ff; }' +
+        '.bg-red-100 { background-color: #fee2e2; }' +
+        '.bg-indigo-100 { background-color: #e0e7ff; }' +
+        '.bg-emerald-100 { background-color: #d1fae5; }' +
+        '.bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }' +
+        '.from-green-500 { --tw-gradient-from: #10b981; --tw-gradient-to: rgb(16 185 129 / 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }' +
+        '.to-green-600 { --tw-gradient-to: #059669; }' +
+        '.h-3 { height: 0.75rem; }' +
+        '.w-full { width: 100%; }' +
+        '.rounded-full { border-radius: 9999px; }' +
+        '.transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }' +
+        '.duration-300 { transition-duration: 300ms; }' +
+        '@media print { body { margin: 0; padding: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .receipt { max-width: none; margin: 0; } @page { margin: 0.5in; size: auto; } }' +
+        '</style>' +
+        '</head>' +
+        '<body>' +
+        '<div class="receipt">' +
+        modalContent +
+        '</div>' +
+        '</body>' +
+        '</html>';
+
+    printWindow.document.write(receiptHtml);
+
+    // Close the document
+    printWindow.document.close();
+
+    // Focus the window and auto-print
+    printWindow.focus();
+
+    // Auto-print after a short delay
+    setTimeout(function() {
+        printWindow.print();
+    }, 500);
+}
+
 </script>
 @endsection

@@ -67,8 +67,6 @@ class SalesController extends Controller
 
         $sales = Sales::getPaginatedWithFilters($search, $status, $brokerId, $dateFrom, $dateTo);
         $fishBoxes = FishBox::getAvailableForSale();
-        $editingSales = null;
-        $viewingSales = null;
 
         $salesStatuses = SalesStatusConstant::getAllStatuses();
         $salesStatusesWithDisplayNames = collect($salesStatuses)->mapWithKeys(function ($status) {
@@ -78,6 +76,11 @@ class SalesController extends Controller
             return [$status => SalesStatusConstant::getStatusColorClasses($status)];
         });
 
+        // Initialize variables
+        $editingSales = null;
+        $viewingSales = null;
+        $saleForPayment = null;
+        $printingSales = null;
 
         // Check if we're in edit mode
         if ($request->get('modal') === 'edit' && $request->has('edit')) {
@@ -116,10 +119,41 @@ class SalesController extends Controller
             }
         }
 
+        // Check if we're in payment mode
+        if ($request->get('modal') === 'payment' && $request->has('sale')) {
+            $saleForPayment = Sales::find($request->get('sale'));
+
+            // Check if the sales record exists and belongs to the current broker
+            if ($saleForPayment) {
+                $userId = Auth::id();
+                $brokerId = Broker::getBrokerIdByUserId($userId);
+
+                if ($saleForPayment->broker_id !== $brokerId) {
+                    $saleForPayment = null; // Reset to null if not authorized
+                }
+            }
+        }
+
+        // Check if we're in print mode
+        if ($request->get('modal') === 'print' && $request->has('print')) {
+            $printingSales = Sales::with(['salesDetails.fishBox.fishType', 'salesPayments', 'broker.user'])->find($request->get('print'));
+
+            // Check if the sales record exists and belongs to the current broker
+            if ($printingSales) {
+                $userId = Auth::id();
+                $brokerId = Broker::getBrokerIdByUserId($userId);
+
+                if ($printingSales->broker_id !== $brokerId) {
+                    $printingSales = null; // Reset to null if not authorized
+                }
+            }
+        }
+
         return compact('sales',
             'fishBoxes', 'editingSales',
             'viewingSales', 'salesStatuses',
-            'salesStatusesWithDisplayNames', 'salesStatusesWithColorClasses'
+            'salesStatusesWithDisplayNames', 'salesStatusesWithColorClasses',
+            'saleForPayment', 'printingSales'
         );
     }
 
@@ -304,7 +338,7 @@ class SalesController extends Controller
             $sale->updatePaymentStatus();
 
             $broker = Broker::where('user_id', $userId)->first();
-            $broker->addToBalance($sale->paid_amount);
+            $broker->addToBalance($validated['paid_amount']);
         });
 
         return redirect()->route('broker.sales.sales')
@@ -331,14 +365,14 @@ class SalesController extends Controller
 
         DB::transaction(function () use ($payment, $userId) {
             $sale = $payment->sales;
-            $payment->delete();
-
-            // Update the sales paid amount and status
-            $sale->updatePaidAmount();
-            $sale->updatePaymentStatus();
 
             $broker = Broker::where('user_id', $userId)->first();
-            $broker->addToBalance($sale->paid_amount);
+            $broker->minusFromBalance($payment->paid_amount);
+            $payment->delete();
+
+             // Update the sales paid amount and status
+             $sale->updatePaidAmount();
+             $sale->updatePaymentStatus();
         });
 
         return redirect()->route('broker.sales.sales')
