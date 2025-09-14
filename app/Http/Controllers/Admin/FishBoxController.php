@@ -121,8 +121,6 @@ class FishBoxController extends Controller
 
         $fishBoxes = FishBox::getPaginatedWithFilters($search, $status, $fishType, 12, $brokerId);
 
-        Log::info($fishBoxes);
-
         return compact('fishBoxes');
     }
 

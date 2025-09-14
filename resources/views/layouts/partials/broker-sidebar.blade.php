@@ -52,11 +52,11 @@
             </div>
             <!--  Analytics -->
             <div>
-                <a href="{{ route('broker.sales.index') }}"
+                <a href="{{ route('broker.sales.analytics') }}"
                 class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
-                        {{ request()->routeIs('broker.sales.index') ? 'bg-green-100 text-green-700 border-r-4 border-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                        {{ request()->routeIs('broker.sales.analytics') ? 'bg-green-100 text-green-700 border-r-4 border-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                     <x-heroicon-o-chart-bar class="h-6 w-6 flex-shrink-0 transition-transform duration-200 group-hover:scale-110 sidebar-icon
-                            {{ request()->routeIs('broker.sales.index') ? 'text-green-500' : 'text-gray-400 group-hover:text-gray-500' }}" />
+                            {{ request()->routeIs('broker.sales.analytics') ? 'text-green-500' : 'text-gray-400 group-hover:text-gray-500' }}" />
                     <span class="transition-all duration-200" x-show="sidebarOpen" x-transition>Analytics</span>
                 </a>
             </div>

@@ -51,11 +51,11 @@
 
         <!-- Analytics -->
         <div class="relative group">
-            <a href="{{ route('broker.sales.index') }}"
+            <a href="{{ route('broker.sales.analytics') }}"
                class="flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 ease-in-out
-                      {{ request()->routeIs('broker.sales.index') ? 'bg-green-100 text-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                      {{ request()->routeIs('broker.sales.analytics') ? 'bg-green-100 text-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <x-heroicon-o-chart-bar class="h-6 w-6 transition-transform duration-200 group-hover:scale-110
-                           {{ request()->routeIs('broker.sales.index') ? 'text-green-500' : 'text-gray-400 group-hover:text-gray-500' }}" />
+                           {{ request()->routeIs('broker.sales.analytics') ? 'text-green-500' : 'text-gray-400 group-hover:text-gray-500' }}" />
                 <span class="text-xs mt-1 font-medium">Analytics</span>
             </a>
             <!-- Tooltip -->

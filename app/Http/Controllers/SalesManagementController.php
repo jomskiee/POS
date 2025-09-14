@@ -12,9 +12,11 @@ class SalesManagementController extends Controller
         return view('admin.sales.index');
     }
 
-    public function brokerIndex()
+    public function analytics(Request $request)
     {
-        return view('broker.sales.index');
+        $salesController = new SalesController();
+        $data = $salesController->getAnalyticsData($request);
+        return view('broker.sales.analytics', $data);
     }
 
     public function sales(Request $request)

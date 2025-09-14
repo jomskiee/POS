@@ -157,6 +157,39 @@ class SalesController extends Controller
         );
     }
 
+
+    public function getAnalyticsData(Request $request): array
+    {
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
+
+        // Get date filters from request, default to 1st of current month to today
+        $dateFrom = $request->get('date_from', now()->startOfMonth()->format('Y-m-d'));
+        $dateTo = $request->get('date_to', now()->format('Y-m-d'));
+        $status = $request->get('status');
+
+        // Get analytics data
+        $analyticsData = Sales::getAnalyticsData($brokerId, $dateFrom, $dateTo, $status);
+
+        // Get paginated sales for the period
+        $sales = Sales::getPaginatedWithFilters(
+            null,
+            $request->get('status'),
+            $brokerId,
+            $dateFrom,
+            $dateTo
+        );
+
+        // Get total fish boxes for the broker
+        $totalFishBoxes = FishBox::getTotalFishBoxes($brokerId);
+
+        return array_merge($analyticsData, [
+            'sales' => $sales,
+            'totalFishBoxes' => $totalFishBoxes,
+            'status' => $request->get('status')
+        ]);
+    }
+
     /**
      * Store a newly created sale.
      *
