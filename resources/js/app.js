@@ -8,6 +8,8 @@ require('./bootstrap');
 // Third-party libraries via npm
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
+import Swal from 'sweetalert2';
+
 
 /**
  * POS System JavaScript
@@ -39,6 +41,96 @@ document.addEventListener('DOMContentLoaded', () => {
     if (flashWarning) toastr.warning(flashWarning);
     if (flashInfo) toastr.info(flashInfo);
 
-
+    // Initialize SweetAlert form handlers
+    initializeSweetAlert();
 });
+
+
+/**
+ * Initialize SweetAlert form handlers
+ */
+function initializeSweetAlert() {
+    const confirmableForms = document.querySelectorAll('form[data-swal]');
+
+    confirmableForms.forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const action = form.getAttribute('data-swal');
+            const recordName = form.getAttribute('data-record-name') || '';
+
+            let title = 'Are you sure?';
+            let text = '';
+            let confirmText = 'Yes';
+            let icon = 'warning';
+
+            // Get the record type from the form action URL
+            const recordType = getRecordTypeFromForm(form);
+
+            switch (action) {
+                case 'delete':
+                    title = `Delete ${recordType}?`;
+                    text = `This will permanently delete the ${recordType.toLowerCase()}${recordName ? ` "${recordName}"` : ''} and cannot be undone.`;
+                    confirmText = `Yes, delete ${recordType.toLowerCase()}`;
+                    break;
+                case 'deactivate':
+                    title = `Deactivate ${recordType}?`;
+                    text = `This will deactivate the ${recordType.toLowerCase()}${recordName ? ` "${recordName}"` : ''}.`;
+                    confirmText = `Yes, deactivate`;
+                    break;
+                case 'activate':
+                    title = `Activate ${recordType}?`;
+                    text = `This will activate the ${recordType.toLowerCase()}${recordName ? ` "${recordName}"` : ''}.`;
+                    confirmText = `Yes, activate`;
+                    break;
+                case 'mark-missing':
+                    title = `Mark Fish Box as Missing?`;
+                    text = `Are you sure you want to mark this fish box${recordName ? ` "${recordName}"` : ''} as missing? This action cannot be undone.`;
+                    confirmText = `Yes, Mark as Missing`;
+                    icon = 'warning';
+                    break;
+                default:
+                    title = 'Are you sure?';
+                    text = 'This action cannot be undone.';
+                    confirmText = 'Yes, continue';
+            }
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: (action === 'delete' || action === 'mark-missing') ? '#dc2626' : '#059669',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Remove the event listener to prevent infinite loop
+                    form.removeEventListener('submit', arguments.callee);
+                    // Submit the form
+                    form.submit();
+                }
+            });
+        });
+    });
+}
+
+/**
+ * Get record type from form action URL
+ */
+function getRecordTypeFromForm(form) {
+    const action = form.getAttribute('action') || '';
+
+    if (action.includes('sales') && action.includes('payments')) return 'Sale Payment';
+    if (action.includes('sales')) return 'Sale';
+    if (action.includes('fish-boxes') || action.includes('fish-box')) return 'Fish Box';
+    if (action.includes('fish-type')) return 'Fish Type';
+    if (action.includes('users')) return 'User';
+    if (action.includes('brokers')) return 'Broker';
+    if (action.includes('admins')) return 'Admin';
+
+    return 'Record';
+}
+
 

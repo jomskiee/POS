@@ -325,4 +325,227 @@ class Sales extends Model
 
         return collect($last7Days);
     }
+
+    /**
+     * Get analytics data for a specific date range
+     *
+     * @param int|null $brokerId
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
+     * @param string|null $status
+     * @return array
+     */
+    public static function getAnalyticsData(?int $brokerId, ?string $dateFrom = null, ?string $dateTo = null, ?string $status = null): array
+    {
+        // Set default date range to last 7 days if not provided
+        if (!$dateFrom) {
+            $dateFrom = Carbon::now()->subDays(6)->format('Y-m-d');
+        }
+        if (!$dateTo) {
+            $dateTo = Carbon::now()->format('Y-m-d');
+        }
+
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', '>=', $dateFrom)
+            ->whereDate('sales_date', '<=', $dateTo);
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        // Current period data
+        $totalRevenue = $query->sum('paid_amount');
+        $totalOrders = $query->count();
+        $totalBalance = $query->sum('total_amount') - $query->sum('paid_amount');
+        $totalFishBoxes = $query->withCount('salesDetails')->get()->sum('sales_details_count');
+
+        // Get weekly sales data for the period
+        $weeklySalesData = self::getDailySalesForPeriod($brokerId, $dateFrom, $dateTo, $status);
+
+        // Get top selling items
+        $topItems = self::getTopSellingItems($brokerId, $dateFrom, $dateTo, 5, $status);
+
+        // Get payment methods breakdown
+        $paymentMethods = self::getPaymentMethodsBreakdown($brokerId, $dateFrom, $dateTo, $status);
+
+        return [
+            'totalRevenue' => $totalRevenue,
+            'totalOrders' => $totalOrders,
+            'totalBalance' => $totalBalance,
+            'totalFishBoxes' => $totalFishBoxes,
+            'weeklySalesData' => $weeklySalesData,
+            'topItems' => $topItems,
+            'paymentMethods' => $paymentMethods,
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo
+        ];
+    }
+
+    /**
+     * Get daily sales data for a specific period
+     *
+     * @param int|null $brokerId
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param string|null $status
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getDailySalesForPeriod(?int $brokerId, string $dateFrom, string $dateTo, ?string $status = null): \Illuminate\Support\Collection
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', '>=', $dateFrom)
+            ->whereDate('sales_date', '<=', $dateTo);
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $weeklySales = $query->selectRaw('YEARWEEK(sales_date, 1) as week, MIN(sales_date) as week_start, MAX(sales_date) as week_end, SUM(paid_amount) as total_sales')
+            ->groupBy('week')
+            ->orderBy('week')
+            ->get();
+
+        // Create array for the period with weekly data
+        $periodWeeks = [];
+        $startDate = Carbon::parse($dateFrom)->startOfWeek();
+        $endDate = Carbon::parse($dateTo)->endOfWeek();
+
+        while ($startDate->lte($endDate)) {
+            $weekStart = $startDate->format('Y-m-d');
+            $weekEnd = $startDate->copy()->endOfWeek()->format('Y-m-d');
+
+            // Check if start and end of week are in different months
+            $startMonth = $startDate->format('M');
+            $endMonth = $startDate->copy()->endOfWeek()->format('M');
+
+            if ($startMonth === $endMonth) {
+                // Same month: "Sep. 1-7"
+                $weekLabel = $startDate->format('M. j') . '-' . $startDate->copy()->endOfWeek()->format('j');
+            } else {
+                // Different months: "Jul. 28- Aug. 3"
+                $weekLabel = $startDate->format('M. j') . '- ' . $startDate->copy()->endOfWeek()->format('M. j');
+            }
+
+            // Find matching sales data by checking if the sales date falls within this week
+            $salesData = $weeklySales->filter(function ($sale) use ($weekStart, $weekEnd) {
+                $saleStart = Carbon::parse($sale->week_start)->format('Y-m-d');
+                $saleEnd = Carbon::parse($sale->week_end)->format('Y-m-d');
+                return $saleStart >= $weekStart && $saleEnd <= $weekEnd;
+            })->first();
+
+            $totalSales = $salesData ? (float) $salesData->total_sales : 0;
+
+            $periodWeeks[] = [
+                'date' => $weekStart,
+                'day' => $weekLabel,
+                'sales' => $totalSales,
+                'week_start' => $weekStart,
+                'week_end' => $weekEnd
+            ];
+
+            $startDate->addWeek();
+        }
+
+        return collect($periodWeeks);
+    }
+
+    /**
+     * Get top selling items for a period
+     *
+     * @param int|null $brokerId
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param int $limit
+     * @param string|null $status
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getTopSellingItems(?int $brokerId, string $dateFrom, string $dateTo, int $limit = 5, ?string $status = null): \Illuminate\Support\Collection
+    {
+        $query = self::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', '>=', $dateFrom)
+            ->whereDate('sales_date', '<=', $dateTo)
+            ->with(['salesDetails']);
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $sales = $query->get();
+
+        // Aggregate items and their quantities
+        $itemCounts = [];
+        foreach ($sales as $sale) {
+            foreach ($sale->salesDetails as $detail) {
+                $item = $detail->item;
+                if (!isset($itemCounts[$item])) {
+                    $itemCounts[$item] = [
+                        'name' => $item,
+                        'quantity' => 0,
+                        'revenue' => 0
+                    ];
+                }
+                $itemCounts[$item]['quantity'] += 1;
+                $itemCounts[$item]['revenue'] += $sale->total_amount / $sale->salesDetails->count();
+            }
+        }
+
+        // Sort by quantity and take top items
+        return collect($itemCounts)
+            ->sortByDesc('quantity')
+            ->take($limit)
+            ->values();
+    }
+
+    /**
+     * Get payment methods breakdown for a period
+     *
+     * @param int|null $brokerId
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param string|null $status
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getPaymentMethodsBreakdown(?int $brokerId, string $dateFrom, string $dateTo, ?string $status = null): \Illuminate\Support\Collection
+    {
+        $query = \App\Models\SalesPayment::whereHas('sales', function ($q) use ($brokerId, $dateFrom, $dateTo, $status) {
+            $q->whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+              ->whereDate('sales_date', '>=', $dateFrom)
+              ->whereDate('sales_date', '<=', $dateTo);
+
+            if ($brokerId) {
+                $q->where('broker_id', $brokerId);
+            }
+
+            if ($status) {
+                $q->where('status', $status);
+            }
+        });
+
+        $payments = $query->selectRaw('payment_method, COUNT(*) as transactions, SUM(paid_amount) as amount')
+            ->groupBy('payment_method')
+            ->get();
+
+        $totalAmount = $payments->sum('amount');
+
+        return $payments->map(function ($payment) use ($totalAmount) {
+            return [
+                'name' => $payment->payment_method,
+                'transactions' => $payment->transactions,
+                'amount' => $payment->amount,
+                'percentage' => $totalAmount > 0 ? round(($payment->amount / $totalAmount) * 100, 1) : 0
+            ];
+        });
+    }
 }
