@@ -10,6 +10,13 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import Swal from 'sweetalert2';
 
+// Make SweetAlert available globally
+window.Swal = Swal;
+
+// QR Scanner modules
+import QRScanner from './qr-scanner';
+import QRBackendHandler from './qr-backend-handler';
+
 
 /**
  * POS System JavaScript
@@ -43,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize SweetAlert form handlers
     initializeSweetAlert();
+
+    // Initialize QR Scanner functionality
+    initializeQRScanner();
 });
 
 
@@ -53,7 +63,7 @@ function initializeSweetAlert() {
     const confirmableForms = document.querySelectorAll('form[data-swal]');
 
     confirmableForms.forEach(function (form) {
-        form.addEventListener('submit', function (e) {
+        const handleSubmit = function (e) {
             e.preventDefault();
 
             const action = form.getAttribute('data-swal');
@@ -107,12 +117,14 @@ function initializeSweetAlert() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Remove the event listener to prevent infinite loop
-                    form.removeEventListener('submit', arguments.callee);
+                    form.removeEventListener('submit', handleSubmit);
                     // Submit the form
                     form.submit();
                 }
             });
-        });
+        };
+
+        form.addEventListener('submit', handleSubmit);
     });
 }
 
@@ -133,4 +145,68 @@ function getRecordTypeFromForm(form) {
     return 'Record';
 }
 
+/**
+ * Initialize QR Scanner functionality
+ */
+function initializeQRScanner() {
+    // Create global instances
+    window.qrScanner = new QRScanner();
+    window.qrBackendHandler = new QRBackendHandler();
 
+    // Initialize backend handler
+    if (window.qrBackendHandler.initialize()) {
+        console.log('QR Backend Handler initialized successfully');
+    } else {
+        console.warn('QR Backend Handler initialization failed');
+    }
+
+    // Make key functions globally available
+    window.openQRScanner = openQRScanner;
+    window.stopQRScanner = stopQRScanner;
+    // updateFishBoxStatus and onScanSuccess now handled directly in qr-scanner.js
+
+    // Setup QR scanner button event listener
+    setupQRScannerButton();
+}
+
+/**
+ * Setup QR Scanner button event listener
+ */
+function setupQRScannerButton() {
+    const scanQRBtn = document.getElementById('scanQRBtn');
+    if (scanQRBtn) {
+        scanQRBtn.addEventListener('click', function() {
+            console.log('QR Scanner button clicked');
+            if (typeof window.openQRScanner === 'function') {
+                window.openQRScanner();
+            } else {
+                console.error('openQRScanner function not available');
+                alert('QR Scanner not initialized. Please refresh the page.');
+            }
+        });
+    }
+}
+
+/**
+ * Open QR Scanner Modal and start scanning
+ */
+function openQRScanner() {
+    if (window.qrScanner) {
+        // Open the modal and start scanner
+        window.qrScanner.openModal();
+        setTimeout(() => {
+            window.qrScanner.startScanner();
+        }, 100);
+    } else {
+        alert('QR Scanner not initialized. Please refresh the page.');
+    }
+}
+
+/**
+ * Stop QR Scanner
+ */
+function stopQRScanner() {
+    if (window.qrScanner) {
+        window.qrScanner.closeModal();
+    }
+}

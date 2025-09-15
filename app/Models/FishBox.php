@@ -158,47 +158,7 @@ class FishBox extends Model
         return $query->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate($perPage);
     }
 
-    /**
-     * Generate a unique fish box name
-     *
-     * @return string
-     */
-    protected static function generateUniqueName(): string
-    {
-        do {
-            // Get the next sequential number
-            $lastFishBox = static::withTrashed()->orderBy('id', 'desc')->first();
-            $nextNumber = $lastFishBox ? $lastFishBox->id + 1 : 1;
-
-            // Format as "Fish Box #01", "Fish Box #02", etc.
-            $name = 'Fish Box #' . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
-
-            // Check if this name already exists
-            $exists = static::withTrashed()->where('name', $name)->exists();
-        } while ($exists);
-
-        return $name;
-    }
-
-    /**
-     * Generate a unique QR code
-     *
-     * @return string
-     */
-    protected static function generateUniqueQrCode(): string
-    {
-        do {
-            // Generate a unique UUID for QR code
-            $qrCode = Str::uuid()->toString();
-
-            // Check if this QR code already exists
-            $exists = static::withTrashed()->where('qr_code', $qrCode)->exists();
-        } while ($exists);
-
-        return $qrCode;
-    }
-
-    /**
+     /**
      * Get available fish boxes for sale
      *
      * @return \Illuminate\Database\Eloquent\Collection
@@ -239,7 +199,22 @@ class FishBox extends Model
         return true;
     }
 
+    /**
+     * @param string $qrCode
+     *
+     * @return static|null
+     */
+    public static function getFishBoxByQrCode(string $qrCode): ?self
+    {
+        return static::where('qr_code', $qrCode)->first();
+    }
 
+
+    /**
+     * @param int|null $brokerId
+     *
+     * @return int
+     */
     public static function getTotalFishBoxes(?int $brokerId): int
     {
         $query = static::where('status', FishBoxStatusConstant::SOLD);
@@ -271,5 +246,45 @@ class FishBox extends Model
     {
         $latestSale = $this->latestSale->first();
         return $latestSale ? $latestSale->buyer_name : null;
+    }
+
+    /**
+     * Generate a unique fish box name
+     *
+     * @return string
+     */
+    protected static function generateUniqueName(): string
+    {
+        do {
+            // Get the next sequential number
+            $lastFishBox = static::withTrashed()->orderBy('id', 'desc')->first();
+            $nextNumber = $lastFishBox ? $lastFishBox->id + 1 : 1;
+
+            // Format as "Fish Box #01", "Fish Box #02", etc.
+            $name = 'Fish Box #' . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+
+            // Check if this name already exists
+            $exists = static::withTrashed()->where('name', $name)->exists();
+        } while ($exists);
+
+        return $name;
+    }
+
+    /**
+     * Generate a unique QR code
+     *
+     * @return string
+     */
+    protected static function generateUniqueQrCode(): string
+    {
+        do {
+            // Generate a unique UUID for QR code
+            $qrCode = Str::uuid()->toString();
+
+            // Check if this QR code already exists
+            $exists = static::withTrashed()->where('qr_code', $qrCode)->exists();
+        } while ($exists);
+
+        return $qrCode;
     }
 }

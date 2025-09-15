@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\FishTypesController;
 use App\Http\Controllers\Admin\FishBoxController;
 use App\Http\Controllers\Admin\FishManagementController;
 use App\Http\Controllers\Broker\SalesController;
+use App\Http\Controllers\BrokerDashboardController;
+use App\Http\Controllers\SalesManagementController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -77,18 +79,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 
     // Sales & Transactions routes
-    Route::get('/admin/sales', [App\Http\Controllers\SalesManagementController::class, 'index'])->name('admin.sales.index');
+    Route::get('/admin/sales', [SalesManagementController::class, 'index'])->name('admin.sales.index');
 });
 
 // Broker routes
 Route::middleware(['auth', 'broker'])->group(function () {
-    Route::get('/broker/dashboard', [App\Http\Controllers\BrokerDashboardController::class, 'index'])->name('broker.dashboard');
-    Route::get('/broker/fish-boxes', [App\Http\Controllers\BrokerDashboardController::class, 'fishBoxes'])->name('broker.sales.fish-boxes');
-    Route::get('/broker/analytics', [App\Http\Controllers\SalesManagementController::class, 'analytics'])->name('broker.sales.analytics');
-    Route::get('/broker/sales', [App\Http\Controllers\SalesManagementController::class, 'sales'])->name('broker.sales.sales');
+    Route::get('/broker/dashboard', [BrokerDashboardController::class, 'index'])->name('broker.dashboard');
+    Route::get('/broker/fish-boxes', [BrokerDashboardController::class, 'fishBoxes'])->name('broker.sales.fish-boxes');
+    Route::get('/broker/analytics', [SalesManagementController::class, 'analytics'])->name('broker.sales.analytics');
+    Route::get('/broker/sales', [SalesManagementController::class, 'sales'])->name('broker.sales.sales');
 
     // Fish Box Management routes for brokers
-    Route::controller(\App\Http\Controllers\Admin\FishBoxController::class)->prefix('broker')->name('broker.')->group(function () {
+    Route::controller(FishBoxController::class)->prefix('broker')->name('broker.')->group(function () {
         Route::post('/fish-boxes/update-status', 'updateStatus')->name('fish-boxes.update-status');
         Route::patch('/fish-boxes/{id}/mark-missing', 'markAsMissing')->name('fish-boxes.mark-missing');
     });

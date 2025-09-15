@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "qr-code-styling": "^1.9.2",
+        "qr-scanner": "^1.4.2",
         "sweetalert2": "^11.23.0",
         "toastr": "^2.1.4"
     }
