@@ -2,11 +2,19 @@
 <div>
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-semibold text-gray-900">Fish Boxes List</h2>
-        <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'create']) }}"
-           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
-            <x-heroicon-o-plus class="w-4 h-4" />
-            <span>Add Fish Box</span>
-        </a>
+        <div class="flex items-center space-x-3">
+            <form method="GET" action="{{ route('admin.fish-boxes.return-to-stock') }}" data-swal="return-to-stock" class="inline">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+                    <x-heroicon-o-arrow-uturn-left class="w-4 h-4" />
+                    <span>Return to In Stock</span>
+                </button>
+            </form>
+            <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'create']) }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+                <x-heroicon-o-plus class="w-4 h-4" />
+                <span>Add Fish Box</span>
+            </a>
+        </div>
     </div>
 
     <!-- Add/Edit Fish Box Modal -->

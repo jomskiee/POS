@@ -236,4 +236,29 @@ class FishBoxController extends Controller
             return back()->withErrors(['error' => 'Error marking fish box as missing. Please try again.']);
         }
     }
+
+    /**
+     * Return all "Returned" fish boxes to "In Stock" status
+     *
+     * @return RedirectResponse
+     */
+    public function returnToStock(): RedirectResponse
+    {
+        try {
+            $count = FishBox::returnAllToStock(Auth::id());
+
+            if ($count > 0) {
+                return redirect()->route('admin.inventory.index', ['tab' => 'fishBoxes'])
+                    ->with('success', "Successfully returned {$count} fish box(es) to 'In Stock' status.");
+            } else {
+                return redirect()->route('admin.inventory.index', ['tab' => 'fishBoxes'])
+                    ->with('error', 'No fish boxes with "Returned" status found.');
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Return to stock error: ' . $e->getMessage());
+            return redirect()->route('admin.inventory.index', ['tab' => 'fishBoxes'])
+                ->with('error', 'Error returning fish boxes to stock. Please try again.');
+        }
+    }
 }

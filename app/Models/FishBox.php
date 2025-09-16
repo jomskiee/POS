@@ -79,6 +79,19 @@ class FishBox extends Model
                     ->latest('sales.created_at');
     }
 
+
+    // ============== SCOPES ============== //
+    /**
+     * Scope a query to only include returned fish boxes.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeReturned($query)
+    {
+        return $query->where('status', FishBoxStatusConstant::RETURNED);
+    }
+
     // ============== DATABASE OPERATIONS ============== //
     /**
      * Create multiple fish boxes with unique names and QR codes
@@ -286,6 +299,36 @@ class FishBox extends Model
     }
 
     /**
+     * Return all returned fish boxes to in stock status
+     *
+     * @param int $userId
+     * @return int
+     */
+    public static function returnAllToStock(int $userId): int
+    {
+        $returnedFishBoxes = static::returned()->get();
+
+        if ($returnedFishBoxes->isEmpty()) {
+            return 0;
+        }
+
+        $count = 0;
+        foreach ($returnedFishBoxes as $fishBox) {
+            // Update status to In Stock
+            $fishBox->status = FishBoxStatusConstant::IN_STOCK;
+            $fishBox->current_broker_id = null;
+            $fishBox->save();
+
+            // Create inventory log for the status change
+            InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::IN_STOCK, $userId);
+
+            $count++;
+        }
+
+        return $count;
+    }
+
+    /**
      * Generate a unique fish box name
      *
      * @return string
@@ -324,4 +367,5 @@ class FishBox extends Model
 
         return $qrCode;
     }
+
 }

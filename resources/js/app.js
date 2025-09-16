@@ -94,29 +94,40 @@ function initializeSweetAlert() {
                     confirmText = `Yes, Mark as Missing`;
                     icon = 'warning';
                     break;
+                case 'return-to-stock':
+                    title = `Return Fish Boxes to In Stock?`;
+                    text = `This will change all "Returned" fish boxes back to "In Stock" status. Are you sure?`;
+                    confirmText = `Yes, Return to Stock`;
+                    icon = 'question';
+                    break;
                 default:
                     title = 'Are you sure?';
                     text = 'This action cannot be undone.';
                     confirmText = 'Yes, continue';
             }
-
-            Swal.fire({
-                title: title,
-                text: text,
-                icon: icon,
-                showCancelButton: true,
-                confirmButtonColor: (action === 'delete' || action === 'mark-missing') ? '#dc2626' : '#059669',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: confirmText,
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Remove the event listener to prevent infinite loop
-                    form.removeEventListener('submit', handleSubmit);
-                    // Submit the form
-                    form.submit();
-                }
-            });
+            Swal.close();
+            // Use setTimeout to ensure proper initialization
+            setTimeout(() => {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonColor: (action === 'delete' || action === 'mark-missing') ? '#dc2626' : '#059669',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: confirmText,
+                    cancelButtonText: 'Cancel',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Remove the event listener to prevent infinite loop
+                        form.removeEventListener('submit', handleSubmit);
+                        // Submit the form
+                        form.submit();
+                    }
+                });
+            }, 10);
         };
 
         form.addEventListener('submit', handleSubmit);
