@@ -11,6 +11,10 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Constants\FishBoxStatusConstant;
+use App\Models\InventoryLog;
 
 class Sales extends Model
 {
@@ -105,6 +109,90 @@ class Sales extends Model
             ->where('status', 'Active')
             ->sum('paid_amount');
         $this->save();
+    }
+
+    /**
+     * Create a new sales record with details and update fish box status
+     *
+     * @param array $salesData
+     * @param array $salesDetails
+     * @param int $brokerId
+     * @param int $userId
+     * @return Sales
+     */
+    public static function createSalesWithDetails(array $salesData, array $salesDetails, int $brokerId): Sales
+    {
+        return DB::transaction(function () use ($salesData, $salesDetails, $brokerId) {
+
+            $userId = Auth::user()->id;
+            // Create the sale
+            $sale = self::create([
+                'sales_date' => $salesData['sales_date'],
+                'broker_id' => $brokerId,
+                'total_amount' => $salesData['total_amount'],
+                'buyer_name' => $salesData['buyer_name'],
+                'buyer_contact' => $salesData['buyer_contact'] ?? null,
+                'remarks' => $salesData['remarks'] ?? null,
+                'details' => $salesData['details'] ?? null,
+                'status' => SalesStatusConstant::ACTIVE
+            ]);
+
+            // Create sales details
+            SalesDetails::createSalesDetails($sale->id, $brokerId, $salesDetails);
+
+            // Update fish box status for each detail
+            FishBox::updateFishBoxesForSales($brokerId, $salesDetails, $userId);
+
+            return $sale;
+        });
+    }
+
+    /**
+     * Update an existing sales record with details and update fish box status
+     *
+     * @param Sales $sale
+     * @param array $salesData
+     * @param array $salesDetails
+     * @param int $brokerId
+     * @return void
+     */
+    public static function updateSalesWithDetails(Sales $sale, array $salesData, array $salesDetails, int $brokerId): void
+    {
+        DB::transaction(function () use ($sale, $salesData, $salesDetails, $brokerId) {
+            $userId = Auth::user()->id;
+
+            // Update the sale
+            $sale->update([
+                'sales_date' => $salesData['sales_date'],
+                'total_amount' => $salesData['total_amount'],
+                'buyer_name' => $salesData['buyer_name'],
+                'buyer_contact' => $salesData['buyer_contact'] ?? null,
+                'remarks' => $salesData['remarks'] ?? null,
+                'details' => $salesData['details'] ?? null,
+            ]);
+
+            // Get old sales details before deleting
+            $oldSalesDetails = $sale->salesDetails;
+
+            // Reset fish boxes back to IN_STOCK status for old sales details
+            foreach ($oldSalesDetails as $detail) {
+                FishBox::updateBrokerAndStatus($detail->box_id, null, FishBoxStatusConstant::IN_STOCK, $userId);
+                InventoryLog::deleteLogForFishBox($detail->box_id, $userId, $sale->created_at);
+            }
+
+            // Update sales details - delete existing and create new ones
+            $sale->salesDetails()->delete();
+
+            // Create new sales details
+            SalesDetails::createSalesDetails($sale->id, $brokerId, $salesDetails);
+
+            // Update fish box status for new details
+            FishBox::updateFishBoxesForSales($brokerId, $salesDetails, $userId);
+
+            // Recalculate paid amount and update status
+            $sale->updatePaidAmount();
+            $sale->updatePaymentStatus();
+        });
     }
 
     /**

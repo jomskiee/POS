@@ -35767,6 +35767,9 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
+// Make SweetAlert available globally
+window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_2___default());
+
 /**
  * POS System JavaScript
  * Using Alpine.js for reactive components and vanilla JS for custom functionality
@@ -35805,8 +35808,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function initializeSweetAlert() {
   var confirmableForms = document.querySelectorAll('form[data-swal]');
   confirmableForms.forEach(function (form) {
-    form.addEventListener('submit', function (e) {
-      var _arguments = arguments;
+    var _handleSubmit = function handleSubmit(e) {
       e.preventDefault();
       var action = form.getAttribute('data-swal');
       var recordName = form.getAttribute('data-record-name') || '';
@@ -35856,12 +35858,13 @@ function initializeSweetAlert() {
       }).then(function (result) {
         if (result.isConfirmed) {
           // Remove the event listener to prevent infinite loop
-          form.removeEventListener('submit', _arguments.callee);
+          form.removeEventListener('submit', _handleSubmit);
           // Submit the form
           form.submit();
         }
       });
-    });
+    };
+    form.addEventListener('submit', _handleSubmit);
   });
 }
 

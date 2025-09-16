@@ -9,12 +9,11 @@ use App\Models\FishBox;
 use App\Models\InventoryLog;
 use App\Http\Requests\FishBoxRequest;
 use App\Models\Broker;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Zxing\QrReader;
 
 class FishBoxController extends Controller
 {
@@ -125,75 +124,82 @@ class FishBoxController extends Controller
     }
 
     /**
-     * Update fish box status by scanning/uploading QR code
+     * Update fish box status by scanning QR code
      *
      * @param Request $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function updateStatus(Request $request): RedirectResponse
+    public function updateStatus(Request $request): JsonResponse
     {
-        // Validate the request - handle both text input and file upload
-        if ($request->hasFile('qr_code')) {
-            // File upload validation
-            $request->validate([
-                'qr_code' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+        // Validate the request - expect text QR code from camera scanning
+        $request->validate([
+            'qr_code' => 'required|string|max:255',
+        ]);
 
-            try {
-                // Store the uploaded QR code image
-                $path = $request->file('qr_code')->store('qr_codes', 'public');
-                $imagePath = storage_path('app/public/' . $path);
-
-                // Read QR code from the uploaded image
-                $qrCodeReader = new QrReader($imagePath);
-                $qrCodeValue = $qrCodeReader->text();
-
-                if (empty($qrCodeValue)) {
-                    // Clean up the uploaded file
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
-                    return back()->withErrors(['qr_code' => 'No QR code found in the uploaded image. Please try a different image.']);
-                }
-
-                // Clean up the uploaded file after processing
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
-
-            } catch (\Exception $e) {
-                Log::error('QR Code image processing error: ' . $e->getMessage());
-                return back()->withErrors(['qr_code' => 'Error processing QR code image. Please try again.']);
-            }
-        } else {
-            return back()->withErrors(['qr_code' => 'Please upload a QR code image or use the camera scanner.']);
-        }
+        $qrCodeValue = $request->input('qr_code');
 
         try {
+            // Get fish box by QR code
+            $fishBox = FishBox::getFishBoxByQrCode($qrCodeValue);
 
-            $fishBox = FishBox::where('qr_code', $qrCodeValue)->first();
-
+            // Check if the fish box is found
             if (!$fishBox) {
-                return back()->withErrors(['qr_code' => 'Invalid QR code. Fish box not found.']);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid QR code. Fish box not found.'
+                ], 404);
             }
 
-            // Check if the fish box belongs to the current broker
+            // Check if the fish box is already returned
+            if($fishBox->status == FishBoxStatusConstant::RETURNED) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This fish box is already returned.'
+                ], 400);
+            }
+
+
             $userId = Auth::id();
-            $brokerId = \App\Models\Broker::getBrokerIdByUserId($userId);
+            $brokerId = null;
 
-            if ($fishBox->current_broker_id !== $brokerId) {
-                return back()->withErrors(['qr_code' => 'This fish box is not assigned to you.']);
+            // Check if user is a broker and validate ownership
+            if (Auth::user()->role === 'broker') {
+                $brokerId = Broker::getBrokerIdByUserId($userId);
+                if ($fishBox->current_broker_id !== $brokerId) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'This fish box is not assigned to you.'
+                    ], 403);
+                }
             }
 
-            // Update the fish box status based on current status
             $newStatus = FishBoxStatusConstant::RETURNED;
-            $fishBox->status = $newStatus;
-            $fishBox->save();
+            // Update the fish box status based on current status
+            FishBox::updateBrokerAndStatus($fishBox->id, $brokerId, $newStatus, Auth::id());
+
 
             // Create inventory log for the status change
             InventoryLog::createLogForFishBox($fishBox->id, $newStatus, Auth::id());
 
-            return back()->with('success', "Fish box '{$fishBox->name}' status updated to '{$newStatus}' successfully.");
+            // Return JSON response for AJAX requests
+            return response()->json([
+                'success' => true,
+                'message' => "'{$fishBox->name}' status updated to '{$newStatus}' successfully.",
+                'data' => [
+                    'fish_box_id' => $fishBox->id,
+                    'fish_box_name' => $fishBox->name,
+                    'old_status' => $fishBox->status,
+                    'new_status' => $newStatus
+                ]
+            ]);
 
         } catch (\Exception $e) {
             Log::error('QR Code processing error: ' . $e->getMessage());
-            return back()->withErrors(['qr_code' => 'Error processing QR code. Please try again.']);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error processing QR code. Please try again.'
+            ], 500);
         }
     }
 
@@ -210,7 +216,7 @@ class FishBoxController extends Controller
 
             // Check if the fish box belongs to the current broker
             $userId = Auth::id();
-            $brokerId = \App\Models\Broker::getBrokerIdByUserId($userId);
+            $brokerId = Broker::getBrokerIdByUserId($userId);
 
             if ($fishBox->current_broker_id !== $brokerId) {
                 return back()->withErrors(['error' => 'This fish box is not assigned to you.']);

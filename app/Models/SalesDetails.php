@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SalesDetails extends Model
 {
@@ -17,19 +18,62 @@ class SalesDetails extends Model
         'item_description'
     ];
 
-    // Relationships
-    public function sales()
+    // ============== RELATIONS ============== //
+
+    /**
+     * Get the sales that this sales detail belongs to
+     *
+     * @return BelongsTo
+     */
+    public function sales(): BelongsTo
     {
         return $this->belongsTo(Sales::class, 'sales_id');
     }
 
-    public function broker()
+    /**
+     * Get the broker that this sales detail belongs to
+     *
+     * @return BelongsTo
+     */
+    public function broker(): BelongsTo
     {
         return $this->belongsTo(Broker::class, 'broker_id');
     }
 
-    public function fishBox()
+    /**
+     * Get the fish box that this sales detail belongs to
+     *
+     * @return BelongsTo
+     */
+    public function fishBox(): BelongsTo
     {
         return $this->belongsTo(FishBox::class, 'box_id');
+    }
+
+    // ============== DATABASE OPERATIONS ============== //
+
+    /**
+     * Create sales details for a sale
+     *
+     * @param int $salesId
+     * @param int $brokerId
+     * @param array $details
+     * @return void
+     */
+    public static function createSalesDetails(int $salesId, int $brokerId, array $details): void
+    {
+        if (empty($details)) {
+            return;
+        }
+
+        foreach ($details as $detail) {
+            self::create([
+                'sales_id' => $salesId,
+                'broker_id' => $brokerId,
+                'box_id' => $detail['box_id'],
+                'item' => $detail['item'],
+                'item_description' => $detail['item_description'] ?? null
+            ]);
+        }
     }
 }

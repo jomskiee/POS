@@ -10,6 +10,10 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import Swal from 'sweetalert2';
 
+// Make SweetAlert available globally
+window.Swal = Swal;
+
+
 
 /**
  * POS System JavaScript
@@ -43,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize SweetAlert form handlers
     initializeSweetAlert();
+
 });
 
 
@@ -53,7 +58,7 @@ function initializeSweetAlert() {
     const confirmableForms = document.querySelectorAll('form[data-swal]');
 
     confirmableForms.forEach(function (form) {
-        form.addEventListener('submit', function (e) {
+        const handleSubmit = function (e) {
             e.preventDefault();
 
             const action = form.getAttribute('data-swal');
@@ -107,12 +112,14 @@ function initializeSweetAlert() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Remove the event listener to prevent infinite loop
-                    form.removeEventListener('submit', arguments.callee);
+                    form.removeEventListener('submit', handleSubmit);
                     // Submit the form
                     form.submit();
                 }
             });
-        });
+        };
+
+        form.addEventListener('submit', handleSubmit);
     });
 }
 
@@ -132,5 +139,4 @@ function getRecordTypeFromForm(form) {
 
     return 'Record';
 }
-
 
