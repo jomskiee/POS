@@ -273,6 +273,19 @@ class FishBox extends Model
     }
 
     /**
+     * Check if the fish box can be marked as missing
+     *
+     * @return bool
+     */
+    public function canBeMarkedAsMissing(): bool
+    {
+        return !in_array($this->status, [
+            FishBoxStatusConstant::MISSING,
+            FishBoxStatusConstant::RETURNED
+        ]);
+    }
+
+    /**
      * Generate a unique fish box name
      *
      * @return string

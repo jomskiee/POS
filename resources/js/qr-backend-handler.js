@@ -160,14 +160,16 @@ class QRBackendHandler {
                 icon: 'success',
                 title: 'Success!',
                 text: message,
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#059669'
             });
         } else if (typeof window.Swal !== 'undefined') {
             window.Swal.fire({
                 icon: 'success',
                 title: 'Success!',
                 text: message,
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#059669'
             });
         } else if (typeof toastr !== 'undefined') {
             toastr.success(message);
@@ -186,14 +188,16 @@ class QRBackendHandler {
                 icon: 'error',
                 title: 'Error',
                 text: message,
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc2626'
             });
         } else if (typeof window.Swal !== 'undefined') {
             window.Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: message,
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc2626'
             });
         } else if (typeof toastr !== 'undefined') {
             toastr.error(message);
@@ -301,5 +305,5 @@ class QRBackendHandler {
 
 }
 
-// Export the class for use in other modules
-export default QRBackendHandler;
+// Make the class available globally
+window.QRBackendHandler = QRBackendHandler;

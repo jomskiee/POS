@@ -458,5 +458,5 @@ class QRScanner {
     }
 }
 
-// Export the class
-export default QRScanner;
+// Make the class available globally
+window.QRScanner = QRScanner;

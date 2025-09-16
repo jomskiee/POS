@@ -142,12 +142,22 @@ class FishBoxController extends Controller
             // Get fish box by QR code
             $fishBox = FishBox::getFishBoxByQrCode($qrCodeValue);
 
+            // Check if the fish box is found
             if (!$fishBox) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid QR code. Fish box not found.'
                 ], 404);
             }
+
+            // Check if the fish box is already returned
+            if($fishBox->status == FishBoxStatusConstant::RETURNED) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This fish box is already returned.'
+                ], 400);
+            }
+
 
             $userId = Auth::id();
             $brokerId = null;

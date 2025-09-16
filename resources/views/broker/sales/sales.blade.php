@@ -335,11 +335,18 @@
                                 </div>
                                     @endforeach
                         </div>
-                                <button type="button" id="add-sales-detail-btn"
-                                class="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <x-heroicon-o-plus class="w-4 h-4 mr-2 inline" />
-                            Add Sales Detail
-                        </button>
+                        <div class="mt-3 flex space-x-3">
+                            <button type="button" id="add-sales-detail-btn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                <x-heroicon-o-plus class="w-4 h-4 mr-2 inline" />
+                                Add Sales Detail
+                            </button>
+                            <button type="button" id="scan-qr-btn"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                <x-heroicon-o-qr-code class="w-4 h-4 mr-2 inline" />
+                                Scan QR Code
+                            </button>
+                        </div>
                         @error('sales_details')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -559,11 +566,6 @@
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">Print Receipt</h3>
                     <div class="flex items-center space-x-3">
-                        <!-- <button onclick="printReceipt()"
-                                class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
-                            <x-heroicon-o-printer class="w-4 h-4 mr-2" />
-                            Print
-                        </button> -->
                         <a href="{{ route('broker.sales.sales') }}"
                             class="text-gray-400 hover:text-gray-600 transition-colors">
                             <x-heroicon-o-x-mark class="w-6 h-6" />
@@ -1075,9 +1077,25 @@
 @endif
 
 <script src="{{ asset('js/print-receipt.js') }}" defer></script>
+<script src="{{ asset('js/sales-qr-scanner.js') }}" defer></script>
 <script>
 // Simple sales form functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Sales QR Scanner
+    window.salesQrScanner = new SalesQRScanner();
+
+    // Setup QR scan button event listener
+    const scanBtn = document.getElementById('scan-qr-btn');
+    if (scanBtn) {
+        scanBtn.addEventListener('click', function() {
+            if (window.salesQrScanner) {
+                window.salesQrScanner.openModal();
+            } else {
+                alert('QR Scanner not initialized. Please refresh the page.');
+            }
+        });
+    }
+
     const container = document.getElementById('sales-details-container');
     const addBtn = document.getElementById('add-sales-detail-btn');
     const fishBoxes = @json($fishBoxes ?? []);

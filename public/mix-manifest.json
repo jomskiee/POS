@@ -3,7 +3,10 @@
     "/js/user.js": "/js/user.js",
     "/js/inventory.js": "/js/inventory.js",
     "/js/qr-code.js": "/js/qr-code.js",
+    "/js/qr-scanner.js": "/js/qr-scanner.js",
+    "/js/qr-backend-handler.js": "/js/qr-backend-handler.js",
     "/js/print-receipt.js": "/js/print-receipt.js",
+    "/js/sales-qr-scanner.js": "/js/sales-qr-scanner.js",
     "/css/admin.css": "/css/admin.css",
     "/css/app.css": "/css/app.css"
 }

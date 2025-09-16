@@ -138,18 +138,20 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <form method="POST" action="/broker/fish-boxes/{{ $fishBox->id }}/mark-missing"
-                                          data-swal="mark-missing"
-                                          data-record-name="{{ $fishBox->name }}"
-                                          class="inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit"
-                                                class="text-red-600 hover:text-red-900 transition-colors"
-                                                title="Mark as Missing">
-                                            <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
-                                        </button>
-                                    </form>
+                                    @if($fishBox->canBeMarkedAsMissing())
+                                        <form method="POST" action="/broker/fish-boxes/{{ $fishBox->id }}/mark-missing"
+                                              data-swal="mark-missing"
+                                              data-record-name="{{ $fishBox->name }}"
+                                              class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                    class="text-red-600 hover:text-red-900 transition-colors"
+                                                    title="Mark as Missing">
+                                                <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -176,5 +178,35 @@
         </div>
     @endif
 </div>
+
+<script src="{{ asset('js/qr-scanner.js') }}" defer></script>
+<script src="{{ asset('js/qr-backend-handler.js') }}" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize QR Scanner
+    window.qrScanner = new QRScanner();
+    window.qrBackendHandler = new QRBackendHandler();
+
+    // Initialize backend handler
+    if (window.qrBackendHandler.initialize()) {
+        // QR Backend Handler initialized successfully
+    }
+
+    // Setup QR scanner button event listener
+    const scanQRBtn = document.getElementById('scanQRBtn');
+    if (scanQRBtn) {
+        scanQRBtn.addEventListener('click', function() {
+            if (window.qrScanner) {
+                window.qrScanner.openModal();
+                setTimeout(() => {
+                    window.qrScanner.startScanner();
+                }, 100);
+            } else {
+                alert('QR Scanner not initialized. Please refresh the page.');
+            }
+        });
+    }
+});
+</script>
 
 @endsection

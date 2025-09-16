@@ -13,6 +13,7 @@ use App\Models\FishBox;
 use App\Constants\SalesStatusConstant;
 use App\Models\Broker;
 use App\Models\InventoryLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -319,13 +320,58 @@ class SalesController extends Controller
      * Get available fish boxes for sales details
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getAvailableFishBoxes(Request $request)
+    public function getAvailableFishBoxes(Request $request): JsonResponse
     {
         $fishBoxes = FishBox::getAvailableForSale();
 
         return response()->json($fishBoxes);
+    }
+
+    /**
+     * Get fish box by QR code for sales
+     *
+     * @param string $qrCode
+     * @return JsonResponse
+     */
+    public function getFishBoxByQRCode(string $qrCode): JsonResponse
+    {
+        try {
+            $fishBox = FishBox::getFishBoxByQrCode($qrCode);
+
+            if (!$fishBox) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Fish box not found'
+                ], 404);
+            }
+
+            // Check if fish box is available for sale
+            if ($fishBox->status !== FishBoxStatusConstant::IN_STOCK || $fishBox->current_broker_id !== null) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Fish box is not available for sale'
+                ], 400);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $fishBox->id,
+                    'name' => $fishBox->name,
+                    'qr_code' => $fishBox->qr_code,
+                    'fish_type' => $fishBox->fishType->name,
+                    'status' => $fishBox->status
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving fish box details'
+            ], 500);
+        }
     }
 
     /**

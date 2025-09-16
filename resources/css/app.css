@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* QR Scanner animations */
+@keyframes scanLine {
+    0% {
+        transform: translateX(-50%) translateY(-50%) translateY(-120px);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-50%) translateY(-50%) translateY(120px);
+        opacity: 0;
+    }
+}
+
 /* Toastr styles consolidated */
 
 /* Placement and interaction */
