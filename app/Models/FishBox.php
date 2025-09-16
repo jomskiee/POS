@@ -33,7 +33,7 @@ class FishBox extends Model
      */
     public function fishType()
     {
-        return $this->belongsTo(FishType::class);
+        return $this->belongsTo(FishType::class, 'fish_type_id');
     }
 
     /**
@@ -197,6 +197,30 @@ class FishBox extends Model
         InventoryLog::createLogForFishBox($fishBox->id, $status, $userId);
 
         return true;
+    }
+
+    /**
+     * Update fish boxes status based on sales details for sold status
+     *
+     * @param int $brokerId
+     * @param array $salesDetails
+     * @param int $userId
+     * @return void
+     */
+    public static function updateFishBoxesForSales(int $brokerId, array $salesDetails, int $userId): void
+    {
+        if (empty($salesDetails)) {
+            return;
+        }
+
+        foreach ($salesDetails as $detail) {
+            self::updateBrokerAndStatus(
+                $detail['box_id'],
+                $brokerId,
+                FishBoxStatusConstant::SOLD,
+                $userId
+            );
+        }
     }
 
     /**

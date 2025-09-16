@@ -26,6 +26,7 @@ class SalesRequest extends FormRequest
         $rules = [
             'sales_date' => 'required|date',
             'total_amount' => 'required|numeric|min:0',
+            'buyer_name' => 'required|string|max:255',
             'remarks' => 'nullable|string',
             'details' => 'nullable|array',
             'sales_details' => 'required|array|min:1',
