@@ -1134,6 +1134,9 @@ select {
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+.flex-row {
+  flex-direction: row;
+}
 .flex-col {
   flex-direction: column;
 }
@@ -1151,6 +1154,9 @@ select {
 }
 .items-center {
   align-items: center;
+}
+.items-stretch {
+  align-items: stretch;
 }
 .justify-end {
   justify-content: flex-end;
@@ -2148,6 +2154,36 @@ select {
     z-index: 50 !important; /* similar to Tailwind z-50 */
     pointer-events: none; /* container doesn't block UI */
 }
+
+/* Mobile and tablet sidebar and modal spacing fix - covers all devices that might show mobile sidebar */
+@media (max-width: 1366px) {
+    /* Ensure modals have proper bottom spacing for mobile sidebar */
+    .fixed.inset-0.z-50 .flex.items-end:not(.sales-detail-row):not(#sales-details-container) {
+        padding-bottom: 8rem !important; /* More space for mobile sidebar */
+    }
+
+    /* Remove padding from sales detail rows */
+    .sales-detail-row {
+        padding-bottom: 20px !important;
+    }
+
+    /* Ensure modal content doesn't get cut off by mobile sidebar */
+    .fixed.inset-0.z-50 .relative.inline-block {
+        margin-bottom: 2rem !important; /* Increased margin */
+    }
+
+    /* Mobile sidebar should be above modals */
+    .md\\:hidden.fixed.bottom-0 {
+        z-index: 60 !important; /* Higher than modal z-50 */
+    }
+}
+
+/* Mobile sidebar spacing fix for broker pages */
+@media (max-width: 768px) {
+    .content-spacing {
+        margin-bottom: 6rem !important; /* Space for mobile sidebar */
+    }
+}
 #toast-container > .toast {
     pointer-events: auto; /* toast remains interactive */
     margin-bottom: 0.75rem;
@@ -2418,6 +2454,10 @@ select {
     margin-bottom: 2rem;
   }
 
+  .sm\:mr-0 {
+    margin-right: 0px;
+  }
+
   .sm\:mt-0 {
     margin-top: 0px;
   }
@@ -2444,6 +2484,10 @@ select {
 
   .sm\:h-screen {
     height: 100vh;
+  }
+
+  .sm\:w-10 {
+    width: 2.5rem;
   }
 
   .sm\:w-auto {
@@ -2482,6 +2526,10 @@ select {
     flex-direction: row;
   }
 
+  .sm\:items-end {
+    align-items: flex-end;
+  }
+
   .sm\:items-center {
     align-items: center;
   }
@@ -2494,10 +2542,32 @@ select {
     justify-content: space-between;
   }
 
+  .sm\:space-x-0 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0px * var(--tw-space-x-reverse));
+    margin-left: calc(0px * calc(1 - var(--tw-space-x-reverse)));
+  }
+
   .sm\:space-x-3 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-x-reverse: 0;
     margin-right: calc(0.75rem * var(--tw-space-x-reverse));
     margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  .sm\:space-x-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1rem * var(--tw-space-x-reverse));
+    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  .sm\:space-y-0 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(0px * var(--tw-space-y-reverse));
+  }
+
+  .sm\:self-end {
+    align-self: flex-end;
   }
 
   .sm\:p-0 {
@@ -2512,6 +2582,20 @@ select {
   .sm\:px-6 {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+
+  .sm\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .sm\:py-6 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .sm\:text-left {
+    text-align: left;
   }
 
   .sm\:align-middle {
@@ -2541,10 +2625,6 @@ select {
 
   .md\:col-span-3 {
     grid-column: span 3 / span 3;
-  }
-
-  .md\:col-span-4 {
-    grid-column: span 4 / span 4;
   }
 
   .md\:col-span-5 {
@@ -2609,6 +2689,10 @@ select {
 
   .md\:w-8 {
     width: 2rem;
+  }
+
+  .md\:w-full {
+    width: 100%;
   }
 
   .md\:grid-cols-2 {
@@ -2711,6 +2795,11 @@ select {
 
   .lg\:justify-between {
     justify-content: space-between;
+  }
+
+  .lg\:px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .lg\:px-8 {

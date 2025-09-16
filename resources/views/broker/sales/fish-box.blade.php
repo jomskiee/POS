@@ -1,11 +1,18 @@
+@php
+    $breadcrumbs = [
+        ['title' => 'Fish Boxes']
+    ];
+@endphp
+
 @extends('layouts.broker')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/filter-layout.css') }}">
 <!-- Meta tags for QR scanner functionality -->
 <meta name="fish-box-update-url" content="{{ route('broker.fish-boxes.update-status') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="w-full">
+<div class="w-full content-spacing">
     <!-- Page Header -->
     <div class="mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -31,9 +38,9 @@
             status: '{{ request('status') }}',
             fishType: '{{ request('fish_type') }}'
         }">
-            <div class="grid grid-cols-12 gap-4 items-end">
+            <div class="filter-layout">
                 <!-- Search Field -->
-                <div class="col-span-12 md:col-span-4">
+                <div class="search-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
                     <div class="relative">
                         <input type="text"
@@ -48,11 +55,11 @@
                 </div>
 
                 <!-- Status Filter -->
-                <div class="col-span-6 md:col-span-2">
+                <div class="status-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Status</option>
-                        @foreach(\App\Constants\FishBoxStatusConstant::getAllStatuses() as $status)
+                        @foreach($fishBoxStatuses as $status)
                             <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
                                 {{ $status }}
                             </option>
@@ -61,11 +68,11 @@
                 </div>
 
                 <!-- Fish Type Filter -->
-                <div class="col-span-6 md:col-span-2">
+                <div class="fish-type-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fish Type</label>
                     <select name="fish_type" x-model="fishType" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Fish Types</option>
-                        @foreach(\App\Models\FishType::all() as $fishType)
+                        @foreach($fishTypes as $fishType)
                             <option value="{{ $fishType->id }}" {{ request('fish_type') == $fishType->id ? 'selected' : '' }}>
                                 {{ $fishType->name }}
                             </option>
@@ -74,7 +81,7 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="col-span-12 md:col-span-4 flex justify-end space-x-2">
+                <div class="buttons-field flex justify-end space-x-2">
                     <a href="{{ route('broker.sales.fish-boxes') }}"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         Clear

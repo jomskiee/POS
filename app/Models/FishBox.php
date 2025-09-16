@@ -145,7 +145,6 @@ class FishBox extends Model
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('qr_code', 'like', '%' . $search . '%')
                   ->orWhereHas('fishType', function ($subQ) use ($search) {
                       $subQ->where('name', 'like', '%' . $search . '%');
                   });

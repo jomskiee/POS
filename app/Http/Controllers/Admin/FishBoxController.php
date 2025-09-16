@@ -112,15 +112,19 @@ class FishBoxController extends Controller
         $userId = Auth::id();
         $brokerId = Broker::getBrokerIdByUserId($userId);
 
+        // Get filter options
+        $fishBoxStatuses = FishBoxStatusConstant::getAllStatuses();
+        $fishTypes = FishType::all();
+
         // If no broker found, return empty pagination
         if (!$brokerId) {
             $fishBoxes = FishBox::where('id', operator: 0)->paginate(12);
-            return compact('fishBoxes');
+            return compact('fishBoxes', 'fishBoxStatuses', 'fishTypes');
         }
 
         $fishBoxes = FishBox::getPaginatedWithFilters($search, $status, $fishType, 12, $brokerId);
 
-        return compact('fishBoxes');
+        return compact('fishBoxes', 'fishBoxStatuses', 'fishTypes');
     }
 
     /**
