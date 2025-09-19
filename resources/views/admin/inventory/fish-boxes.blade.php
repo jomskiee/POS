@@ -1,18 +1,20 @@
 <!-- Fish Boxes Tab Content -->
 <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
         <h2 class="text-xl font-semibold text-gray-900">Fish Boxes List</h2>
-        <div class="flex items-center space-x-3">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
             <form method="GET" action="{{ route('admin.fish-boxes.return-to-stock') }}" data-swal="return-to-stock" class="inline">
-                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+                <button type="submit" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center space-x-2">
                     <x-heroicon-o-arrow-uturn-left class="w-4 h-4" />
-                    <span>Return to In Stock</span>
+                    <span class="hidden sm:inline">Return to In Stock</span>
+                    <span class="sm:hidden">Return to Stock</span>
                 </button>
             </form>
             <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'create']) }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+               class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center space-x-2">
                 <x-heroicon-o-plus class="w-4 h-4" />
-                <span>Add Fish Box</span>
+                <span class="hidden sm:inline">Add Fish Box</span>
+                <span class="sm:hidden">Add Fish Box</span>
             </a>
         </div>
     </div>
@@ -109,13 +111,13 @@
                      @endif
 
                     <!-- Modal Footer -->
-                    <div class="flex justify-end space-x-3 pt-4">
+                    <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
                         <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes']) }}"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                            class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-center">
                             Cancel
                         </a>
                         <button type="submit"
-                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                             {{ request('modal') === 'edit' ? 'Update Fish Box' : 'Create Fish Box' }}
                         </button>
                     </div>
@@ -130,8 +132,8 @@
     <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
         <form method="GET" action="{{ route('admin.inventory.index') }}" x-data="{ search: '{{ request('search') }}', fish_type: '{{ request('fish_type') }}', status: '{{ request('status') }}' }">
             <input type="hidden" name="tab" value="fishBoxes">
-            <div class="grid grid-cols-12 gap-4 items-center">
-                <div class="col-span-12 md:col-span-5">
+            <div class="filter-layout">
+                <div class="search-field">
                     <div class="relative">
                         <input type="text"
                             name="search"
@@ -143,7 +145,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-2">
+                <div class="fish-type-field">
                     <select name="fish_type" x-model="fish_type" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Fish Types</option>
                         @foreach($fishTypes as $fishType)
@@ -151,7 +153,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-span-6 md:col-span-2">
+                <div class="status-field">
                     <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Status</option>
                         @foreach($fishBoxStatuses as $status)
@@ -159,7 +161,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-span-12 md:col-span-3 flex justify-end space-x-2">
+                <div class="buttons-field flex justify-end space-x-2">
                     <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes']) }}"
                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         Clear
@@ -176,7 +178,8 @@
     <!-- Results Count -->
     <div class="mb-4">
         <p class="text-sm text-gray-600">
-            Showing {{ $fishBoxes->firstItem() ?? 0 }} to {{ $fishBoxes->lastItem() ?? 0 }} of {{ $fishBoxes->total() }} fish boxes
+            <span class="hidden sm:inline">Showing {{ $fishBoxes->firstItem() ?? 0 }} to {{ $fishBoxes->lastItem() ?? 0 }} of {{ $fishBoxes->total() }} fish boxes</span>
+            <span class="sm:hidden">{{ $fishBoxes->total() }} fish boxes</span>
             @if(request()->hasAny(['search', 'status', 'fish_type']))
                 <span class="text-blue-600">(filtered)</span>
             @endif

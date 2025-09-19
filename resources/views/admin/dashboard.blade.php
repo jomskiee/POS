@@ -1,7 +1,13 @@
+@php
+    $breadcrumbs = [
+        ['title' => 'Dashboard']
+    ];
+@endphp
+
 @extends('layouts.admin')
 
 @section('content')
-<div class="w-full">
+<div class="w-full" x-data="adminDashboard()">
                 <!-- Page Header -->
                 <div class="mb-8">
                     <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -10,67 +16,58 @@
 
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <!-- Total Sales -->
+                    <!-- Total Brokers -->
                     <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-blue-100 text-sm font-medium">Total Sales</p>
-                                <p class="text-3xl font-bold">$12,426</p>
-                                <p class="text-blue-100 text-sm">+20.1% from last month</p>
+                                <p class="text-blue-100 text-sm font-medium">Total Brokers</p>
+                                <p class="text-3xl font-bold">{{ number_format($totalBrokers) }}</p>
+                                <p class="text-blue-100 text-sm">Active brokers</p>
                             </div>
                             <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                                </svg>
+                                <x-heroicon-o-users class="w-6 h-6" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Fishboxes Sold -->
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-100 text-sm font-medium">Total Fishboxes Sold</p>
+                                <p class="text-3xl font-bold">{{ number_format($totalFishBoxesSold) }}</p>
+                                <p class="text-green-100 text-sm">Sold items</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                                <x-heroicon-o-archive-box class="w-6 h-6" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Sales -->
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-100 text-sm font-medium">Total Sales</p>
+                                <p class="text-3xl font-bold">₱{{ number_format($totalSales, 2) }}</p>
+                                <p class="text-purple-100 text-sm">Total revenue</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
+                                <x-heroicon-o-currency-dollar class="w-6 h-6" />
                             </div>
                         </div>
                     </div>
 
                     <!-- Total Orders -->
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-green-100 text-sm font-medium">Total Orders</p>
-                                <p class="text-3xl font-bold">2,340</p>
-                                <p class="text-green-100 text-sm">+15.3% from last month</p>
-                            </div>
-                            <div class="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Total Customers -->
-                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-purple-100 text-sm font-medium">Total Customers</p>
-                                <p class="text-3xl font-bold">892</p>
-                                <p class="text-purple-100 text-sm">+12.5% from last month</p>
-                            </div>
-                            <div class="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Total Products -->
                     <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-orange-100 text-sm font-medium">Total Products</p>
-                                <p class="text-3xl font-bold">156</p>
-                                <p class="text-orange-100 text-sm">+8.2% from last month</p>
+                                <p class="text-orange-100 text-sm font-medium">Total Orders</p>
+                                <p class="text-3xl font-bold">{{ number_format($totalOrders) }}</p>
+                                <p class="text-orange-100 text-sm">Completed orders</p>
                             </div>
                             <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                </svg>
+                                <x-heroicon-o-shopping-cart class="w-6 h-6" />
                             </div>
                         </div>
                     </div>
@@ -81,14 +78,21 @@
                     <!-- Sales Analytics -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Sales Analytics</h3>
-                        <div class="h-64 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg flex items-center justify-center">
-                            <div class="text-center">
-                                <svg class="w-16 h-16 text-blue-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                </svg>
-                                <p class="text-gray-600 font-medium">Sales Chart Coming Soon</p>
-                                <p class="text-gray-500 text-sm">Weekly and monthly sales visualization</p>
-                            </div>
+                        <div class="h-64 flex items-end justify-between space-x-2">
+                            @php
+                                $maxValue = max(array_column($dailySalesData, 'value'));
+                            @endphp
+                            @foreach($dailySalesData as $day)
+                                <div class="flex flex-col items-center flex-1">
+                                    <div class="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t relative"
+                                         style="height: {{ $maxValue > 0 ? ($day['value'] / $maxValue) * 200 : 0 }}px">
+                                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">
+                                            ₱{{ number_format($day['value'], 0) }}
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-500 mt-2 text-center">{{ $day['label'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
 
@@ -96,114 +100,97 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Recent Orders</h3>
-                            <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
+                            <a href="{{ route('admin.sales.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-4">
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                    <span class="text-green-600 font-semibold text-sm">#001</span>
+                            @forelse($recentOrders as $index => $order)
+                                <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                        <span class="text-green-600 font-semibold text-sm">{{ $index + 1 }}</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">{{ $order->buyer_name ?: 'Anonymous' }}</p>
+                                        <p class="text-xs text-gray-500">
+                                            @if($order->salesDetails->count() > 0)
+                                                @foreach($order->salesDetails->take(2) as $detail)
+                                                    {{ $detail->fishBox->fishType->name ?? 'Unknown' }}{{ !$loop->last ? ', ' : '' }}
+                                                @endforeach
+                                                @if($order->salesDetails->count() > 2)
+                                                    +{{ $order->salesDetails->count() - 2 }} more
+                                                @endif
+                                            @else
+                                                No items
+                                            @endif
+                                            • {{ $order->created_at->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                    <span class="text-sm font-semibold text-gray-900">₱{{ number_format($order->total_amount, 2) }}</span>
                                 </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">John Doe</p>
-                                    <p class="text-xs text-gray-500">2 items • Just now</p>
+                            @empty
+                                <div class="text-center py-8">
+                                    <x-heroicon-o-shopping-cart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                                    <p class="text-gray-500 text-sm">No recent orders</p>
                                 </div>
-                                <span class="text-sm font-semibold text-gray-900">$45.99</span>
-                            </div>
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <span class="text-blue-600 font-semibold text-sm">#002</span>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Jane Smith</p>
-                                    <p class="text-xs text-gray-500">1 item • 5 min ago</p>
-                                </div>
-                                <span class="text-sm font-semibold text-gray-900">$129.50</span>
-                            </div>
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                    <span class="text-purple-600 font-semibold text-sm">#003</span>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Mike Johnson</p>
-                                    <p class="text-xs text-gray-500">3 items • 12 min ago</p>
-                                </div>
-                                <span class="text-sm font-semibold text-gray-900">$67.25</span>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
 
                 <!-- Additional Sections Grid -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Restock Alerts -->
+                    <!-- Top Fish Types Sold -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">Restock Alerts</h3>
-                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">3 Items</span>
+                            <h3 class="text-lg font-semibold text-gray-900">Top Fish Types Sold</h3>
+                            <a href="{{ route('admin.inventory.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.464 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                        </svg>
+                            @forelse($topFishTypes as $fishType)
+                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <x-heroicon-o-archive-box class="w-4 h-4 text-green-600" />
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">{{ $fishType['fish_type']->name }}</p>
+                                            <p class="text-xs text-gray-500">Most popular fish type</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">iPhone 15 Pro</p>
-                                        <p class="text-xs text-gray-500">Only 2 left in stock</p>
-                                    </div>
+                                    <span class="text-green-600 text-sm font-medium">{{ $fishType['sold_count'] }} sold</span>
                                 </div>
-                                <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Restock</button>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.99-.833-2.464 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">Samsung Galaxy S24</p>
-                                        <p class="text-xs text-gray-500">Only 5 left in stock</p>
-                                    </div>
+                            @empty
+                                <div class="text-center py-8">
+                                    <x-heroicon-o-archive-box class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                                    <p class="text-gray-500 text-sm">No fish types sold yet</p>
                                 </div>
-                                <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Restock</button>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
 
-                    <!-- Recent Supply Deliveries -->
+                    <!-- Top Brokers This Month -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">Recent Supply Deliveries</h3>
-                            <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
+                            <h3 class="text-lg font-semibold text-gray-900">Top Brokers This Month</h3>
+                            <a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-4">
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                    </svg>
+                            @forelse($topBrokers as $brokerData)
+                                <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <x-heroicon-o-users class="w-5 h-5 text-blue-600" />
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">{{ $brokerData['broker']->name ?? 'Unknown Broker' }}</p>
+                                        <p class="text-xs text-gray-500">{{ $brokerData['sales_count'] }} sales this month</p>
+                                    </div>
+                                    <span class="text-sm font-semibold text-green-600">₱{{ number_format($brokerData['total_sales'], 2) }}</span>
                                 </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">ABC Electronics</p>
-                                    <p class="text-xs text-gray-500">50 items • Delivered today</p>
+                            @empty
+                                <div class="text-center py-8">
+                                    <x-heroicon-o-users class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                                    <p class="text-gray-500 text-sm">No broker sales this month</p>
                                 </div>
-                                <span class="text-sm font-semibold text-green-600">$15,750</span>
-                            </div>
-                            <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900">Fashion Hub</p>
-                                    <p class="text-xs text-gray-500">120 items • Yesterday</p>
-                                </div>
-                                <span class="text-sm font-semibold text-green-600">$8,400</span>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>

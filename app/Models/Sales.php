@@ -76,6 +76,18 @@ class Sales extends Model
         return $this->hasMany(SalesPayment::class, 'sales_id');
     }
 
+    // Scopes
+    /**
+     * Scope a query to only include active sales
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->whereIn('status', SalesStatusConstant::getAllActiveStatuses());
+    }
+
     // Helper methods
     /**
      * @return float
@@ -458,7 +470,7 @@ class Sales extends Model
         $topItems = self::getTopSellingItems($brokerId, $dateFrom, $dateTo, 5, $status);
 
         // Get payment methods breakdown
-        $paymentMethods = self::getPaymentMethodsBreakdown($brokerId, $dateFrom, $dateTo, $status);
+        $paymentMethods = SalesPayment::getPaymentMethodsBreakdown($brokerId, $dateFrom, $dateTo, $status);
 
         return [
             'totalRevenue' => $totalRevenue,
@@ -596,44 +608,4 @@ class Sales extends Model
             ->values();
     }
 
-    /**
-     * Get payment methods breakdown for a period
-     *
-     * @param int|null $brokerId
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @param string|null $status
-     * @return \Illuminate\Support\Collection
-     */
-    public static function getPaymentMethodsBreakdown(?int $brokerId, string $dateFrom, string $dateTo, ?string $status = null): \Illuminate\Support\Collection
-    {
-        $query = \App\Models\SalesPayment::whereHas('sales', function ($q) use ($brokerId, $dateFrom, $dateTo, $status) {
-            $q->whereIn('status', SalesStatusConstant::getAllActiveStatuses())
-              ->whereDate('sales_date', '>=', $dateFrom)
-              ->whereDate('sales_date', '<=', $dateTo);
-
-            if ($brokerId) {
-                $q->where('broker_id', $brokerId);
-            }
-
-            if ($status) {
-                $q->where('status', $status);
-            }
-        });
-
-        $payments = $query->selectRaw('payment_method, COUNT(*) as transactions, SUM(paid_amount) as amount')
-            ->groupBy('payment_method')
-            ->get();
-
-        $totalAmount = $payments->sum('amount');
-
-        return $payments->map(function ($payment) use ($totalAmount) {
-            return [
-                'name' => $payment->payment_method,
-                'transactions' => $payment->transactions,
-                'amount' => $payment->amount,
-                'percentage' => $totalAmount > 0 ? round(($payment->amount / $totalAmount) * 100, 1) : 0
-            ];
-        });
-    }
 }
