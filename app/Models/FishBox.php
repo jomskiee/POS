@@ -92,6 +92,39 @@ class FishBox extends Model
         return $query->where('status', FishBoxStatusConstant::RETURNED);
     }
 
+    /**
+     * Scope a query to only include sold fish boxes.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSold($query)
+    {
+        return $query->where('status', FishBoxStatusConstant::SOLD);
+    }
+
+    /**
+     * Scope a query to only include in stock fish boxes.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInStock($query)
+    {
+        return $query->where('status', FishBoxStatusConstant::IN_STOCK);
+    }
+
+    /**
+     * Scope a query to only include missing fish boxes.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeMissing($query)
+    {
+        return $query->where('status', FishBoxStatusConstant::MISSING);
+    }
+
     // ============== DATABASE OPERATIONS ============== //
     /**
      * Create multiple fish boxes with unique names and QR codes

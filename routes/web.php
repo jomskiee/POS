@@ -79,8 +79,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/fish-boxes/return-to-stock', 'returnToStock')->name('fish-boxes.return-to-stock');
     });
 
-    // Sales & Transactions routes
-    Route::get('/admin/sales', [SalesManagementController::class, 'index'])->name('admin.sales.index');
+    // Sales Management routes - grouped by controller
+    Route::controller(SalesManagementController::class)->prefix('admin/sales')->name('admin.sales.')->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
 });
 
 // Broker routes

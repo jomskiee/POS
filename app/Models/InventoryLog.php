@@ -9,6 +9,7 @@ use App\Constants\FishBoxStatusConstant;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class InventoryLog extends Model
 {
@@ -188,5 +189,70 @@ class InventoryLog extends Model
             ->where('action', InventoryLogActionConstant::SOLD)
             ->whereBetween('created_at', [$from, $to])
             ->delete();
+    }
+
+    /**
+     * Get top 5 fish types most sold based on inventory logs
+     *
+     * @return Collection
+     */
+    public static function getTopFishTypesSold(): Collection
+    {
+        return static::join('fish_boxes', 'inventory_logs.fish_box_id', '=', 'fish_boxes.id')
+            ->join('fish_types', 'fish_boxes.fish_type_id', '=', 'fish_types.id')
+            ->where('inventory_logs.action', 'Sold')
+            ->selectRaw('fish_types.id, fish_types.name, COUNT(inventory_logs.id) as total_sold')
+            ->groupBy('fish_types.id', 'fish_types.name')
+            ->orderByDesc('total_sold')
+            ->limit(5)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'fish_type' => (object) [
+                        'id' => $item->id,
+                        'name' => $item->name
+                    ],
+                    'sold_count' => $item->total_sold
+                ];
+            });
+    }
+
+    /**
+     * Get top fish types sold with filters for admin analysis
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param string|null $status
+     * @param int $limit
+     * @return Collection
+     */
+    public static function getTopFishTypesSoldForAdmin(string $dateFrom, string $dateTo, ?string $status = null, int $limit = 5): Collection
+    {
+        $query = static::join('fish_boxes', 'inventory_logs.fish_box_id', '=', 'fish_boxes.id')
+            ->join('fish_types', 'fish_boxes.fish_type_id', '=', 'fish_types.id')
+            ->join('sales_details', 'fish_boxes.id', '=', 'sales_details.box_id')
+            ->join('sales', 'sales_details.sales_id', '=', 'sales.id')
+            ->where('inventory_logs.action', 'Sold')
+            ->whereDate('sales.sales_date', '>=', $dateFrom)
+            ->whereDate('sales.sales_date', '<=', $dateTo);
+
+        if ($status) {
+            $query->where('sales.status', $status);
+        }
+
+        return $query->selectRaw('fish_types.id, fish_types.name, COUNT(inventory_logs.id) as total_sold')
+            ->groupBy('fish_types.id', 'fish_types.name')
+            ->orderByDesc('total_sold')
+            ->limit($limit)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'fish_type' => (object) [
+                        'id' => $item->id,
+                        'name' => $item->name
+                    ],
+                    'sold_count' => $item->total_sold
+                ];
+            });
     }
 }

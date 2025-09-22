@@ -6,6 +6,7 @@ use App\Models\FishBox;
 use App\Models\Broker;
 use App\Models\User;
 use App\Constants\FishBoxStatusConstant;
+use App\Models\InventoryLog;
 use App\Repositories\SalesRepository;
 use Illuminate\Http\Request;
 
@@ -24,14 +25,14 @@ class AdminDashboardController extends Controller
         $totalBrokers = Broker::count();
 
         // Get total fish boxes sold
-        $totalFishBoxesSold = FishBox::where('status', FishBoxStatusConstant::SOLD)->count();
+        $totalFishBoxesSold = FishBox::sold()->count();
 
         // Get sales data from repository
         $totalSales = $this->salesRepository->getTotalSalesAmount();
         $totalOrders = $this->salesRepository->getTotalOrdersCount();
         $recentOrders = $this->salesRepository->getRecentOrders();
         $topBrokers = $this->salesRepository->getTopBrokersThisMonth();
-        $topFishTypes = $this->salesRepository->getTopFishTypesSold();
+        $topFishTypes = InventoryLog::getTopFishTypesSold();
         $dailySalesData = $this->salesRepository->getDailySalesData();
 
         return view('admin.dashboard', compact(
