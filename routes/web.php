@@ -76,7 +76,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/fish-boxes', 'store')->name('fish-boxes.store');
         Route::put('/fish-boxes/{id}', 'update')->name('fish-boxes.update');
         Route::delete('/fish-boxes/{id}', 'destroy')->name('fish-boxes.destroy');
-        Route::get('/fish-boxes/return-to-stock', 'returnToStock')->name('fish-boxes.return-to-stock');
+        Route::post('/fish-boxes/return-to-stock', 'returnToStock')->name('fish-boxes.return-to-stock');
     });
 
     // Sales Management routes - grouped by controller

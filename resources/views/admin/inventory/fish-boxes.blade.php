@@ -3,7 +3,8 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
         <h2 class="text-xl font-semibold text-gray-900">Fish Boxes List</h2>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-            <form method="GET" action="{{ route('admin.fish-boxes.return-to-stock') }}" data-swal="return-to-stock" class="inline">
+            <form method="POST" action="{{ route('admin.fish-boxes.return-to-stock') }}" data-swal="return-to-stock" class="inline">
+                @csrf
                 <button type="submit" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center space-x-2">
                     <x-heroicon-o-arrow-uturn-left class="w-4 h-4" />
                     <span class="hidden sm:inline">Return to In Stock</span>
