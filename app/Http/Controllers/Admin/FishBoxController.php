@@ -112,15 +112,19 @@ class FishBoxController extends Controller
         $userId = Auth::id();
         $brokerId = Broker::getBrokerIdByUserId($userId);
 
+        // Get filter options
+        $fishBoxStatuses = FishBoxStatusConstant::getAllStatuses();
+        $fishTypes = FishType::all();
+
         // If no broker found, return empty pagination
         if (!$brokerId) {
             $fishBoxes = FishBox::where('id', operator: 0)->paginate(12);
-            return compact('fishBoxes');
+            return compact('fishBoxes', 'fishBoxStatuses', 'fishTypes');
         }
 
         $fishBoxes = FishBox::getPaginatedWithFilters($search, $status, $fishType, 12, $brokerId);
 
-        return compact('fishBoxes');
+        return compact('fishBoxes', 'fishBoxStatuses', 'fishTypes');
     }
 
     /**
@@ -234,6 +238,31 @@ class FishBoxController extends Controller
         } catch (\Exception $e) {
             Log::error('Mark as missing error: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Error marking fish box as missing. Please try again.']);
+        }
+    }
+
+    /**
+     * Return all "Returned" fish boxes to "In Stock" status
+     *
+     * @return RedirectResponse
+     */
+    public function returnToStock(): RedirectResponse
+    {
+        try {
+            $count = FishBox::returnAllToStock(Auth::id());
+
+            if ($count > 0) {
+                return redirect()->route('admin.inventory.index', ['tab' => 'fishBoxes'])
+                    ->with('success', "Successfully returned {$count} fish box(es) to 'In Stock' status.");
+            } else {
+                return redirect()->route('admin.inventory.index', ['tab' => 'fishBoxes'])
+                    ->with('error', 'No fish boxes with "Returned" status found.');
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Return to stock error: ' . $e->getMessage());
+            return redirect()->route('admin.inventory.index', ['tab' => 'fishBoxes'])
+                ->with('error', 'Error returning fish boxes to stock. Please try again.');
         }
     }
 }

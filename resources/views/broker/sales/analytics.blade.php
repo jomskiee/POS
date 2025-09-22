@@ -7,27 +7,14 @@
 @extends('layouts.broker')
 
 @section('content')
-            <div class="w-full">
+<link rel="stylesheet" href="{{ asset('css/filter-layout.css') }}">
+            <div class="w-full content-spacing">
                 <!-- Page Header -->
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-gray-900">Sales & Analytics</h1>
                             <p class="text-gray-600 mt-2">Track your sales performance and analytics from {{ \Carbon\Carbon::parse($dateFrom)->format('M d, Y') }} to {{ \Carbon\Carbon::parse($dateTo)->format('M d, Y') }}</p>
-                        </div>
-                        <div class="flex space-x-3">
-                            <!-- <a href="{{ route('broker.sales.sales') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                                New Sale
-                            </a>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                </svg>
-                                Generate Report
-                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -39,9 +26,9 @@
                         dateFrom: '{{ request('date_from', $dateFrom) }}',
                         dateTo: '{{ request('date_to', $dateTo) }}'
                     }">
-                        <div class="grid grid-cols-12 gap-4 items-end">
+                        <div class="analytics-filter-layout">
                             <!-- Status Filter -->
-                            <div class="col-span-6 md:col-span-3">
+                            <div class="status-field">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                                 <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">All Status</option>
@@ -52,7 +39,7 @@
                             </div>
 
                             <!-- Date From -->
-                            <div class="col-span-6 md:col-span-3">
+                            <div class="fish-type-field">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
                                 <input type="date"
                                     name="date_from"
@@ -61,7 +48,7 @@
                             </div>
 
                             <!-- Date To -->
-                            <div class="col-span-6 md:col-span-3">
+                            <div class="fish-type-field">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
                                 <input type="date"
                                     name="date_to"
@@ -70,7 +57,7 @@
                             </div>
 
                             <!-- Action Buttons -->
-                            <div class="col-span-6 md:col-span-3 flex justify-end space-x-2">
+                            <div class="buttons-field flex justify-end space-x-2">
                                 <a href="{{ route('broker.sales.analytics') }}"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                                     Clear

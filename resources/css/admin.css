@@ -5,6 +5,42 @@
     }
 }
 
+/* Mobile and tablet sidebar and modal spacing fix - covers all devices that might show mobile sidebar */
+@media (max-width: 1366px) {
+    /* Ensure modals have proper bottom spacing for mobile sidebar */
+    .fixed.inset-0.z-50 .flex.items-end:not(.sales-detail-row):not(#sales-details-container) {
+        padding-bottom: 8rem !important; /* More space for mobile sidebar */
+    }
+
+    /* Remove padding from sales detail rows */
+    .sales-detail-row {
+        padding-bottom: 20px !important;
+    }
+
+    /* Ensure modal content doesn't get cut off by mobile sidebar */
+    .fixed.inset-0.z-50 .relative.inline-block {
+        margin-bottom: 2rem !important; /* Increased margin */
+    }
+
+    /* Mobile sidebar should be above modals */
+    .md\\:hidden.fixed.bottom-0 {
+        z-index: 60 !important; /* Higher than modal z-50 */
+    }
+}
+
+/* Mobile sidebar spacing fix for admin pages - target the main content area */
+@media (max-width: 768px) {
+    /* Ensure main content has proper bottom spacing for mobile sidebar */
+    .main-content main {
+        padding-bottom: 9rem !important; /* Increased space for mobile sidebar */
+    }
+
+    /* Alternative content spacing class for specific elements */
+    .content-spacing {
+        margin-bottom: 8rem !important; /* Increased space for mobile sidebar */
+    }
+}
+
 /* Icon margin based on sidebar state */
 .w-64 .sidebar-icon {
     margin-right: 0.75rem !important;

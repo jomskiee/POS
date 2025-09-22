@@ -26,6 +26,36 @@
     z-index: 50 !important; /* similar to Tailwind z-50 */
     pointer-events: none; /* container doesn't block UI */
 }
+
+/* Mobile and tablet sidebar and modal spacing fix - covers all devices that might show mobile sidebar */
+@media (max-width: 1366px) {
+    /* Ensure modals have proper bottom spacing for mobile sidebar */
+    .fixed.inset-0.z-50 .flex.items-end:not(.sales-detail-row):not(#sales-details-container) {
+        padding-bottom: 8rem !important; /* More space for mobile sidebar */
+    }
+
+    /* Remove padding from sales detail rows */
+    .sales-detail-row {
+        padding-bottom: 20px !important;
+    }
+
+    /* Ensure modal content doesn't get cut off by mobile sidebar */
+    .fixed.inset-0.z-50 .relative.inline-block {
+        margin-bottom: 2rem !important; /* Increased margin */
+    }
+
+    /* Mobile sidebar should be above modals */
+    .md\\:hidden.fixed.bottom-0 {
+        z-index: 60 !important; /* Higher than modal z-50 */
+    }
+}
+
+/* Mobile sidebar spacing fix for broker pages */
+@media (max-width: 768px) {
+    .content-spacing {
+        margin-bottom: 6rem !important; /* Space for mobile sidebar */
+    }
+}
 #toast-container > .toast {
     pointer-events: auto; /* toast remains interactive */
     margin-bottom: 0.75rem;

@@ -1,0 +1,185 @@
+/* Custom Filter Layout CSS */
+.filter-layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.filter-layout .search-field {
+    grid-column: span 12;
+}
+
+.filter-layout .status-field {
+    grid-column: span 6;
+}
+
+.filter-layout .fish-type-field {
+    grid-column: span 6;
+}
+
+.filter-layout .buttons-field {
+    grid-column: span 12;
+}
+
+/* Medium devices (768px and up) */
+@media (min-width: 768px) {
+    .filter-layout .search-field {
+        grid-column: span 4;
+    }
+
+    .filter-layout .status-field {
+        grid-column: span 4;
+    }
+
+    .filter-layout .fish-type-field {
+        grid-column: span 4;
+    }
+
+    .filter-layout .buttons-field {
+        grid-column: 9 / 13;
+    }
+}
+
+/* Large devices (1280px and up) */
+@media (min-width: 1280px) {
+    .filter-layout .search-field {
+        grid-column: span 4;
+    }
+
+    .filter-layout .status-field {
+        grid-column: span 2;
+    }
+
+    .filter-layout .fish-type-field {
+        grid-column: span 2;
+    }
+
+    .filter-layout .buttons-field {
+        grid-column: span 4;
+    }
+}
+
+/* Sales Page Specific Layout - 5 elements */
+.sales-filter-layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.sales-filter-layout .search-field {
+    grid-column: span 6;
+}
+
+.sales-filter-layout .status-field {
+    grid-column: span 6;
+}
+
+.sales-filter-layout .fish-type-field {
+    grid-column: span 6;
+}
+
+.sales-filter-layout .buttons-field {
+    grid-column: 9 / 13;
+}
+
+/* Medium devices (768px and up) - Sales Layout */
+@media (min-width: 768px) {
+    .sales-filter-layout .search-field {
+        grid-column: span 6;
+    }
+
+    .sales-filter-layout .status-field {
+        grid-column: span 6;
+    }
+
+    .sales-filter-layout .fish-type-field {
+        grid-column: span 4;
+    }
+
+    .sales-filter-layout .buttons-field {
+        grid-column: span 4;
+    }
+}
+
+/* Large devices (1280px and up) - Sales Layout */
+@media (min-width: 1280px) {
+    .sales-filter-layout .search-field {
+        grid-column: span 4;
+    }
+
+    .sales-filter-layout .status-field {
+        grid-column: span 2;
+    }
+
+    .sales-filter-layout .fish-type-field {
+        grid-column: span 2;
+    }
+
+    .sales-filter-layout .buttons-field {
+        grid-column: span 2;
+    }
+}
+
+/* Analytics Page Specific Layout - 4 elements */
+.analytics-filter-layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.analytics-filter-layout .search-field {
+    grid-column: span 6;
+}
+
+.analytics-filter-layout .status-field {
+    grid-column: span 6;
+}
+
+.analytics-filter-layout .fish-type-field {
+    grid-column: span 6;
+}
+
+.analytics-filter-layout .buttons-field {
+    grid-column: span 6;
+}
+
+/* Medium devices (768px and up) - Analytics Layout */
+@media (min-width: 768px) {
+    .analytics-filter-layout .search-field {
+        grid-column: span 4;
+    }
+
+    .analytics-filter-layout .status-field {
+        grid-column: span 4;
+    }
+
+    .analytics-filter-layout .fish-type-field {
+        grid-column: span 4;
+    }
+
+    .analytics-filter-layout .buttons-field {
+        grid-column: 9 / 13;
+    }
+}
+
+/* Large devices (1280px and up) - Analytics Layout */
+@media (min-width: 1280px) {
+    .analytics-filter-layout .search-field {
+        grid-column: span 3;
+    }
+
+    .analytics-filter-layout .status-field {
+        grid-column: span 3;
+    }
+
+    .analytics-filter-layout .fish-type-field {
+        grid-column: span 3;
+    }
+
+    .analytics-filter-layout .buttons-field {
+        grid-column: span 3;
+    }
+}

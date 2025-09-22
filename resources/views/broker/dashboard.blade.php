@@ -1,3 +1,9 @@
+@php
+    $breadcrumbs = [
+        ['title' => 'Dashboard']
+    ];
+@endphp
+
 @extends('layouts.broker')
 
 @section('content')

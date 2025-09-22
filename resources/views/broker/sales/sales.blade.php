@@ -1,7 +1,14 @@
+@php
+    $breadcrumbs = [
+        ['title' => 'Sales Management']
+    ];
+@endphp
+
 @extends('layouts.broker')
 
 @section('content')
-            <div class="w-full">
+<link rel="stylesheet" href="{{ asset('css/filter-layout.css') }}">
+            <div class="w-full content-spacing">
                 <!-- Page Header -->
                 <div class="mb-8">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -27,9 +34,9 @@
                         dateFrom: '{{ request('date_from') }}',
                         dateTo: '{{ request('date_to') }}'
                     }">
-                        <div class="grid grid-cols-12 gap-4 items-end">
+                        <div class="sales-filter-layout">
                             <!-- Search Field -->
-                            <div class="col-span-12 md:col-span-4">
+                            <div class="search-field">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
                                 <div class="relative">
                                     <input type="text"
@@ -44,7 +51,7 @@
                             </div>
 
                             <!-- Status Filter -->
-                            <div class="col-span-6 md:col-span-2">
+                            <div class="status-field">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                                 <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">All Status</option>
@@ -57,7 +64,7 @@
                             </div>
 
                             <!-- Date From -->
-                            <div class="col-span-6 md:col-span-2">
+                            <div class="fish-type-field">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
                                 <input type="date"
                                     name="date_from"
@@ -66,7 +73,7 @@
                             </div>
 
                             <!-- Date To -->
-                            <div class="col-span-6 md:col-span-2">
+                            <div class="fish-type-field">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
                                 <input type="date"
                                     name="date_to"
@@ -75,13 +82,13 @@
                             </div>
 
                             <!-- Action Buttons -->
-                            <div class="col-span-12 md:col-span-2 flex justify-end space-x-2">
+                            <div class="buttons-field flex justify-end space-x-2">
                                 <a href="{{ route('broker.sales.sales') }}"
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                class="px-3 lg:px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                                     Clear
                                 </a>
                                 <button type="submit"
-                                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                        class="px-3 lg:px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                                     Apply
                                 </button>
                             </div>
@@ -214,7 +221,7 @@
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg md:w-full">
             <div class="bg-white px-6 py-6">
                         <div class="text-center">
                             <div class="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4">
@@ -239,7 +246,7 @@
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-        <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl md:w-full">
             <!-- Modal Header -->
             <div class="bg-white px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
@@ -299,7 +306,7 @@
                         </label>
                                 <div class="space-y-4" id="sales-details-container">
                                     @foreach($salesDetails as $index => $detail)
-                                        <div class="flex items-end space-x-4 p-4 border border-gray-200 rounded-lg sales-detail-row">
+                                        <div class="flex flex-col sm:flex-row items-stretch sm:items-end space-y-3 sm:space-y-0 sm:space-x-4 p-4 border border-gray-200 rounded-lg sales-detail-row">
                                     <div class="flex-1">
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Fish Box</label>
                                                 <select name="sales_details[{{ $index }}][box_id]"
@@ -329,8 +336,9 @@
                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                                placeholder="Item description">
                                     </div>
-                                            <button type="button" class="remove-detail-btn text-red-600 hover:text-red-800 transition-colors">
-                                        <x-heroicon-o-trash class="w-5 h-5" />
+                                            <button type="button" class="remove-detail-btn text-red-600 hover:text-red-800 transition-colors flex items-center justify-center w-full sm:w-10 h-10 sm:self-end">
+                                        <x-heroicon-o-trash class="w-5 h-5 sm:mr-0 mr-2" />
+                                        <span class="sm:hidden">Delete</span>
                                     </button>
                                 </div>
                                     @endforeach
@@ -421,7 +429,7 @@
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-        <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg md:w-full">
             <!-- Modal Header -->
             <div class="bg-white px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
@@ -531,7 +539,7 @@
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg md:w-full">
                 <div class="bg-white px-6 py-6">
                     <div class="text-center">
                         <div class="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4">
@@ -560,7 +568,7 @@
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-        <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl md:w-full">
             <!-- Modal Header -->
             <div class="bg-white px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
@@ -700,7 +708,7 @@
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg md:w-full">
                 <div class="bg-white px-6 py-6">
                     <div class="text-center">
                         <div class="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4">
@@ -728,7 +736,7 @@
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-        <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-7xl sm:w-full">
+        <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-7xl md:w-full">
             <!-- Modal Header -->
             <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 text-white">
                 <div class="flex items-center justify-between">
@@ -1046,26 +1054,26 @@
             </div>
 
             <!-- Modal Footer -->
-            <div class="bg-white px-8 py-6 border-t border-gray-200 flex items-center justify-between">
+            <div class="bg-white px-4 sm:px-8 py-4 sm:py-6 border-t border-gray-200 flex flex-row items-center justify-center sm:justify-between space-x-2 sm:space-x-0">
                 <div class="flex items-center space-x-4">
                     <a href="{{ route('broker.sales.sales', ['modal' => 'payment', 'sale' => $viewingSales->id]) }}"
-                       class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
+                       class="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
                         <x-heroicon-o-plus class="w-4 h-4 mr-2" />
                         Add Payment
                     </a>
                     @if($viewingSales->status !== \App\Constants\SalesStatusConstant::PAID)
-                        <span class="text-sm text-gray-500">
+                        <span class="hidden sm:block text-sm text-gray-500 text-center sm:text-left">
                             Outstanding: <span class="font-semibold text-orange-600">₱{{ number_format($viewingSales->remaining_amount, 2) }}</span>
                         </span>
                     @endif
                 </div>
                 <div class="flex items-center space-x-3">
                     <a href="{{ route('broker.sales.sales') }}"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-center">
                         Close
                     </a>
                     <a href="{{ route('broker.sales.sales', ['modal' => 'edit', 'edit' => $viewingSales->id]) }}"
-                        class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                        class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
                         <x-heroicon-o-pencil-square class="w-4 h-4 mr-2" />
                         Edit Sale
                     </a>
