@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('12345678'),
                 'role' => 'broker',
                 'address' => '789 Sales Street, Broker City, BC 54321',
-                'account_balance' => $this->generateRandomBalance(),
+                'account_balance' => 0.00,
             ],
             [
                 'name' => 'Jane Sales',
@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('12345678'),
                 'role' => 'broker',
                 'address' => '321 Commerce Blvd, Broker City, BC 54322',
-                'account_balance' => $this->generateRandomBalance(),
+                'account_balance' => 0.00,
             ],
             [
                 'name' => 'Mike Seller',
@@ -49,7 +49,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('12345678'),
                 'role' => 'broker',
                 'address' => '654 Trade Lane, Broker City, BC 54323',
-                'account_balance' => $this->generateRandomBalance(),
+                'account_balance' => 0.00,
             ],
             [
                 'name' => 'Lisa Agent',
@@ -57,7 +57,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('12345678'),
                 'role' => 'broker',
                 'address' => '987 Market Square, Broker City, BC 54324',
-                'account_balance' => $this->generateRandomBalance(),
+                'account_balance' => 0.00,
             ],
         ];
 
@@ -91,10 +91,5 @@ class UserSeeder extends Seeder
         $this->command->info('Created ' . User::count() . ' users');
         $this->command->info('Created ' . Admin::count() . ' admins');
         $this->command->info('Created ' . Broker::count() . ' brokers');
-    }
-
-    private function generateRandomBalance()
-    {
-        return rand(10000, 5000000) / 100;
     }
 }
