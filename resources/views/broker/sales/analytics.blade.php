@@ -135,22 +135,36 @@
                     <!-- Sales Trend Chart -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Weekly Sales Trend</h3>
+
+                        <!-- Sales Amount Labels - Outside/Above Chart Container -->
+                        <div class="flex justify-between space-x-2 mb-4">
+                            @foreach($weeklySalesData as $weekData)
+                                <div class="flex-1 text-center">
+                                    <span class="text-xs font-medium text-gray-700">
+                                        ₱{{ number_format($weekData['sales'], 0) }}
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Chart Bars -->
                         <div class="h-64 flex items-end justify-between space-x-2">
                             @php
                                 $maxSales = $weeklySalesData->max('sales');
                             @endphp
                             @foreach($weeklySalesData as $weekData)
                                 <div class="flex flex-col items-center flex-1">
-                                    <div class="w-full bg-green-200 rounded-t relative"
+                                    <!-- Chart Bar -->
+                                    <div class="w-full bg-green-200 rounded-t"
                                          style="height: {{ $maxSales > 0 ? ($weekData['sales'] / $maxSales) * 240 : 0 }}px">
-                                        <div class="w-full bg-green-600 rounded-t absolute bottom-0"
-                                             style="height: {{ $maxSales > 0 ? ($weekData['sales'] / $maxSales) * 240 : 0 }}px">
-                                        </div>
-                                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">
-                                            ₱{{ number_format($weekData['sales'], 0) }}
-                                        </div>
+                                        @if($weekData['sales'] > 0)
+                                            <div class="w-full bg-green-600 rounded-t h-full">
+                                            </div>
+                                        @endif
                                     </div>
-                                    <span class="text-xs text-gray-500 mt-2">{{ $weekData['day'] }}</span>
+
+                                    <!-- Day Label -->
+                                    <span class="text-xs text-gray-500 mt-3">{{ $weekData['day'] }}</span>
                                 </div>
                             @endforeach
                         </div>

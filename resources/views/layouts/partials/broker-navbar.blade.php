@@ -12,7 +12,7 @@
             </div>
 
             <!-- Breadcrumbs -->
-            <nav class="hidden md:block text-sm">
+            <nav class="hidden lg:block text-sm">
                 <ol class="flex items-center space-x-2">
                     <li>
                         <a href="{{ route('broker.dashboard') }}" class="text-gray-500 hover:text-gray-700">Broker</a>
@@ -59,7 +59,7 @@
                     <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center">
                         <span class="text-sm font-medium text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                     </div>
-                    <span class="hidden sm:inline">{{ auth()->user()->name }}</span>
+                    <span class="hidden lg:inline">{{ auth()->user()->name }}</span>
                     <x-heroicon-o-chevron-down class="w-4 h-4" />
                 </button>
 
