@@ -100,11 +100,17 @@ class Broker extends Model
      */
     public function updateProfile(array $data): bool
     {
-        return $this->update([
+        $updateData = [
             'name' => $data['name'],
             'address' => $data['address'],
-            'stall_name' => $data['stall_name']
-        ]);
+        ];
+
+        // Only update stall_name if it's provided in the data
+        if (isset($data['stall_name'])) {
+            $updateData['stall_name'] = $data['stall_name'];
+        }
+
+        return $this->update($updateData);
     }
 
     /**
