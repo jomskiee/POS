@@ -51,6 +51,9 @@
 
         <!-- Mobile Footer Sidebar -->
         @include('layouts.partials.mobile-footer-sidebar')
+
+        <!-- Profile Modal -->
+        @include('auth.profile')
     </div>
 </body>
 </html>

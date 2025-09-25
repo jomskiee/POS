@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\FishManagementController;
 use App\Http\Controllers\Broker\SalesController;
 use App\Http\Controllers\BrokerDashboardController;
 use App\Http\Controllers\SalesManagementController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,6 +43,14 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect()->route('login')->with('message', 'You have been logged out successfully.');
 })->name('logout')->middleware('auth');
+
+// Profile routes - available to all authenticated users
+Route::middleware(['auth'])->group(function () {
+    Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', 'show')->name('show');
+        Route::put('/', 'update')->name('update');
+    });
+});
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->group(function () {

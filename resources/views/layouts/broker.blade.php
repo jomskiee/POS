@@ -50,6 +50,9 @@
 
         <!-- Mobile Footer Sidebar -->
         @include('layouts.partials.broker-mobile-footer-sidebar')
+
+        <!-- Profile Modal -->
+        @include('auth.profile')
     </div>
 </body>
 </html>
