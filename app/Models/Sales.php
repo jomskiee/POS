@@ -350,6 +350,17 @@ class Sales extends Model
         return $this->salesDetails->pluck('item')->implode(', ');
     }
 
+    /**
+     * Get formatted sale ID in the format #000-000-001
+     *
+     * @return string
+     */
+    public function getFormattedIdAttribute(): string
+    {
+        $id = str_pad($this->id, 9, '0', STR_PAD_LEFT);
+        return '#' . substr($id, 0, 3) . '-' . substr($id, 3, 3) . '-' . substr($id, 6, 3);
+    }
+
 
     /**
      * @param int|null $brokerId

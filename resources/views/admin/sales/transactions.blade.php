@@ -137,7 +137,7 @@
                     @forelse($transactionsData['transactions'] as $transaction)
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-blue-600">#{{ $transaction->id }}</div>
+                                <div class="text-sm font-medium text-blue-600">{{ $transaction->formatted_id }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $transaction->created_at->format('M d, Y') }}</div>

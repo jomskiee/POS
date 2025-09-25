@@ -83,10 +83,10 @@
                             <a href="{{ route('broker.sales.sales') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-4">
-                            @foreach ($recentSales as $sale)
+                            @foreach ($recentSales as $index => $sale)
                             <div class="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
                                 <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                    <span class="text-green-600 font-semibold text-sm"> #{{ $sale->id }}</span>
+                                    <span class="text-green-600 font-semibold text-sm">{{ $index + 1 }}</span>
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-sm font-medium text-gray-900"> {{ $sale->buyer_name }} ({{ $sale->formatted_items }})</p>
