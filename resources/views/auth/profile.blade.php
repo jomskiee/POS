@@ -49,6 +49,23 @@
                     @enderror
                 </div>
 
+                <!-- Stall Name Field (Brokers Only) -->
+                @if(auth()->user()->isBroker())
+                <div>
+                    <label for="stall_name" class="block text-sm font-medium text-gray-700">Stall Name</label>
+                    <input type="text"
+                           id="stall_name"
+                           name="stall_name"
+                           value="{{ old('stall_name', auth()->user()->getProfile()?->stall_name ?? '') }}"
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('stall_name') border-red-300 @enderror"
+                           placeholder="Enter your stall name"
+                           required>
+                    @error('stall_name')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                @endif
+
                 <!-- Email Field (Read-only) -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Email</label>

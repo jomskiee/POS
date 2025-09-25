@@ -44,11 +44,17 @@ class ProfileController extends Controller
         // Update user data
         $user->update($updateData);
 
-        // Update profile data (address)
+        // Update profile data
         $profileData = [
             'name' => $request->name,
             'address' => $request->address,
         ];
+
+        // Add stall_name for brokers only
+        if ($user->isBroker() && $request->has('stall_name')) {
+            $profileData['stall_name'] = $request->stall_name;
+        }
+
         $user->updateProfile($profileData);
 
         // Redirect back to the referring page without modal parameter on success

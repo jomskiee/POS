@@ -24,12 +24,20 @@ class ProfileRequest extends FormRequest
      */
     public function rules(): array
     {
+        /** @var User $user */
+        $user = Auth::user();
+
         $passwordOption = $this->input('password_option', 'keep');
 
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:500'],
         ];
+
+        // Add stall_name validation for brokers only
+        if ($user && $user->isBroker()) {
+            $rules['stall_name'] = ['required', 'string', 'max:255'];
+        }
 
         // Add password validation rules only if changing password
         if ($passwordOption === 'change') {
@@ -51,6 +59,8 @@ class ProfileRequest extends FormRequest
             'name.required' => 'The name field is required.',
             'name.max' => 'The name may not be greater than 255 characters.',
             'address.max' => 'The address may not be greater than 500 characters.',
+            'stall_name.required' => 'The stall name field is required.',
+            'stall_name.max' => 'The stall name may not be greater than 255 characters.',
             'current_password.required' => 'Current password is required when changing password.',
             'password.required' => 'New password is required when changing password.',
             'password.confirmed' => 'Password confirmation does not match.',
