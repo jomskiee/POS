@@ -506,9 +506,9 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                             <option value="">Select Payment Method</option>
                             <option value="Cash" {{ old('payment_method') == 'Cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="GCash" {{ old('payment_method') == 'GCash' ? 'selected' : '' }}>GCash</option>
                             <option value="Bank Transfer" {{ old('payment_method') == 'Bank Transfer' ? 'selected' : '' }}>Bank Transfer</option>
                             <option value="Check" {{ old('payment_method') == 'Check' ? 'selected' : '' }}>Check</option>
-                            <option value="Credit Card" {{ old('payment_method') == 'Credit Card' ? 'selected' : '' }}>Credit Card</option>
                             <option value="Other" {{ old('payment_method') == 'Other' ? 'selected' : '' }}>Other</option>
                         </select>
                         @error('payment_method')

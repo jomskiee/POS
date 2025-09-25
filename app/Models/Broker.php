@@ -17,6 +17,7 @@ class Broker extends Model
         'user_id',
         'name',
         'address',
+        'stall_name',
         'account_balance',
         'status',
     ];
@@ -101,7 +102,8 @@ class Broker extends Model
     {
         return $this->update([
             'name' => $data['name'],
-            'address' => $data['address']
+            'address' => $data['address'],
+            'stall_name' => $data['stall_name']
         ]);
     }
 
