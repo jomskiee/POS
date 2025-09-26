@@ -105,6 +105,7 @@ Route::middleware(['auth', 'broker'])->group(function () {
     Route::controller(FishBoxController::class)->prefix('broker')->name('broker.')->group(function () {
         Route::post('/fish-boxes/update-status', 'updateStatus')->name('fish-boxes.update-status');
         Route::patch('/fish-boxes/{id}/mark-missing', 'markAsMissing')->name('fish-boxes.mark-missing');
+        Route::patch('/fish-boxes/{id}/return', 'returnFishBox')->name('fish-boxes.return');
     });
 
     // Sales Management routes
