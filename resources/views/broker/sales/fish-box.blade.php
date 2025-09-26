@@ -159,7 +159,7 @@
                                             </button>
                                         </form>
                                     @endif
-                                    @if($fishBox->status !== 'Returned')
+                                    @if($fishBox->status !== 'Returned' && $fishBox->status !== 'Missing')
                                         <form method="POST" action="{{ route('broker.fish-boxes.return', $fishBox->id) }}"
                                               data-swal="return-fish-box"
                                               data-record-name="{{ $fishBox->name }}"
