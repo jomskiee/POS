@@ -87,8 +87,7 @@ class SalesController extends Controller
         $editingSales = $this->getModalSales($request, 'edit', 'edit', ['salesDetails.fishBox.fishType', 'salesPayments']);
         $viewingSales = $this->getModalSales($request, 'show', 'show', ['salesDetails.fishBox.fishType', 'salesPayments']);
         $saleForPayment = $this->getModalSales($request, 'payment', 'sale');
-        $printingSales = $this->getModalSales($request, 'print', 'print', ['salesDetails.fishBox.fishType', 'salesPayments', 'broker.user']);
-
+        $printingSales = $this->getModalSales($request, 'print', 'print', ['salesDetails.fishBox.fishType', 'salesPayments', 'broker.user', 'broker']);
         // Handle fish boxes for editing mode
         $fishBoxes = $this->prepareFishBoxesForEdit($fishBoxes, $editingSales);
 
