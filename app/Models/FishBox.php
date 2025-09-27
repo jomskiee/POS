@@ -269,6 +269,26 @@ class FishBox extends Model
     }
 
     /**
+     * @param int $fishBoxId
+     * @param int $userId
+     *
+     * @return self
+     */
+    public static function updateFishBoxesForReturned(int $fishBoxId, int $userId): self
+    {
+        $fishBox = static::find($fishBoxId);
+
+        // Update the fish box status to Returned
+        $fishBox->status = FishBoxStatusConstant::RETURNED;
+        $fishBox->save();
+
+        // Create inventory log for the status change
+        InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::RETURNED, $userId);
+
+        return $fishBox;
+    }
+
+    /**
      * @param string $qrCode
      *
      * @return static|null

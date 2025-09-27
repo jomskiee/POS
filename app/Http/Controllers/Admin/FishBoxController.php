@@ -266,11 +266,7 @@ class FishBoxController extends Controller
             }
 
             // Update the fish box status to Returned
-            $fishBox->status = FishBoxStatusConstant::RETURNED;
-            $fishBox->save();
-
-            // Create inventory log for the status change
-            InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::RETURNED, Auth::id());
+            $fishBox = FishBox::updateFishBoxesForReturned($fishBox->id, Auth::id());
 
             return back()->with('success', "Fish box '{$fishBox->name}' has been returned successfully.");
 
