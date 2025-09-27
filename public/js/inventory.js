@@ -4737,6 +4737,16 @@ document.addEventListener('DOMContentLoaded', function () {
           text = "This will activate the ".concat(recordType.toLowerCase()).concat(recordName ? " \"".concat(recordName, "\"") : '', ".");
           confirmText = "Yes, activate ".concat(recordType.toLowerCase());
           break;
+        case 'mark-missing':
+          title = "Mark ".concat(recordType, " as Missing?");
+          text = "This will mark the ".concat(recordType.toLowerCase()).concat(recordName ? " \"".concat(recordName, "\"") : '', " as missing.");
+          confirmText = "Yes, mark as missing";
+          break;
+        case 'return-fish-box':
+          title = "Return ".concat(recordType, "?");
+          text = "This will mark the ".concat(recordType.toLowerCase()).concat(recordName ? " \"".concat(recordName, "\"") : '', " as returned.");
+          confirmText = "Yes, return ".concat(recordType.toLowerCase());
+          break;
       }
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: title,

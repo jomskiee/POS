@@ -587,8 +587,8 @@
                 <div class="max-w-md mx-auto bg-white">
                     <!-- Company Header -->
                     <div class="text-center border-b border-gray-200 pb-4 mb-4">
-                        <h1 class="text-2xl font-bold text-gray-900">Fish Box POS</h1>
-                        <p class="text-sm text-gray-600">Sales Receipt</p>
+                        <h1 class="text-2xl font-bold text-gray-900">{{ $printingSales->broker->name }}</h1>
+                        <p class="text-sm text-gray-600">{{ $printingSales->broker->stall_name }}</p>
                         <p class="text-xs text-gray-500">Receipt #{{ $printingSales->id }}</p>
                     </div>
 

@@ -190,7 +190,7 @@ class SalesManagementController extends Controller
 
         // Handle modal data for view and print
         $viewingSales = $this->getModalSales($request, 'show', 'show', ['broker', 'salesDetails.fishBox.fishType', 'salesPayments']);
-        $printingSales = $this->getModalSales($request, 'print', 'print', ['broker', 'salesDetails.fishBox.fishType', 'salesPayments']);
+        $printingSales = $this->getModalSales($request, 'print', 'print', ['broker', 'salesDetails.fishBox.fishType', 'salesPayments', 'broker']);
 
         // Add status display variables (same as broker)
         $salesStatuses = SalesStatusConstant::getAllActiveStatuses();

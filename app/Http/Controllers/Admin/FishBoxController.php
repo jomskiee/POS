@@ -242,6 +242,41 @@ class FishBoxController extends Controller
     }
 
     /**
+     * Return a specific fish box to "Returned" status
+     *
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function returnFishBox($id): RedirectResponse
+    {
+        try {
+            $fishBox = FishBox::findOrFail($id);
+
+            // Check if the fish box is already returned
+            if ($fishBox->status === FishBoxStatusConstant::RETURNED) {
+                return back()->withErrors(['error' => 'This fish box is already returned.']);
+            }
+
+            // Check if the fish box belongs to the current broker
+            $userId = Auth::id();
+            $brokerId = Broker::getBrokerIdByUserId($userId);
+
+            if ($fishBox->current_broker_id !== $brokerId) {
+                return back()->withErrors(['error' => 'This fish box is not assigned to you.']);
+            }
+
+            // Update the fish box status to Returned
+            $fishBox = FishBox::updateFishBoxesForReturned($fishBox->id, Auth::id());
+
+            return back()->with('success', "Fish box '{$fishBox->name}' has been returned successfully.");
+
+        } catch (\Exception $e) {
+            Log::error('Return fish box error: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Error returning fish box. Please try again.']);
+        }
+    }
+
+    /**
      * Return all "Returned" fish boxes to "In Stock" status
      *
      * @return RedirectResponse

@@ -31,6 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     text = `This will activate the ${recordType.toLowerCase()}${recordName ? ` "${recordName}"` : ''}.`;
                     confirmText = `Yes, activate ${recordType.toLowerCase()}`;
                     break;
+                case 'mark-missing':
+                    title = `Mark ${recordType} as Missing?`;
+                    text = `This will mark the ${recordType.toLowerCase()}${recordName ? ` "${recordName}"` : ''} as missing.`;
+                    confirmText = `Yes, mark as missing`;
+                    break;
+                case 'return-fish-box':
+                    title = `Return ${recordType}?`;
+                    text = `This will mark the ${recordType.toLowerCase()}${recordName ? ` "${recordName}"` : ''} as returned.`;
+                    confirmText = `Yes, return ${recordType.toLowerCase()}`;
+                    break;
             }
 
             Swal.fire({

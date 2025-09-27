@@ -159,13 +159,20 @@
                                             </button>
                                         </form>
                                     @endif
-                                        <form class="inline">
-                                            <button type="button"
+                                    @if($fishBox->status !== 'Returned' && $fishBox->status !== 'Missing')
+                                        <form method="POST" action="{{ route('broker.fish-boxes.return', $fishBox->id) }}"
+                                              data-swal="return-fish-box"
+                                              data-record-name="{{ $fishBox->name }}"
+                                              class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
                                                     class="text-green-600 hover:text-green-900 transition-colors"
-                                                    title="Mark as Returned">
+                                                    title="Return Fish Box">
                                                 <x-heroicon-o-arrow-uturn-left class="w-5 h-5" />
                                             </button>
                                         </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
