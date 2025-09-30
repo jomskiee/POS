@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Broker;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FishTypeRequest;
 use App\Models\FishType;
+use App\Models\Broker;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class FishTypesController extends Controller
 {
@@ -19,12 +21,15 @@ class FishTypesController extends Controller
      */
     public function getIndexData(Request $request): array
     {
-        $fishTypes = FishType::getPaginatedWithSearch($request->get('search'));
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
+
+        $fishTypes = FishType::getPaginatedWithSearch($request->get('search'), $brokerId);
         $editingFishType = null;
 
         // Only fetch editing fish type if we're in edit mode
         if ($request->get('modal') === 'edit' && $request->has('edit')) {
-            $editingFishType = FishType::find($request->get('edit'));
+            $editingFishType = FishType::where('broker_id', $brokerId)->find($request->get('edit'));
         }
 
         return compact('fishTypes', 'editingFishType');
@@ -39,9 +44,15 @@ class FishTypesController extends Controller
      */
     public function store(FishTypeRequest $request): RedirectResponse
     {
-        FishType::create($request->validated());
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
 
-        return redirect()->route('admin.inventory.index', ['tab' => 'fishTypes'])
+        $data = $request->validated();
+        $data['broker_id'] = $brokerId;
+
+        FishType::create($data);
+
+        return redirect()->route('broker.inventory.index', ['tab' => 'fishTypes'])
             ->with('success', 'Fish type created successfully!');
     }
 
@@ -59,7 +70,7 @@ class FishTypesController extends Controller
 
         $fishType->update($request->validated());
 
-        return redirect()->route('admin.inventory.index', ['tab' => 'fishTypes'])
+        return redirect()->route('broker.inventory.index', ['tab' => 'fishTypes'])
             ->with('success', 'Fish type updated successfully!');
     }
 
@@ -73,9 +84,16 @@ class FishTypesController extends Controller
     public function destroy($id): RedirectResponse
     {
         $fishType = FishType::findOrFail($id);
+
+        // Check if fish type has associated fish boxes
+        if ($fishType->fishBoxes()->count() > 0) {
+            return redirect()->route('broker.inventory.index', ['tab' => 'fishTypes'])
+                ->with('error', 'Cannot delete fish type that has associated fish boxes.');
+        }
+
         $fishType->delete();
 
-        return redirect()->route('admin.inventory.index', ['tab' => 'fishTypes'])
+        return redirect()->route('broker.inventory.index', ['tab' => 'fishTypes'])
             ->with('success', 'Fish type deleted successfully!');
     }
 }

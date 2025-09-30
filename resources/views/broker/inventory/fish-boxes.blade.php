@@ -3,16 +3,16 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
         <h2 class="text-xl font-semibold text-gray-900">Fish Boxes List</h2>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-            <form method="POST" action="{{ route('admin.fish-boxes.return-to-stock') }}" data-swal="return-to-stock" class="inline">
+            <form method="POST" action="{{ route('broker.fish-boxes.return-to-stock') }}" data-swal="return-to-stock" class="inline">
                 @csrf
-                <button type="submit" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center space-x-2">
+                <button type="submit" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center space-x-2">
                     <x-heroicon-o-arrow-uturn-left class="w-4 h-4" />
                     <span class="hidden sm:inline">Return to In Stock</span>
                     <span class="sm:hidden">Return to Stock</span>
                 </button>
             </form>
-            <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'create']) }}"
-               class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center space-x-2">
+            <a href="{{ route('broker.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'create']) }}"
+               class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center space-x-2">
                 <x-heroicon-o-plus class="w-4 h-4" />
                 <span class="hidden sm:inline">Add Fish Box</span>
                 <span class="sm:hidden">Add Fish Box</span>
@@ -34,7 +34,7 @@
                     <h3 class="text-lg font-semibold text-gray-900">
                         {{ request('modal') === 'edit' ? 'Edit Fish Box' : 'Add New Fish Box' }}
                     </h3>
-                    <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes']) }}"
+                    <a href="{{ route('broker.inventory.index', ['tab' => 'fishBoxes']) }}"
                         class="text-gray-400 hover:text-gray-600 transition-colors">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
                     </a>
@@ -43,7 +43,7 @@
 
             <!-- Modal Body -->
             <div class="bg-white px-6 py-6">
-                <form action="{{ request('modal') === 'edit' ? route('admin.fish-boxes.update', request('edit', 0)) : route('admin.fish-boxes.store') }}" method="POST" class="space-y-6">
+                <form action="{{ request('modal') === 'edit' ? route('broker.fish-boxes.update', request('edit', 0)) : route('broker.fish-boxes.store') }}" method="POST" class="space-y-6">
                     @csrf
                     @if(request('modal') === 'edit')
                         @method('PUT')
@@ -113,12 +113,12 @@
 
                     <!-- Modal Footer -->
                     <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
-                        <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes']) }}"
+                        <a href="{{ route('broker.inventory.index', ['tab' => 'fishBoxes']) }}"
                             class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-center">
                             Cancel
                         </a>
                         <button type="submit"
-                                class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
                             {{ request('modal') === 'edit' ? 'Update Fish Box' : 'Create Fish Box' }}
                         </button>
                     </div>
@@ -131,44 +131,62 @@
 
     <!-- Fish Boxes Filters -->
     <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
-        <form method="GET" action="{{ route('admin.inventory.index') }}" x-data="{ search: '{{ request('search') }}', fish_type: '{{ request('fish_type') }}', status: '{{ request('status') }}' }">
+        <form method="GET" action="{{ route('broker.inventory.index') }}" x-data="{
+            search: '{{ request('search') }}',
+            status: '{{ request('status') }}',
+            fishType: '{{ request('fish_type') }}'
+        }">
             <input type="hidden" name="tab" value="fishBoxes">
             <div class="filter-layout">
+                <!-- Search Field -->
                 <div class="search-field">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
                     <div class="relative">
                         <input type="text"
                             name="search"
                             x-model="search"
-                            placeholder="Search fish boxes..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            placeholder="Search fish box name or fish type..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <x-heroicon-o-magnifying-glass class="h-4 w-4 text-gray-400" />
                         </div>
                     </div>
                 </div>
-                <div class="fish-type-field">
-                    <select name="fish_type" x-model="fish_type" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">All Fish Types</option>
-                        @foreach($fishTypes as $fishType)
-                            <option value="{{ $fishType->id }}" {{ request('fish_type') == $fishType->id ? 'selected' : '' }}>{{ $fishType->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
+
+                <!-- Status Filter -->
                 <div class="status-field">
-                    <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <option value="">All Status</option>
                         @foreach($fishBoxStatuses as $status)
-                            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $status)) }}</option>
+                            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
+                                {{ ucfirst(str_replace('_', ' ', $status)) }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
+
+                <!-- Fish Type Filter -->
+                <div class="fish-type-field">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fish Type</label>
+                    <select name="fish_type" x-model="fishType" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <option value="">All Fish Types</option>
+                        @foreach($fishTypes as $fishType)
+                            <option value="{{ $fishType->id }}" {{ request('fish_type') == $fishType->id ? 'selected' : '' }}>
+                                {{ $fishType->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
                 <div class="buttons-field flex justify-end space-x-2">
-                    <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes']) }}"
-                       class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                    <a href="{{ route('broker.inventory.index', ['tab' => 'fishBoxes']) }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         Clear
                     </a>
                     <button type="submit"
-                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                            class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
                         Apply
                     </button>
                 </div>
@@ -176,13 +194,14 @@
         </form>
     </div>
 
+
     <!-- Results Count -->
     <div class="mb-4">
         <p class="text-sm text-gray-600">
             <span class="hidden sm:inline">Showing {{ $fishBoxes->firstItem() ?? 0 }} to {{ $fishBoxes->lastItem() ?? 0 }} of {{ $fishBoxes->total() }} fish boxes</span>
             <span class="sm:hidden">{{ $fishBoxes->total() }} fish boxes</span>
             @if(request()->hasAny(['search', 'status', 'fish_type']))
-                <span class="text-blue-600">(filtered)</span>
+                <span class="text-green-600">(filtered)</span>
             @endif
         </p>
     </div>
@@ -192,7 +211,7 @@
         @forelse($fishBoxes as $fishBox)
             <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                         <x-heroicon-o-archive-box class="w-6 h-6 text-white" />
                     </div>
                     <div class="flex items-center space-x-2">
@@ -202,13 +221,43 @@
                                 data-fish-box-name="{{ $fishBox->name }}">
                             <x-heroicon-o-qr-code class="w-6 h-6" />
                         </button>
-                        <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'edit', 'edit' => $fishBox->id]) }}"
-                            class="text-gray-400 hover:text-blue-600 transition-colors"
-                            title="Edit Fish Box">
-                            <x-heroicon-o-pencil-square class="w-6 h-6" />
-                        </a>
-                        @if($fishBox->can_delete)
-                            <form action="{{ route('admin.fish-boxes.destroy', $fishBox->id) }}" method="POST" class="inline-block" data-swal="delete">
+                        @if($fishBox->canBeEdited())
+                            <a href="{{ route('broker.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'edit', 'edit' => $fishBox->id]) }}"
+                                class="text-gray-400 hover:text-green-600 transition-colors"
+                                title="Edit Fish Box">
+                                <x-heroicon-o-pencil-square class="w-6 h-6" />
+                            </a>
+                        @endif
+                        @if($fishBox->canBeMarkedAsMissing())
+                            <form method="POST" action="{{ route('broker.fish-boxes.mark-missing', $fishBox->id) }}"
+                                  data-swal="mark-missing"
+                                  data-record-name="{{ $fishBox->name }}"
+                                  class="inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit"
+                                        class="text-gray-400 hover:text-red-600 transition-colors"
+                                        title="Mark as Missing">
+                                    <x-heroicon-o-exclamation-triangle class="w-6 h-6" />
+                                </button>
+                            </form>
+                        @endif
+                        @if($fishBox->canBeReturned())
+                            <form method="POST" action="{{ route('broker.fish-boxes.return', $fishBox->id) }}"
+                                  data-swal="return-fish-box"
+                                  data-record-name="{{ $fishBox->name }}"
+                                  class="inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit"
+                                        class="text-gray-400 hover:text-green-600 transition-colors"
+                                        title="Return Fish Box">
+                                    <x-heroicon-o-arrow-uturn-left class="w-6 h-6" />
+                                </button>
+                            </form>
+                        @endif
+                        @if($fishBox->canBeDeleted())
+                            <form action="{{ route('broker.fish-boxes.destroy', $fishBox->id) }}" method="POST" class="inline-block" data-swal="delete">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
@@ -217,10 +266,6 @@
                                     <x-heroicon-o-trash class="w-6 h-6" />
                                 </button>
                             </form>
-                        @else
-                            <button type="button" class="text-gray-400 cursor-not-allowed" title="Cannot delete: Fish box is {{ $fishBox->status }}">
-                                <x-heroicon-o-trash class="w-6 h-6" />
-                            </button>
                         @endif
                     </div>
                 </div>
@@ -246,8 +291,8 @@
                     <x-heroicon-o-archive-box class="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 class="text-xl font-medium text-gray-900 mb-2">No fish boxes found</h3>
                     <p class="text-gray-500 mb-6">Get started by creating your first fish box.</p>
-                    <a href="{{ route('admin.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'create']) }}"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
+                    <a href="{{ route('broker.inventory.index', ['tab' => 'fishBoxes', 'modal' => 'create']) }}"
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center space-x-2">
                         <x-heroicon-o-plus class="w-5 h-5" />
                         <span>Create Fish Box</span>
                     </a>
@@ -264,3 +309,4 @@
     @endif
 
 </div>
+

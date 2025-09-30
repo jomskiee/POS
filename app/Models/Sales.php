@@ -188,8 +188,8 @@ class Sales extends Model
 
             // Reset fish boxes back to IN_STOCK status for old sales details
             foreach ($oldSalesDetails as $detail) {
-                FishBox::updateBrokerAndStatus($detail->box_id, null, FishBoxStatusConstant::IN_STOCK, $userId);
-                InventoryLog::deleteLogForFishBox($detail->box_id, $userId, $sale->created_at);
+                FishBox::updateStatus($detail->box_id, FishBoxStatusConstant::IN_STOCK, $userId);
+                InventoryLog::deleteLogForFishBox($detail->box_id, $sale->created_at);
             }
 
             // Update sales details - delete existing and create new ones

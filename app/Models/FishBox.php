@@ -18,7 +18,7 @@ class FishBox extends Model
         'qr_code',
         'fish_type_id',
         'status',
-        'current_broker_id',
+        'broker_id',
     ];
 
     protected $casts = [
@@ -37,11 +37,11 @@ class FishBox extends Model
     }
 
     /**
-     * Get the current broker that owns the fish box.
+     * Get the broker that owns the fish box.
      */
-    public function currentBroker()
+    public function broker()
     {
-        return $this->belongsTo(Broker::class, 'current_broker_id');
+        return $this->belongsTo(Broker::class, 'broker_id');
     }
 
     /**
@@ -131,10 +131,9 @@ class FishBox extends Model
      *
      * @param int $fishTypeId
      * @param int $quantity
-     * @param int $userId
      * @return array
      */
-    public static function createFishBoxes($fishTypeId, $quantity, $userId): array
+    public static function createFishBoxes($fishTypeId, $quantity, $brokerId): array
     {
         $createdBoxes = [];
 
@@ -144,11 +143,11 @@ class FishBox extends Model
                 'qr_code' => static::generateUniqueQrCode(),
                 'fish_type_id' => $fishTypeId,
                 'status' => FishBoxStatusConstant::IN_STOCK,
-                'current_broker_id' => null,
+                'broker_id' => $brokerId,
             ]);
 
             // Create inventory log for the new fish box
-            InventoryLog::createLogForFishBox($fishBox->id, $fishBox->status, $userId);
+            InventoryLog::createLogForFishBox($fishBox->id, $fishBox->status, $brokerId);
 
             $createdBoxes[] = $fishBox;
         }
@@ -167,7 +166,7 @@ class FishBox extends Model
      */
     public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12, ?int $brokerId = null): LengthAwarePaginator
     {
-        $query = static::with(['fishType', 'currentBroker', 'latestSale', 'salesDetails'])
+        $query = static::with(['fishType', 'broker', 'latestSale', 'salesDetails'])
             ->select('fish_boxes.*')
             ->selectRaw('NOT (status = ? OR status = ?) as can_delete', [
                 FishBoxStatusConstant::SOLD,
@@ -196,7 +195,7 @@ class FishBox extends Model
 
         // Apply broker filter
         if ($brokerId) {
-            $query->where('current_broker_id', $brokerId);
+            $query->where('broker_id', $brokerId);
         }
 
         // Order by creation date and id for consistent pagination
@@ -204,28 +203,28 @@ class FishBox extends Model
     }
 
      /**
-     * Get available fish boxes for sale
+     * Get available fish boxes for sale for a specific broker
      *
+     * @param int $brokerId
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getAvailableForSale()
+    public static function getAvailableForSale(int $brokerId)
     {
         return static::with('fishType')
             ->where('status', FishBoxStatusConstant::IN_STOCK)
-            ->whereNull('current_broker_id')
+            ->where('broker_id', $brokerId)
             ->get();
     }
 
     /**
-     * Update fish box broker ID and status
+     * Update fish box status
      *
      * @param int $fishBoxId
-     * @param int|null $currentBrokerId
      * @param string $status
      * @param int $userId
      * @return bool
      */
-    public static function updateBrokerAndStatus(int $fishBoxId, ?int $currentBrokerId, string $status, int $userId): bool
+    public static function updateStatus(int $fishBoxId, string $status, int $userId): bool
     {
         $fishBox = static::find($fishBoxId);
 
@@ -234,12 +233,11 @@ class FishBox extends Model
         }
 
         $fishBox->update([
-            'current_broker_id' => $currentBrokerId,
             'status' => $status,
         ]);
 
         // Create inventory log for the status change
-        InventoryLog::createLogForFishBox($fishBox->id, $status, $userId);
+        InventoryLog::createLogForFishBox($fishBox->id, $status, $fishBox->broker_id);
 
         return true;
     }
@@ -259,9 +257,8 @@ class FishBox extends Model
         }
 
         foreach ($salesDetails as $detail) {
-            self::updateBrokerAndStatus(
+            self::updateStatus(
                 $detail['box_id'],
-                $brokerId,
                 FishBoxStatusConstant::SOLD,
                 $userId
             );
@@ -283,19 +280,34 @@ class FishBox extends Model
         $fishBox->save();
 
         // Create inventory log for the status change
-        InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::RETURNED, $userId);
+        InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::RETURNED, $fishBox->broker_id);
 
         return $fishBox;
     }
 
     /**
      * @param string $qrCode
+     * @param int $brokerId
      *
      * @return static|null
      */
-    public static function getFishBoxByQrCode(string $qrCode): ?self
+    public static function getFishBoxByQrCode(string $qrCode, int $brokerId): ?self
     {
-        return static::where('qr_code', $qrCode)->first();
+        return static::where('qr_code', $qrCode)->where('broker_id', $brokerId)->first();
+    }
+
+    /**
+     * Get fish box by ID with broker validation
+     *
+     * @param int $id
+     * @param int $brokerId
+     *
+     * @return static
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public static function getFishBoxByIdAndBroker(int $id, int $brokerId): self
+    {
+        return static::where('id', $id)->where('broker_id', $brokerId)->firstOrFail();
     }
 
 
@@ -309,7 +321,7 @@ class FishBox extends Model
         $query = static::where('status', FishBoxStatusConstant::SOLD);
 
         if ($brokerId) {
-            $query->where('current_broker_id', $brokerId);
+            $query->where('broker_id', $brokerId);
         }
 
         return $query->count();
@@ -345,20 +357,55 @@ class FishBox extends Model
     public function canBeMarkedAsMissing(): bool
     {
         return !in_array($this->status, [
+            FishBoxStatusConstant::IN_STOCK,
             FishBoxStatusConstant::MISSING,
             FishBoxStatusConstant::RETURNED
         ]);
     }
 
     /**
-     * Return all returned fish boxes to in stock status
+     * Check if the fish box can be returned
      *
-     * @param int $userId
+     * @return bool
+     */
+    public function canBeReturned(): bool
+    {
+        return !in_array($this->status, [
+            FishBoxStatusConstant::IN_STOCK,
+            FishBoxStatusConstant::MISSING,
+            FishBoxStatusConstant::RETURNED
+        ]);
+    }
+
+    /**
+     * Check if the fish box can be edited
+     *
+     * @return bool
+     */
+    public function canBeEdited(): bool
+    {
+        return $this->status !== FishBoxStatusConstant::SOLD;
+    }
+
+    /**
+     * Check if the fish box can be deleted
+     *
+     * @return bool
+     */
+    public function canBeDeleted(): bool
+    {
+        return $this->can_delete && $this->status !== FishBoxStatusConstant::SOLD;
+    }
+
+    /**
+     * Return all returned fish boxes to in stock status for a specific broker
+     *
+     * @param int $brokerId
      * @return int
      */
-    public static function returnAllToStock(int $userId): int
+    public static function returnAllToStock(int $brokerId): int
     {
-        $returnedFishBoxes = static::returned()->get();
+        $returnedFishBoxes = static::returned()->where('broker_id', $brokerId)->get();
 
         if ($returnedFishBoxes->isEmpty()) {
             return 0;
@@ -368,11 +415,10 @@ class FishBox extends Model
         foreach ($returnedFishBoxes as $fishBox) {
             // Update status to In Stock
             $fishBox->status = FishBoxStatusConstant::IN_STOCK;
-            $fishBox->current_broker_id = null;
             $fishBox->save();
 
             // Create inventory log for the status change
-            InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::IN_STOCK, $userId);
+            InventoryLog::createLogForFishBox($fishBox->id, FishBoxStatusConstant::IN_STOCK, $fishBox->broker_id);
 
             $count++;
         }

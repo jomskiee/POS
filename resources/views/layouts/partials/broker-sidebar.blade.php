@@ -37,13 +37,13 @@
                     <span class="transition-all duration-200" x-show="sidebarOpen" x-transition>Sales Management</span>
                 </a>
             </div>
-            <!-- Fish Boxes -->
+            <!-- Fish Boxes Management -->
             <div>
-                <a href="{{ route('broker.sales.fish-boxes') }}"
+                <a href="{{ route('broker.inventory.index') }}"
                 class="group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out
-                        {{ request()->routeIs('broker.sales.fish-boxes') ? 'bg-green-100 text-green-700 border-r-4 border-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                        {{ request()->routeIs('broker.inventory.*') ? 'bg-green-100 text-green-700 border-r-4 border-green-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                     <x-heroicon-o-cube class="h-6 w-6 flex-shrink-0 transition-transform duration-200 group-hover:scale-110 sidebar-icon
-                            {{ request()->routeIs('broker.sales.fish-boxes') ? 'text-green-500' : 'text-gray-400 group-hover:text-gray-500' }}" />
+                            {{ request()->routeIs('broker.inventory.*') ? 'text-green-500' : 'text-gray-400 group-hover:text-gray-500' }}" />
                     <span class="transition-all duration-200" x-show="sidebarOpen" x-transition>Fish Boxes Management</span>
                 </a>
             </div>

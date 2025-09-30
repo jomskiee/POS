@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\UserManagementController;
-use App\Http\Controllers\Admin\FishTypesController;
-use App\Http\Controllers\Admin\FishBoxController;
+use App\Http\Controllers\Broker\FishTypesController;
+use App\Http\Controllers\Broker\FishBoxController;
 use App\Http\Controllers\Admin\FishManagementController;
 use App\Http\Controllers\Broker\SalesController;
+use App\Http\Controllers\Broker\FishboxManagementController;
 use App\Http\Controllers\BrokerDashboardController;
 use App\Http\Controllers\SalesManagementController;
 use App\Http\Controllers\ProfileController;
@@ -68,24 +69,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
-    // Fish Management routes - Main controller that delegates to specific controllers
+    // Movement Tracking routes - Admin only
     Route::controller(FishManagementController::class)->prefix('admin')->name('admin.')->group(function () {
         Route::get('/inventory', 'index')->name('inventory.index');
-    });
-
-    // Fish Types Management routes - grouped by controller
-    Route::controller(FishTypesController::class)->prefix('admin')->name('admin.')->group(function () {
-        Route::post('/fish-types', 'store')->name('fish-types.store');
-        Route::put('/fish-types/{id}', 'update')->name('fish-types.update');
-        Route::delete('/fish-types/{id}', 'destroy')->name('fish-types.destroy');
-    });
-
-    // Fish Box Management routes - grouped by controller
-    Route::controller(FishBoxController::class)->prefix('admin')->name('admin.')->group(function () {
-        Route::post('/fish-boxes', 'store')->name('fish-boxes.store');
-        Route::put('/fish-boxes/{id}', 'update')->name('fish-boxes.update');
-        Route::delete('/fish-boxes/{id}', 'destroy')->name('fish-boxes.destroy');
-        Route::post('/fish-boxes/return-to-stock', 'returnToStock')->name('fish-boxes.return-to-stock');
     });
 
     // Sales Management routes - grouped by controller
@@ -97,13 +83,28 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Broker routes
 Route::middleware(['auth', 'broker'])->group(function () {
     Route::get('/broker/dashboard', [BrokerDashboardController::class, 'index'])->name('broker.dashboard');
-    Route::get('/broker/fish-boxes', [BrokerDashboardController::class, 'fishBoxes'])->name('broker.sales.fish-boxes');
     Route::get('/broker/analytics', [SalesManagementController::class, 'analytics'])->name('broker.sales.analytics');
     Route::get('/broker/sales', [SalesManagementController::class, 'sales'])->name('broker.sales.sales');
 
+    // Fishbox Management routes for brokers
+    Route::controller(FishboxManagementController::class)->prefix('broker')->name('broker.')->group(function () {
+        Route::get('/inventory', 'index')->name('inventory.index');
+    });
+
+    // Fish Types Management routes for brokers
+    Route::controller(FishTypesController::class)->prefix('broker')->name('broker.')->group(function () {
+        Route::post('/fish-types', 'store')->name('fish-types.store');
+        Route::put('/fish-types/{id}', 'update')->name('fish-types.update');
+        Route::delete('/fish-types/{id}', 'destroy')->name('fish-types.destroy');
+    });
+
     // Fish Box Management routes for brokers
     Route::controller(FishBoxController::class)->prefix('broker')->name('broker.')->group(function () {
-        Route::post('/fish-boxes/update-status', 'updateStatus')->name('fish-boxes.update-status');
+        Route::post('/fish-boxes', 'store')->name('fish-boxes.store');
+        Route::put('/fish-boxes/{id}', 'update')->name('fish-boxes.update');
+        Route::delete('/fish-boxes/{id}', 'destroy')->name('fish-boxes.destroy');
+        Route::post('/fish-boxes/return-to-stock', 'returnToStock')->name('fish-boxes.return-to-stock');
+        Route::post('/fish-boxes/return-via-qr', 'returnFishBoxViaQr')->name('fish-boxes.return-via-qr');
         Route::patch('/fish-boxes/{id}/mark-missing', 'markAsMissing')->name('fish-boxes.mark-missing');
         Route::patch('/fish-boxes/{id}/return', 'returnFishBox')->name('fish-boxes.return');
     });

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('fish_box_id')->constrained('fish_boxes')->onDelete('cascade');
             $table->enum('action', ['Stocked', 'Sold', 'Returned', 'Missing']);
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('broker_id')->constrained('brokers')->onDelete('cascade');
             $table->timestamps();
         });
     }

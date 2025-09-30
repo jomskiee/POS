@@ -21,6 +21,7 @@
     <!-- Compiled CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/filter-layout.css') }}">
 
 
     <!-- Alpine.js for interactive components -->
