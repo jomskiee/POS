@@ -138,9 +138,10 @@ class InventoryLog extends Model
      */
     public static function getPaginatedWithFilters(?string $action, ?string $dateFrom, ?string $dateTo, int $perPage = 12): LengthAwarePaginator
     {
-        $query = static::with(['fishBox.fishType', 'user']);
+        $query = static::with(['fishBox.fishType', 'broker'])
+            ->whereIn('action', ['Returned', 'Missing']);
 
-        // Apply action filter using scope
+        // Apply specific action filter if provided
         if ($action) {
             $query->byAction($action);
         }

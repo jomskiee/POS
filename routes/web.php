@@ -69,10 +69,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
-    // Movement Tracking routes - Admin only
-    Route::controller(FishManagementController::class)->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/inventory', 'index')->name('inventory.index');
-    });
 
     // Sales Management routes - grouped by controller
     Route::controller(SalesManagementController::class)->prefix('admin/sales')->name('admin.sales.')->group(function () {

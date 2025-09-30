@@ -2,7 +2,7 @@
 
 @php
     $breadcrumbs = [
-        ['title' => 'Inventory Management']
+        ['title' => 'Fishboxes Management']
     ];
 @endphp
 
@@ -15,7 +15,7 @@
                 <div class="mb-8">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Inventory Management</h1>
+                            <h1 class="text-3xl font-bold text-gray-900">Fishboxes Management</h1>
                             <p class="text-gray-600 mt-2">Manage your fish boxes and fish types inventory</p>
                         </div>
                         <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
@@ -34,14 +34,14 @@
                     <div class="border-b border-gray-200">
                         <nav class="-mb-px flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 px-4 md:px-6" aria-label="Tabs">
                             <a href="{{ route('broker.inventory.index') }}?tab=fishBoxes"
-                               class="whitespace-nowrap py-3 md:py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ ($currentTab ?? request('tab', 'fishBoxes')) === 'fishBoxes' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                               class="whitespace-nowrap py-3 md:py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ ($currentTab ?? request('tab', 'fishBoxes')) === 'fishBoxes' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                                 <div class="flex items-center space-x-2">
                                     <x-heroicon-o-archive-box class="w-5 h-5" />
                                     <span>Fish Boxes</span>
                                 </div>
                             </a>
                             <a href="{{ route('broker.inventory.index') }}?tab=fishTypes"
-                               class="whitespace-nowrap py-3 md:py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ ($currentTab ?? request('tab')) === 'fishTypes' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                               class="whitespace-nowrap py-3 md:py-4 px-1 border-b-2 font-medium text-sm transition-colors {{ ($currentTab ?? request('tab')) === 'fishTypes' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                                 <div class="flex items-center space-x-2">
                                     <x-heroicon-o-tag class="w-5 h-5" />
                                     <span>Fish Types</span>

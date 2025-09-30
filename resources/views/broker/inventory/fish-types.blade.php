@@ -113,7 +113,7 @@
 
     <!-- Fish Types Search -->
     <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
-        <form method="GET" action="{{ route('admin.inventory.index') }}" x-data="{ search: '{{ request('search') }}' }">
+        <form method="GET" action="{{ route('broker.inventory.index') }}" x-data="{ search: '{{ request('search') }}' }">
             <input type="hidden" name="tab" value="fishTypes">
             <div class="flex items-center space-x-4">
                 <div class="flex-1">
