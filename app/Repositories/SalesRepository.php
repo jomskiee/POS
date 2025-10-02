@@ -8,6 +8,7 @@ use App\Models\Broker;
 use App\Models\InventoryLog;
 use App\Constants\SalesStatusConstant;
 use App\Models\FishBox;
+use App\Models\SalesDetails;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -388,9 +389,10 @@ class SalesRepository
             ->limit(5)
             ->get()
             ->map(function ($sale) use ($startOfMonth, $endOfMonth) {
-                // Get fishbox count for this broker this month
-                $fishBoxCount = FishBox::where('current_broker_id', $sale->broker_id)
-                    ->where('status', FishBoxStatusConstant::SOLD)
+                // Get fishbox sales count for this broker this month
+                // Count all sales details (transactions) by this broker during the period
+                // This counts each sale transaction, even if the same fishbox is sold multiple times
+                $fishBoxCount = SalesDetails::where('broker_id', $sale->broker_id)
                     ->whereHas('sales', function ($query) use ($startOfMonth, $endOfMonth) {
                         $query->whereBetween('sales_date', [$startOfMonth, $endOfMonth]);
                     })
