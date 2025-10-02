@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,6 +35,24 @@ class FishType extends Model
     }
 
     // =============== DATABASE OPERATIONS =============== //
+
+    /**
+     * Get fish types by broker id
+     *
+     * @param int|null $brokerId
+     *
+     * @return Collection
+     */
+    public static function getFishTypeByBrokerId(?int $brokerId = null): Collection
+    {
+        $query = static::query();
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        return $query->get();
+    }
 
     /**
      * Get paginated fish types with search functionality

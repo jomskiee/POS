@@ -24,26 +24,24 @@ class AdminDashboardController extends Controller
         // Get total brokers count
         $totalBrokers = Broker::count();
 
-        // Get total fish boxes sold
+        // Get fish box counts by status
         $totalFishBoxesSold = FishBox::sold()->count();
+        $totalFishBoxesMissing = FishBox::missing()->count();
+        $totalFishBoxesReturned = FishBox::returned()->count();
 
-        // Get sales data from repository
-        $totalSales = $this->salesRepository->getTotalSalesAmount();
-        $totalOrders = $this->salesRepository->getTotalOrdersCount();
-        $recentOrders = $this->salesRepository->getRecentOrders();
-        $topBrokers = $this->salesRepository->getTopBrokersThisMonth();
+        // Get top brokers with fishbox count
+        $topBrokers = $this->salesRepository->getTopBrokersWithFishBoxCount();
+
+        // Get top fish types sold
         $topFishTypes = InventoryLog::getTopFishTypesSold();
-        $dailySalesData = $this->salesRepository->getDailySalesData();
 
         return view('admin.dashboard', compact(
             'totalBrokers',
             'totalFishBoxesSold',
-            'totalSales',
-            'totalOrders',
-            'recentOrders',
+            'totalFishBoxesMissing',
+            'totalFishBoxesReturned',
             'topBrokers',
-            'topFishTypes',
-            'dailySalesData'
+            'topFishTypes'
         ));
     }
 }

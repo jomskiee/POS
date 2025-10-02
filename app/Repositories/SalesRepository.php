@@ -2,103 +2,19 @@
 
 namespace App\Repositories;
 
+use App\Constants\FishBoxStatusConstant;
 use App\Models\Sales;
 use App\Models\Broker;
 use App\Models\InventoryLog;
 use App\Constants\SalesStatusConstant;
+use App\Models\FishBox;
+use App\Models\SalesDetails;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class SalesRepository
 {
-    /**
-     * Get total sales amount for active sales
-     *
-     * @return float
-     */
-    public function getTotalSalesAmount(): float
-    {
-        return Sales::active()->sum('paid_amount');
-    }
-
-    /**
-     * Get total orders count for active sales
-     *
-     * @return int
-     */
-    public function getTotalOrdersCount(): int
-    {
-        return Sales::active()->count();
-    }
-
-    /**
-     * Get recent orders with customer details and fishboxes sold
-     *
-     * @param int $limit
-     * @return Collection
-     */
-    public function getRecentOrders(int $limit = 5): Collection
-    {
-        return Sales::with(['broker', 'salesDetails.fishBox.fishType'])
-            ->active()
-            ->orderBy('created_at', 'desc')
-            ->limit($limit)
-            ->get();
-    }
-
-    /**
-     * Get daily sales data for the last 7 days
-     *
-     * @return array
-     */
-    public function getDailySalesData(): array
-    {
-        $dailySales = [];
-
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-            $dayName = $date->format('D');
-
-            $sales = Sales::active()
-                ->whereDate('sales_date', $date->format('Y-m-d'))
-                ->sum('paid_amount');
-
-            $dailySales[] = [
-                'label' => $dayName,
-                'value' => (float) $sales
-            ];
-        }
-
-        return $dailySales;
-    }
-
-    /**
-     * Get top 5 brokers with most sales this month
-     *
-     * @return Collection
-     */
-    public function getTopBrokersThisMonth(): Collection
-    {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-
-        return Sales::with('broker')
-            ->active()
-            ->whereBetween('sales_date', [$startOfMonth, $endOfMonth])
-            ->selectRaw('broker_id, COUNT(*) as sales_count, SUM(paid_amount) as total_sales')
-            ->groupBy('broker_id')
-            ->orderByDesc('sales_count')
-            ->limit(5)
-            ->get()
-            ->map(function ($sale) {
-                return [
-                    'broker' => $sale->broker,
-                    'sales_count' => $sale->sales_count,
-                    'total_sales' => $sale->total_sales
-                ];
-            });
-    }
 
 
     /**
@@ -452,5 +368,38 @@ class SalesRepository
             SalesStatusConstant::PARTIALLY_PAID => 'bg-blue-500',
             default => 'bg-gray-500'
         };
+    }
+
+    /**
+     * Get top brokers this month with fishbox count
+     *
+     * @return Collection
+     */
+    public function getTopBrokersWithFishBoxCount(): Collection
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        // Get aggregated sales data with fishbox count in a single query
+        $brokerSalesData = Sales::active()
+            ->whereBetween('sales_date', [$startOfMonth, $endOfMonth])
+            ->selectRaw('sales.broker_id, COUNT(DISTINCT sales.id) as sales_count, SUM(sales.paid_amount) as total_sales, COUNT(sales_details.id) as fishbox_count')
+            ->leftJoin('sales_details', 'sales.id', '=', 'sales_details.sales_id')
+            ->groupBy('sales.broker_id')
+            ->orderByDesc('sales_count')
+            ->limit(5)
+            ->get();
+
+        // Get broker details and return the data
+        return $brokerSalesData->map(function ($brokerData) {
+            $broker = Broker::find($brokerData->broker_id);
+
+            return [
+                'broker' => $broker,
+                'sales_count' => $brokerData->sales_count,
+                'total_sales' => $brokerData->total_sales,
+                'fishbox_count' => $brokerData->fishbox_count
+            ];
+        });
     }
 }
