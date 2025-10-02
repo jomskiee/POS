@@ -48,6 +48,10 @@ class SalesManagementController extends Controller
                 $data = $this->getTransactionsData($request);
                 break;
 
+            case 'fishbox-tracking':
+                $data = $this->getFishboxTrackingData($request);
+                break;
+
             default:
                 $data = $this->getAnalysisData($request);
                 break;
@@ -249,6 +253,40 @@ class SalesManagementController extends Controller
         }
 
         return $query->find($salesId);
+    }
+
+    /**
+     * Get fishbox tracking data for admin
+     *
+     * @param Request $request
+     * @return array
+     */
+    private function getFishboxTrackingData(Request $request): array
+    {
+        // Get available actions for filter
+        $actions = FishBoxStatusConstant::getStatusOnlyForAdmin();
+
+        // Get summary counts for today (only Returned and Missing)
+        $today = now()->format('Y-m-d');
+        $fullSummary = InventoryLog::getSummaryForDate($today);
+        $summary = [
+            'returned' => $fullSummary['returned'],
+            'missing' => $fullSummary['missing']
+        ];
+
+        // Get filter parameters
+        $action = $request->get('action');
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
+
+        // Get paginated inventory logs with filters
+        $inventoryLogs = InventoryLog::getPaginatedWithFilters($action, $dateFrom, $dateTo);
+
+        return [
+            'summary' => $summary,
+            'actions' => $actions,
+            'inventoryLogs' => $inventoryLogs,
+        ];
     }
 
 }

@@ -18,7 +18,7 @@ class InventoryLog extends Model
     protected $fillable = [
         'fish_box_id',
         'action',
-        'user_id',
+        'broker_id',
     ];
 
     // ============== RELATIONS ============== //
@@ -30,12 +30,13 @@ class InventoryLog extends Model
         return $this->belongsTo(FishBox::class);
     }
 
+
     /**
-     * Get the user that created the inventory log.
+     * Get the broker that owns this inventory log.
      */
-    public function user()
+    public function broker()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Broker::class, 'broker_id');
     }
 
     // ============== SCOPES ============== //
@@ -91,17 +92,17 @@ class InventoryLog extends Model
      *
      * @param int $fishBoxId
      * @param string $status
-     * @param int $userId
+     * @param int $brokerId
      * @return self
      */
-    public static function createLogForFishBox($fishBoxId, $status, $userId): self
+    public static function createLogForFishBox($fishBoxId, $status, $brokerId): self
     {
         $action = static::getActionFromStatus($status);
 
         return static::create([
             'fish_box_id' => $fishBoxId,
             'action' => $action,
-            'user_id' => $userId,
+            'broker_id' => $brokerId,
         ]);
     }
 
@@ -137,9 +138,10 @@ class InventoryLog extends Model
      */
     public static function getPaginatedWithFilters(?string $action, ?string $dateFrom, ?string $dateTo, int $perPage = 12): LengthAwarePaginator
     {
-        $query = static::with(['fishBox.fishType', 'user']);
+        $query = static::with(['fishBox.fishType', 'broker'])
+            ->whereIn('action', ['Returned', 'Missing']);
 
-        // Apply action filter using scope
+        // Apply specific action filter if provided
         if ($action) {
             $query->byAction($action);
         }
@@ -174,18 +176,16 @@ class InventoryLog extends Model
 
     /**
      * @param int $fishBoxId
-     * @param int $userId
      * @param Carbon $createdAt
      *
      * @return int
      */
-    public static function deleteLogForFishBox(int $fishBoxId, int $userId, Carbon $createdAt): int
+    public static function deleteLogForFishBox(int $fishBoxId, Carbon $createdAt): int
     {
         $from = $createdAt->copy()->subMinute();
         $to = $createdAt->copy()->addMinute();
 
         return static::where('fish_box_id', $fishBoxId)
-            ->where('user_id', $userId)
             ->where('action', InventoryLogActionConstant::SOLD)
             ->whereBetween('created_at', [$from, $to])
             ->delete();

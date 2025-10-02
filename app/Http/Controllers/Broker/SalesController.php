@@ -13,11 +13,11 @@ use App\Models\FishBox;
 use App\Constants\SalesStatusConstant;
 use App\Models\Broker;
 use App\Models\InventoryLog;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -67,7 +67,7 @@ class SalesController extends Controller
         $brokerId = Broker::getBrokerIdByUserId($userId);
 
         $sales = Sales::getPaginatedWithFilters($search, $status, $brokerId, $dateFrom, $dateTo);
-        $fishBoxes = FishBox::getAvailableForSale();
+        $fishBoxes = FishBox::getAvailableForSale($brokerId);
 
         $salesStatuses = SalesStatusConstant::getAllStatuses();
         $salesStatusesWithDisplayNames = collect($salesStatuses)->mapWithKeys(function ($status) {
@@ -231,8 +231,8 @@ class SalesController extends Controller
 
             // Reset fish boxes back to IN_STOCK status
             foreach ($salesDetails as $detail) {
-                FishBox::updateBrokerAndStatus($detail->box_id, null, FishBoxStatusConstant::IN_STOCK, $userId);
-                InventoryLog::deleteLogForFishBox($detail->box_id, $userId, $sale->created_at);
+                FishBox::updateStatus($detail->box_id, FishBoxStatusConstant::IN_STOCK, $userId);
+                InventoryLog::deleteLogForFishBox($detail->box_id, $sale->created_at);
             }
 
             $broker = Broker::byUser($userId)->first();
@@ -323,7 +323,9 @@ class SalesController extends Controller
      */
     public function getAvailableFishBoxes(Request $request): JsonResponse
     {
-        $fishBoxes = FishBox::getAvailableForSale();
+        $userId = Auth::id();
+        $brokerId = Broker::getBrokerIdByUserId($userId);
+        $fishBoxes = FishBox::getAvailableForSale($brokerId);
 
         return response()->json($fishBoxes);
     }
@@ -337,7 +339,9 @@ class SalesController extends Controller
     public function getFishBoxByQRCode(string $qrCode): JsonResponse
     {
         try {
-            $fishBox = FishBox::getFishBoxByQrCode($qrCode);
+            // Get broker ID for the current user
+            $brokerId = Broker::getBrokerIdByUserId(Auth::id());
+            $fishBox = FishBox::getFishBoxByQrCode($qrCode, $brokerId);
 
             if (!$fishBox) {
                 return response()->json([
@@ -347,7 +351,7 @@ class SalesController extends Controller
             }
 
             // Check if fish box is available for sale
-            if ($fishBox->status !== FishBoxStatusConstant::IN_STOCK || $fishBox->current_broker_id !== null) {
+            if ($fishBox->status !== FishBoxStatusConstant::IN_STOCK) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Fish box is not available for sale'

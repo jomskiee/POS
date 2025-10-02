@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('fish_types', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('broker_id')->constrained('brokers')->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();

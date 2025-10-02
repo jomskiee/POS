@@ -7,7 +7,6 @@
 @extends('layouts.broker')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/filter-layout.css') }}">
             <div class="w-full content-spacing">
                 <!-- Page Header -->
                 <div class="mb-8">
