@@ -383,18 +383,15 @@ class SalesRepository
         return Sales::with('broker')
             ->active()
             ->whereBetween('sales_date', [$startOfMonth, $endOfMonth])
-            ->selectRaw('broker_id, COUNT(*) as sales_count, SUM(paid_amount) as total_sales')
+            ->selectRaw('id, broker_id, COUNT(*) as sales_count, SUM(paid_amount) as total_sales')
             ->groupBy('broker_id')
             ->orderByDesc('sales_count')
             ->limit(5)
             ->get()
             ->map(function ($sale) use ($startOfMonth, $endOfMonth) {
-                // Get fishbox sales count for this broker this month
-                // Count all sales details (transactions) by this broker during the period
-                // This counts each sale transaction, even if the same fishbox is sold multiple times
-                $fishBoxCount = SalesDetails::where('broker_id', $sale->broker_id)
-                    ->whereHas('sales', function ($query) use ($startOfMonth, $endOfMonth) {
-                        $query->whereBetween('sales_date', [$startOfMonth, $endOfMonth]);
+                $fishBoxCount = SalesDetails::whereHas('sales', function ($query) use ($sale, $startOfMonth, $endOfMonth) {
+                        $query->where('broker_id', $sale->broker_id)
+                            ->whereBetween('sales_date', [$startOfMonth, $endOfMonth]);
                     })
                     ->count();
 
