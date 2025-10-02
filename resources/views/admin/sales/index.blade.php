@@ -38,6 +38,14 @@
                                     <span>Sales History</span>
                                 </div>
                             </a>
+                            <a href="{{ route('admin.sales.index', ['tab' => 'fishbox-tracking']) }}"
+                               :class="activeTab === 'fishbox-tracking' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                               class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <x-heroicon-o-archive-box class="w-5 h-5" />
+                                    <span>Fishbox Tracking</span>
+                                </div>
+                            </a>
                         </nav>
                     </div>
                 </div>
@@ -50,6 +58,11 @@
                 <!-- Transaction History Tab -->
                 @if($currentTab === 'transactions')
                     @include('admin.sales.transactions')
+                @endif
+
+                <!-- Fishbox Tracking Tab -->
+                @if($currentTab === 'fishbox-tracking')
+                    @include('admin.sales.fishbox-tracking')
                 @endif
 
             </div>

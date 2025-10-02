@@ -21,4 +21,12 @@ class FishBoxStatusConstant
             self::MISSING,
         ];
     }
+
+    public static function getStatusOnlyForAdmin(): array
+    {
+        return [
+            self::RETURNED,
+            self::MISSING,
+        ];
+    }
 }

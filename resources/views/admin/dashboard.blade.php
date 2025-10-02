@@ -79,7 +79,7 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Top Fish Types Sold</h3>
-                            <a href="{{ route('admin.inventory.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
+                            <a href="{{ route('admin.sales.index', ['tab' => 'fishbox-tracking']) }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-3">
                             @forelse($topFishTypes as $fishType)

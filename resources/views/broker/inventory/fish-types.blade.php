@@ -2,8 +2,8 @@
     <!-- Fish Types Tab Content -->
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-semibold text-gray-900">Fish Types List</h2>
-        <a href="{{ route('admin.inventory.index', ['tab' => 'fishTypes', 'modal' => 'create']) }}"
-           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+        <a href="{{ route('broker.inventory.index', ['tab' => 'fishTypes', 'modal' => 'create']) }}"
+           class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
             <x-heroicon-o-plus class="w-4 h-4" />
             <span>Add Fish Type</span>
         </a>
@@ -23,7 +23,7 @@
                 <div class="bg-white px-6 py-4 border-b border-gray-200">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
                                 <x-heroicon-o-tag class="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -35,7 +35,7 @@
                                 </p>
                             </div>
                         </div>
-                        <a href="{{ route('admin.inventory.index', ['tab' => 'fishTypes']) }}"
+                        <a href="{{ route('broker.inventory.index', ['tab' => 'fishTypes']) }}"
                            class="text-gray-400 hover:text-gray-600 transition-colors">
                             <x-heroicon-o-x-mark class="w-6 h-6" />
                         </a>
@@ -44,7 +44,7 @@
 
                 <!-- Modal Body -->
                 <div class="bg-white px-6 py-6">
-                    <form action="{{ request('modal') === 'edit' ? route('admin.fish-types.update', request('edit')) : route('admin.fish-types.store') }}" method="POST" class="space-y-6">
+                    <form action="{{ request('modal') === 'edit' ? route('broker.fish-types.update', request('edit')) : route('broker.fish-types.store') }}" method="POST" class="space-y-6">
                         @csrf
                         @if(request('modal') === 'edit')
                             @method('PUT')
@@ -61,7 +61,7 @@
                                        name="name"
                                        value="{{ request('modal') === 'edit' && isset($editingFishType) ? $editingFishType->name : old('name') }}"
                                        placeholder="Enter fish type name (e.g., Tilapia, Catfish)"
-                                       class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('name') border-red-500 @enderror"
+                                       class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors @error('name') border-red-500 @enderror"
                                        required>
                                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                     <x-heroicon-o-tag class="h-5 w-5 text-gray-400" />
@@ -81,7 +81,7 @@
                                       name="description"
                                       rows="4"
                                       placeholder="Enter a detailed description of the fish type..."
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none @error('description') border-red-500 @enderror">{{ request('modal') === 'edit' && isset($editingFishType) ? $editingFishType->description : old('description') }}</textarea>
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-none @error('description') border-red-500 @enderror">{{ request('modal') === 'edit' && isset($editingFishType) ? $editingFishType->description : old('description') }}</textarea>
                             @error('description')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -89,12 +89,12 @@
 
                         <!-- Modal Footer -->
                         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 pt-4">
-                            <a href="{{ route('admin.inventory.index', ['tab' => 'fishTypes']) }}"
-                               class="mt-3 w-full inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto transition-colors">
+                            <a href="{{ route('broker.inventory.index', ['tab' => 'fishTypes']) }}"
+                               class="mt-3 w-full inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:w-auto transition-colors">
                                 Cancel
                             </a>
                             <button type="submit"
-                                    class="w-full inline-flex justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto transition-colors">
+                                    class="w-full inline-flex justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:w-auto transition-colors">
                                 @if(request('modal') === 'edit')
                                     <x-heroicon-o-pencil-square class="w-4 h-4 mr-2" />
                                     Update Fish Type
@@ -113,7 +113,7 @@
 
     <!-- Fish Types Search -->
     <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
-        <form method="GET" action="{{ route('admin.inventory.index') }}" x-data="{ search: '{{ request('search') }}' }">
+        <form method="GET" action="{{ route('broker.inventory.index') }}" x-data="{ search: '{{ request('search') }}' }">
             <input type="hidden" name="tab" value="fishTypes">
             <div class="flex items-center space-x-4">
                 <div class="flex-1">
@@ -122,19 +122,19 @@
                             name="search"
                             x-model="search"
                             placeholder="Search fish types..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <x-heroicon-o-magnifying-glass class="h-4 w-4 text-gray-400" />
                         </div>
                     </div>
                 </div>
                 <div class="flex space-x-2">
-                    <a href="{{ route('admin.inventory.index', ['tab' => 'fishTypes']) }}"
+                    <a href="{{ route('broker.inventory.index', ['tab' => 'fishTypes']) }}"
                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         Clear
                     </a>
                     <button type="submit"
-                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                            class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
                         Search
                     </button>
                 </div>
@@ -148,7 +148,7 @@
             <p class="text-sm text-gray-600">
                 Showing {{ $fishTypes->firstItem() ?? 0 }} to {{ $fishTypes->lastItem() ?? 0 }} of {{ $fishTypes->total() }} fish types
                 @if(request()->has('search'))
-                    <span class="text-blue-600">(filtered)</span>
+                    <span class="text-green-600">(filtered)</span>
                 @endif
             </p>
         </div>
@@ -170,7 +170,7 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                                         <x-heroicon-o-tag class="w-5 h-5 text-white" />
                                     </div>
                                     <div class="ml-4">
@@ -183,8 +183,8 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <a href="{{ route('admin.inventory.index', ['tab' => 'fishTypes', 'modal' => 'edit', 'edit' => $fishType->id]) }}"
-                                       class="text-blue-600 hover:text-blue-900 transition-colors">
+                                    <a href="{{ route('broker.inventory.index', ['tab' => 'fishTypes', 'modal' => 'edit', 'edit' => $fishType->id]) }}"
+                                       class="text-green-600 hover:text-green-900 transition-colors">
                                         <x-heroicon-o-pencil-square class="w-6 h-6" />
                                     </a>
                                     @if($fishType->is_used)
@@ -192,7 +192,7 @@
                                             <x-heroicon-o-trash class="w-6 h-6" />
                                         </button>
                                     @else
-                                        <form action="{{ route('admin.fish-types.destroy', $fishType->id) }}" method="POST" class="inline" data-swal="delete" data-record-name="{{ $fishType->name }}">
+                                        <form action="{{ route('broker.fish-types.destroy', $fishType->id) }}" method="POST" class="inline" data-swal="delete" data-record-name="{{ $fishType->name }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900 transition-colors">

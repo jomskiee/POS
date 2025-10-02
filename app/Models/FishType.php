@@ -14,7 +14,16 @@ class FishType extends Model
     protected $fillable = [
         'name',
         'description',
+        'broker_id',
     ];
+
+    /**
+     * Get the broker that owns this fish type.
+     */
+    public function broker()
+    {
+        return $this->belongsTo(Broker::class, 'broker_id');
+    }
 
     /**
      * Get the fish boxes for this fish type.
@@ -30,15 +39,21 @@ class FishType extends Model
      * Get paginated fish types with search functionality
      *
      * @param string|null $search
+     * @param int|null $brokerId
      * @param int $perPage
      *
      * @return LengthAwarePaginator
      */
-    public static function getPaginatedWithSearch(?string $search = null, int $perPage = 12): LengthAwarePaginator
+    public static function getPaginatedWithSearch(?string $search = null, ?int $brokerId = null, int $perPage = 12): LengthAwarePaginator
     {
         $query = static::query()
             ->select('fish_types.*')
             ->selectRaw('EXISTS(SELECT 1 FROM fish_boxes WHERE fish_boxes.fish_type_id = fish_types.id) as is_used');
+
+        // Filter by broker if provided
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
 
         // Apply search filter
         if ($search) {
