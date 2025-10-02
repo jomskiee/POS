@@ -29,7 +29,7 @@ class FishBoxController extends Controller
         $brokerId = Broker::getBrokerIdByUserId($userId);
 
         $fishBoxStatuses = FishBoxStatusConstant::getAllStatuses();
-        $fishTypes = FishType::all();
+        $fishTypes = FishType::getFishTypeByBrokerId($brokerId);
 
         $search = $request->get('search');
         $status = $request->get('status');

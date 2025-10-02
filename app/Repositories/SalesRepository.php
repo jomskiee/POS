@@ -380,27 +380,26 @@ class SalesRepository
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();
 
-        return Sales::with('broker')
-            ->active()
+        // Get aggregated sales data with fishbox count in a single query
+        $brokerSalesData = Sales::active()
             ->whereBetween('sales_date', [$startOfMonth, $endOfMonth])
-            ->selectRaw('id, broker_id, COUNT(*) as sales_count, SUM(paid_amount) as total_sales')
-            ->groupBy('broker_id')
+            ->selectRaw('sales.broker_id, COUNT(DISTINCT sales.id) as sales_count, SUM(sales.paid_amount) as total_sales, COUNT(sales_details.id) as fishbox_count')
+            ->leftJoin('sales_details', 'sales.id', '=', 'sales_details.sales_id')
+            ->groupBy('sales.broker_id')
             ->orderByDesc('sales_count')
             ->limit(5)
-            ->get()
-            ->map(function ($sale) use ($startOfMonth, $endOfMonth) {
-                $fishBoxCount = SalesDetails::whereHas('sales', function ($query) use ($sale, $startOfMonth, $endOfMonth) {
-                        $query->where('broker_id', $sale->broker_id)
-                            ->whereBetween('sales_date', [$startOfMonth, $endOfMonth]);
-                    })
-                    ->count();
+            ->get();
 
-                return [
-                    'broker' => $sale->broker,
-                    'sales_count' => $sale->sales_count,
-                    'total_sales' => $sale->total_sales,
-                    'fishbox_count' => $fishBoxCount
-                ];
-            });
+        // Get broker details and return the data
+        return $brokerSalesData->map(function ($brokerData) {
+            $broker = Broker::find($brokerData->broker_id);
+
+            return [
+                'broker' => $broker,
+                'sales_count' => $brokerData->sales_count,
+                'total_sales' => $brokerData->total_sales,
+                'fishbox_count' => $brokerData->fishbox_count
+            ];
+        });
     }
 }
