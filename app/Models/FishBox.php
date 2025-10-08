@@ -219,13 +219,34 @@ class FishBox extends Model
     /**
      * Update fish box status
      *
-     * @param int $fishBoxId
+     * @param int|array $fishBoxId
      * @param string $status
      * @param int $userId
      * @return bool
      */
-    public static function updateStatus(int $fishBoxId, string $status, int $userId): bool
+    public static function updateStatus($fishBoxId, string $status, int $userId): bool
     {
+        // Handle array of IDs
+        if (is_array($fishBoxId)) {
+            $fishBoxes = static::whereIn('id', $fishBoxId)->get();
+
+            if ($fishBoxes->isEmpty()) {
+                return false;
+            }
+
+            foreach ($fishBoxes as $fishBox) {
+                $fishBox->update([
+                    'status' => $status,
+                ]);
+
+                // Create inventory log for the status change
+                InventoryLog::createLogForFishBox($fishBox->id, $status, $fishBox->broker_id);
+            }
+
+            return true;
+        }
+
+        // Handle single ID
         $fishBox = static::find($fishBoxId);
 
         if (!$fishBox) {
@@ -252,10 +273,10 @@ class FishBox extends Model
      */
     public static function updateFishBoxesForSales(int $brokerId, array $salesDetails, int $userId): void
     {
+
         if (empty($salesDetails)) {
             return;
         }
-
         foreach ($salesDetails as $detail) {
             self::updateStatus(
                 $detail['box_id'],

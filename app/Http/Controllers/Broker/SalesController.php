@@ -10,6 +10,7 @@ use App\Models\Sales;
 use App\Models\SalesDetails;
 use App\Models\SalesPayment;
 use App\Models\FishBox;
+use App\Models\FishType;
 use App\Constants\SalesStatusConstant;
 use App\Models\Broker;
 use App\Models\InventoryLog;
@@ -68,6 +69,11 @@ class SalesController extends Controller
 
         $sales = Sales::getPaginatedWithFilters($search, $status, $brokerId, $dateFrom, $dateTo);
         $fishBoxes = FishBox::getAvailableForSale($brokerId);
+        $allFishTypes = FishType::getFishTypeByBrokerId($brokerId);
+
+        // Filter fish types to only show those with available fish boxes in both create and edit modes
+        $availableFishTypeIds = $fishBoxes->pluck('fish_type_id')->unique()->filter()->toArray();
+        $fishTypes = $allFishTypes->whereIn('id', $availableFishTypeIds);
 
         $salesStatuses = SalesStatusConstant::getAllStatuses();
         $salesStatusesWithDisplayNames = collect($salesStatuses)->mapWithKeys(function ($status) {
@@ -88,14 +94,17 @@ class SalesController extends Controller
         $viewingSales = $this->getModalSales($request, 'show', 'show', ['salesDetails.fishBox.fishType', 'salesPayments']);
         $saleForPayment = $this->getModalSales($request, 'payment', 'sale');
         $printingSales = $this->getModalSales($request, 'print', 'print', ['salesDetails.fishBox.fishType', 'salesPayments', 'broker.user', 'broker']);
-        // Handle fish boxes for editing mode
-        $fishBoxes = $this->prepareFishBoxesForEdit($fishBoxes, $editingSales);
+        // Handle fish boxes for editing mode - only include truly available fish boxes
+        if ($editingSales) {
+            $fishBoxes = $this->prepareFishBoxesForEdit($fishBoxes, $editingSales);
+            $fishTypes = $this->prepareFishTypeForEdit($fishTypes, $editingSales);
+        }
 
         // Prepare sales details for the form
         $salesDetails = $this->prepareSalesDetailsForForm($request, $editingSales);
 
         return compact('sales',
-            'fishBoxes', 'editingSales',
+            'fishBoxes', 'fishTypes', 'editingSales',
             'viewingSales', 'salesStatuses',
             'salesStatusesWithDisplayNames', 'salesStatusesWithColorClasses',
             'saleForPayment', 'printingSales', 'salesDetails'
@@ -437,8 +446,22 @@ class SalesController extends Controller
 
         $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->toArray();
         $selectedFishBoxes = FishBox::with('fishType')->whereIn('id', $selectedBoxIds)->get();
+        return $selectedFishBoxes->merge($fishBoxes)->unique('id');
+    }
 
-        return $fishBoxes->merge($selectedFishBoxes)->unique('id');
+    private function prepareFishTypeForEdit($fishTypes, ?Sales $editingSales)
+    {
+        $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->toArray();
+        $selectedFishBoxes = FishBox::whereIn('id', $selectedBoxIds)->get();
+
+        // Get fish type IDs from selected fish boxes
+        $selectedFishTypeIds = $selectedFishBoxes->pluck('fish_type_id')->filter()->unique()->toArray();
+
+        // Get fish types using the fish_type_id from selected fish boxes
+        $selectedFishTypes = FishType::whereIn('id', $selectedFishTypeIds)->get();
+
+        // Merge with existing fish types and remove duplicates
+        return $fishTypes->merge($selectedFishTypes)->unique('id');
     }
 
     /**
@@ -451,17 +474,33 @@ class SalesController extends Controller
     private function prepareSalesDetailsForForm(Request $request, ?Sales $editingSales): array
     {
         if ($request->get('modal') === 'edit' && $editingSales) {
-            return $editingSales->salesDetails->map(function($detail) {
+            // Group sales details by item to handle multiple fish boxes
+            $groupedDetails = $editingSales->salesDetails->groupBy('item');
+
+            return $groupedDetails->map(function($details) {
+                $firstDetail = $details->first();
                 return [
-                    'box_id' => (string)$detail->box_id,
-                    'item' => $detail->item,
-                    'item_description' => $detail->item_description ?? '',
+                    'box_id' => $details->pluck('box_id')->toArray(),
+                    'fish_type_id' => $firstDetail->fishBox ? (string)$firstDetail->fishBox->fish_type_id : '',
+                    'item' => $firstDetail->item,
+                    'item_description' => $firstDetail->item_description ?? '',
+                    'unit_price' => $firstDetail->unit_price ?? '',
+                    'quantity' => $details->count(),
+                    'sub_total' => $details->sum('sub_total'),
                 ];
             })->values()->toArray();
         }
 
         return old('sales_details') ?: [
-            ['box_id' => '', 'item' => '', 'item_description' => '']
+            [
+                'box_id' => [],
+                'fish_type_id' => '',
+                'item' => '',
+                'item_description' => '',
+                'unit_price' => '',
+                'quantity' => '1',
+                'sub_total' => ''
+            ]
         ];
     }
 }

@@ -15,7 +15,10 @@ class SalesDetails extends Model
         'broker_id',
         'box_id',
         'item',
-        'item_description'
+        'item_description',
+        'unit_price',
+        'quantity',
+        'sub_total'
     ];
 
     // ============== RELATIONS ============== //
@@ -67,13 +70,21 @@ class SalesDetails extends Model
         }
 
         foreach ($details as $detail) {
-            self::create([
-                'sales_id' => $salesId,
-                'broker_id' => $brokerId,
-                'box_id' => $detail['box_id'],
-                'item' => $detail['item'],
-                'item_description' => $detail['item_description'] ?? null
-            ]);
+            // Handle multiple fish boxes for the same sales detail
+            $boxIds = is_array($detail['box_id']) ? $detail['box_id'] : [$detail['box_id']];
+
+            foreach ($boxIds as $boxId) {
+                self::create([
+                    'sales_id' => $salesId,
+                    'broker_id' => $brokerId,
+                    'box_id' => $boxId,
+                    'item' => $detail['item'],
+                    'item_description' => $detail['item_description'] ?? null,
+                    'unit_price' => $detail['unit_price'] ?? null,
+                    'quantity' => 1, // Each fish box represents quantity 1
+                    'sub_total' => $detail['unit_price'] ?? null // Sub total per fish box
+                ]);
+            }
         }
     }
 }
