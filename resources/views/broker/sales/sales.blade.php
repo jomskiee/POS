@@ -680,18 +680,35 @@
                     <!-- Items -->
                     <div class="border-t border-gray-200 pt-4 mb-4">
                         <h3 class="text-sm font-semibold text-gray-900 mb-3">Items Sold</h3>
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             @foreach($printingSales->salesDetails as $detail)
-                                <div class="flex justify-between items-start text-sm">
-                                    <div class="flex-1">
-                                        <div class="font-medium text-gray-900">{{ $detail->item }}</div>
-                                        @if($detail->fishBox)
-                                            <div class="text-xs text-gray-500">{{ $detail->fishBox->name }}</div>
-                                        @endif
-                                        @if($detail->item_description)
-                                            <div class="text-xs text-gray-500">{{ $detail->item_description }}</div>
-                                        @endif
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div class="flex-1">
+                                            <div class="font-medium text-gray-900">{{ $detail->item }}</div>
+                                            @if($detail->item_description)
+                                                <div class="text-xs text-gray-500 mt-1">{{ $detail->item_description }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-sm font-semibold text-gray-900">₱{{ number_format($detail->sub_total, 2) }}</div>
+                                            <div class="text-xs text-gray-500">{{ $detail->quantity }} × ₱{{ number_format($detail->unit_price, 2) }}</div>
+                                        </div>
                                     </div>
+
+                                    <!-- Fish Boxes -->
+                                    @if(is_array($detail->box_id) && count($detail->box_id) > 0)
+                                        <div class="mt-2">
+                                            <div class="text-xs text-gray-600 mb-1">Fish Boxes:</div>
+                                            <div class="flex flex-wrap gap-1">
+                                                @foreach($detail->box_id as $boxId)
+                                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                        Fish Box #{{ $boxId }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -966,7 +983,7 @@
                                 </div>
                                 <h4 class="text-lg font-semibold text-gray-900">Items Sold</h4>
                                 <span class="ml-2 bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                    {{ $viewingSales->salesDetails->count() }} items
+                                    {{ $viewingSales->salesDetails->sum(function($detail) { return is_array($detail->box_id) ? count($detail->box_id) : 1; }) }} fish boxes
                                 </span>
                             </div>
                         </div>
@@ -976,7 +993,9 @@
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Box</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Total</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -988,10 +1007,13 @@
                                                         <x-heroicon-o-archive-box class="w-4 h-4 text-blue-600" />
                                                     </div>
                                                     <div>
-                                                        <div class="text-sm font-medium text-gray-900">{{ $detail->fishBox->name ?? 'N/A' }}</div>
-                                                        @if($detail->fishBox && $detail->fishBox->fishType)
-                                                            <div class="text-xs text-gray-500">{{ $detail->fishBox->fishType->name }}</div>
-                                                        @endif
+                                                    <div class="flex flex-wrap gap-2">
+                                                        @foreach($detail->box_id as $boxId)
+                                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                                                Fish Box #{{ $boxId }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -999,12 +1021,18 @@
                                                 <div class="text-sm font-medium text-gray-900">{{ $detail->item }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">{{ $detail->item_description ?? '-' }}</div>
+                                                <div class="text-sm font-medium text-gray-900">₱{{ number_format($detail->unit_price, 2) }}</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900">{{ $detail->quantity }}</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-bold text-gray-900">₱{{ number_format($detail->sub_total, 2) }}</div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="px-6 py-12 text-center">
+                                            <td colspan="5" class="px-6 py-12 text-center">
                                                 <div class="flex flex-col items-center">
                                                     <x-heroicon-o-archive-box class="w-12 h-12 text-gray-400 mb-2" />
                                                     <p class="text-sm text-gray-500">No items found</p>

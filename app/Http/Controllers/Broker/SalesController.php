@@ -90,16 +90,20 @@ class SalesController extends Controller
         $printingSales = null;
 
         // Handle modal-specific sales retrieval
-        $editingSales = $this->getModalSales($request, 'edit', 'edit', ['salesDetails.fishBox.fishType', 'salesPayments']);
-        $viewingSales = $this->getModalSales($request, 'show', 'show', ['salesDetails.fishBox.fishType', 'salesPayments']);
+        $editingSales = $this->getModalSales($request, 'edit', 'edit', ['salesDetails', 'salesPayments']);
+        $viewingSales = $this->getModalSales($request, 'show', 'show', ['salesDetails', 'salesPayments']);
         $saleForPayment = $this->getModalSales($request, 'payment', 'sale');
-        $printingSales = $this->getModalSales($request, 'print', 'print', ['salesDetails.fishBox.fishType', 'salesPayments', 'broker.user', 'broker']);
+        $printingSales = $this->getModalSales($request, 'print', 'print', ['salesDetails', 'salesPayments', 'broker.user', 'broker']);
         // Handle fish boxes for editing mode - only include truly available fish boxes
         if ($editingSales) {
             $fishBoxes = $this->prepareFishBoxesForEdit($fishBoxes, $editingSales);
             $fishTypes = $this->prepareFishTypeForEdit($fishTypes, $editingSales);
         }
 
+        if ($viewingSales) {
+            Log::info('$viewingSales');
+            Log::info(print_r($viewingSales->salesDetails, true));
+        }
         // Prepare sales details for the form
         $salesDetails = $this->prepareSalesDetailsForForm($request, $editingSales);
 
@@ -444,14 +448,14 @@ class SalesController extends Controller
             return $fishBoxes;
         }
 
-        $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->toArray();
+        $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->flatten()->unique()->toArray();
         $selectedFishBoxes = FishBox::with('fishType')->whereIn('id', $selectedBoxIds)->get();
         return $selectedFishBoxes->merge($fishBoxes)->unique('id');
     }
 
     private function prepareFishTypeForEdit($fishTypes, ?Sales $editingSales)
     {
-        $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->toArray();
+        $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->flatten()->unique()->toArray();
         $selectedFishBoxes = FishBox::whereIn('id', $selectedBoxIds)->get();
 
         // Get fish type IDs from selected fish boxes
@@ -479,14 +483,22 @@ class SalesController extends Controller
 
             return $groupedDetails->map(function($details) {
                 $firstDetail = $details->first();
+
+                // Get fish type ID from the first fish box
+                $fishTypeId = '';
+                if (is_array($firstDetail->box_id) && !empty($firstDetail->box_id)) {
+                    $firstFishBox = FishBox::find($firstDetail->box_id[0]);
+                    $fishTypeId = $firstFishBox ? (string)$firstFishBox->fish_type_id : '';
+                }
+
                 return [
-                    'box_id' => $details->pluck('box_id')->toArray(),
-                    'fish_type_id' => $firstDetail->fishBox ? (string)$firstDetail->fishBox->fish_type_id : '',
+                    'box_id' => $firstDetail->box_id ?? [], // box_id is now a JSON array
+                    'fish_type_id' => $fishTypeId,
                     'item' => $firstDetail->item,
                     'item_description' => $firstDetail->item_description ?? '',
                     'unit_price' => $firstDetail->unit_price ?? '',
-                    'quantity' => $details->count(),
-                    'sub_total' => $details->sum('sub_total'),
+                    'quantity' => $firstDetail->quantity ?? 1,
+                    'sub_total' => $firstDetail->sub_total ?? '',
                 ];
             })->values()->toArray();
         }
