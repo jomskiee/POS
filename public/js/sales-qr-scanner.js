@@ -872,21 +872,20 @@ var SalesQRScanner = /*#__PURE__*/function () {
   }, {
     key: "handleSalesQRScanSuccess",
     value: function handleSalesQRScanSuccess(fishBox) {
+      var _fishBoxData$fish_typ;
       // Extract the actual fish box data from the response
       var fishBoxData = fishBox.data || fishBox;
 
       // Add the fish box to sales details
       this.addFishBoxToSalesDetails(fishBoxData);
 
+      // Get fish type name
+      var fishTypeName = ((_fishBoxData$fish_typ = fishBoxData.fish_type) === null || _fishBoxData$fish_typ === void 0 ? void 0 : _fishBoxData$fish_typ.name) || fishBoxData.fish_type_name || fishBoxData.fish_type || 'Unknown';
+      var boxName = fishBoxData.name || "Fish Box #".concat(fishBoxData.id);
+
       // Show success message
-      if (window.Swal) {
-        window.Swal.fire({
-          icon: 'success',
-          title: 'Fish Box Added!',
-          text: "".concat(fishBoxData.name, " (").concat(fishBoxData.fish_type, ") has been added to sales details."),
-          timer: 2000,
-          showConfirmButton: false
-        });
+      if (window.toastr) {
+        window.toastr.success("".concat(boxName, " (").concat(fishTypeName, ") added! Fish type auto-selected, quantity set to 1."));
       }
     }
 
@@ -897,51 +896,111 @@ var SalesQRScanner = /*#__PURE__*/function () {
   }, {
     key: "addFishBoxToSalesDetails",
     value: function addFishBoxToSalesDetails(fishBox) {
+      var _fishBox$fish_type;
       var container = document.getElementById('sales-details-container');
       if (!container) {
         return;
       }
 
-      // Check if there's an empty row we can use first
-      var existingRows = document.querySelectorAll('.sales-detail-row');
-      var targetIndex = existingRows.length;
-      var targetRow = null;
+      // Get the fish type ID and name from fish box data
+      var fishTypeId = fishBox.fish_type_id || (fishBox.fish_type ? fishBox.fish_type.id : null);
+      var fishTypeName = ((_fishBox$fish_type = fishBox.fish_type) === null || _fishBox$fish_type === void 0 ? void 0 : _fishBox$fish_type.name) || fishBox.fish_type_name || fishBox.fish_type || '';
+      console.log('Fish Box Data:', fishBox);
+      console.log('Fish Type ID:', fishTypeId);
+      console.log('Fish Type Name:', fishTypeName);
 
-      // Look for an empty row (one with "Select Fish Box" placeholder)
+      // Check for existing blank rows (no fish type selected)
+      var existingRows = container.querySelectorAll('.sales-detail-row');
+      var targetRow = null;
+      var rowIndex = null;
       for (var i = 0; i < existingRows.length; i++) {
-        var selectElement = existingRows[i].querySelector('select[name*="[box_id]"]');
-        if (selectElement && selectElement.value === '') {
-          targetIndex = i;
-          targetRow = existingRows[i];
+        var row = existingRows[i];
+        var _fishTypeSelect = row.querySelector('.fish-type-select');
+
+        // Check if row is empty (no fish type selected)
+        if (_fishTypeSelect && !_fishTypeSelect.value) {
+          targetRow = row;
+          rowIndex = row.dataset.index;
           break;
         }
       }
-      if (targetRow) {
-        // Update existing empty row
-        var _selectElement = targetRow.querySelector('select[name*="[box_id]"]');
-        var itemInput = targetRow.querySelector('input[name*="[item]"]');
-        if (_selectElement) {
-          _selectElement.innerHTML = "<option value=\"".concat(fishBox.id, "\" selected>").concat(fishBox.name, " - ").concat(fishBox.fish_type, "</option>");
-        }
-        if (itemInput) {
-          itemInput.value = fishBox.fish_type;
-        }
-      } else {
-        // Create new row
-        var newRow = document.createElement('div');
-        newRow.className = 'flex items-end space-x-4 p-4 border border-gray-200 rounded-lg sales-detail-row';
-        newRow.innerHTML = "\n                <div class=\"flex-1\">\n                    <label class=\"block text-sm font-medium text-gray-700 mb-1\">Fish Box</label>\n                    <select name=\"sales_details[".concat(targetIndex, "][box_id]\" class=\"fish-box-select w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500\" required>\n                        <option value=\"").concat(fishBox.id, "\" selected>").concat(fishBox.name, " - ").concat(fishBox.fish_type, "</option>\n                    </select>\n                </div>\n                <input type=\"hidden\" name=\"sales_details[").concat(targetIndex, "][item]\" value=\"").concat(fishBox.fish_type, "\" class=\"item-input\">\n                <div class=\"flex-1\">\n                    <label class=\"block text-sm font-medium text-gray-700 mb-1\">Description</label>\n                    <input type=\"text\" name=\"sales_details[").concat(targetIndex, "][item_description]\" class=\"w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500\" placeholder=\"Item description\">\n                </div>\n                <button type=\"button\" class=\"remove-detail-btn text-red-600 hover:text-red-800 transition-colors\">\n                    <svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\"></path>\n                    </svg>\n                </button>\n            ");
 
-        // Add the new row to the container
+      // If no blank row found, create a new one
+      if (!targetRow) {
+        var template = document.getElementById('sales-detail-row-template');
+        if (!template) {
+          console.error('Sales detail row template not found');
+          return;
+        }
+        rowIndex = existingRows.length;
+        var newRow = template.content.cloneNode(true).querySelector('.sales-detail-row');
+        newRow.dataset.index = rowIndex;
+
+        // Update all input names to use the correct index
+        newRow.querySelectorAll('input, select').forEach(function (input) {
+          if (input.name) {
+            input.name = input.name.replace('[INDEX]', "[".concat(rowIndex, "]"));
+          }
+        });
         container.appendChild(newRow);
+        targetRow = container.querySelector(".sales-detail-row[data-index=\"".concat(rowIndex, "\"]"));
+      }
+      if (!targetRow) {
+        console.error('Could not find or create target row');
+        return;
+      }
 
-        // Setup remove button event listener
-        var removeBtn = newRow.querySelector('.remove-detail-btn');
-        if (removeBtn) {
-          removeBtn.addEventListener('click', function () {
-            newRow.remove();
-          });
-        }
+      // Mark as scanned
+      targetRow.dataset.scanned = 'true';
+
+      // Set fish type and disable it
+      var fishTypeSelect = targetRow.querySelector('.fish-type-select');
+      console.log('Fish Type Select Element:', fishTypeSelect);
+      console.log('Setting fish type to:', fishTypeId);
+      if (fishTypeSelect && fishTypeId) {
+        fishTypeSelect.value = fishTypeId;
+        console.log('Fish Type Select Value After Setting:', fishTypeSelect.value);
+
+        // Add hidden input to preserve fish_type_id when select is disabled
+        // (disabled inputs are not submitted with the form)
+        var hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = fishTypeSelect.name;
+        hiddenInput.value = fishTypeId;
+        hiddenInput.className = 'fish-type-hidden-input';
+        fishTypeSelect.parentNode.appendChild(hiddenInput);
+        fishTypeSelect.disabled = true;
+        fishTypeSelect.classList.add('bg-gray-100', 'cursor-not-allowed');
+      } else {
+        console.warn('Could not set fish type - Select:', !!fishTypeSelect, 'ID:', !!fishTypeId);
+      }
+
+      // Set quantity to 1 and disable it
+      var quantityInput = targetRow.querySelector('.quantity-input');
+      if (quantityInput) {
+        quantityInput.value = 1;
+
+        // Add hidden input to preserve quantity when input is disabled
+        var hiddenQtyInput = document.createElement('input');
+        hiddenQtyInput.type = 'hidden';
+        hiddenQtyInput.name = quantityInput.name;
+        hiddenQtyInput.value = 1;
+        hiddenQtyInput.className = 'quantity-hidden-input';
+        quantityInput.parentNode.appendChild(hiddenQtyInput);
+        quantityInput.disabled = true;
+        quantityInput.classList.add('bg-gray-100', 'cursor-not-allowed');
+      }
+
+      // Set item name
+      var itemInput = targetRow.querySelector('.item-input');
+      if (itemInput) {
+        itemInput.value = fishTypeName;
+      }
+
+      // Create fish box display (no dropdown, just showing the scanned box)
+      var fishBoxesContainer = targetRow.querySelector('.fish-boxes-container');
+      if (fishBoxesContainer) {
+        fishBoxesContainer.innerHTML = "\n                <div class=\"fish-box-item mb-2\">\n                    <div class=\"w-full px-3 py-2 border border-green-300 bg-green-50 rounded-lg text-sm\">\n                        <div class=\"flex items-center text-green-700\">\n                            <svg class=\"w-4 h-4 mr-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                                <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"></path>\n                            </svg>\n                            <span class=\"font-medium\">".concat(fishBox.name || "Fish Box #".concat(fishBox.id), "</span>\n                            <span class=\"ml-2 text-xs\">(Scanned)</span>\n                        </div>\n                    </div>\n                    <input type=\"hidden\" name=\"sales_details[").concat(rowIndex, "][box_id][]\" value=\"").concat(fishBox.id, "\">\n                </div>\n            ");
       }
     }
   }]);

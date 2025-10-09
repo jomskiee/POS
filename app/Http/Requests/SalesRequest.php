@@ -30,9 +30,14 @@ class SalesRequest extends FormRequest
             'remarks' => 'nullable|string',
             'details' => 'nullable|array',
             'sales_details' => 'required|array|min:1',
-            'sales_details.*.box_id' => 'required|exists:fish_boxes,id',
+            'sales_details.*.box_id' => 'required|array|min:1',
+            'sales_details.*.box_id.*' => 'required|exists:fish_boxes,id',
+            'sales_details.*.fish_type_id' => 'required|exists:fish_types,id',
             'sales_details.*.item' => 'required|string|max:255',
             'sales_details.*.item_description' => 'nullable|string',
+            'sales_details.*.unit_price' => 'nullable|numeric|min:0',
+            'sales_details.*.quantity' => 'nullable|integer|min:1',
+            'sales_details.*.sub_total' => 'nullable|numeric|min:0',
         ];
 
 
@@ -58,10 +63,21 @@ class SalesRequest extends FormRequest
             'buyer_contact.max' => 'Buyer contact cannot exceed 255 characters.',
             'sales_details.required' => 'Please add at least one sales detail.',
             'sales_details.min' => 'Please add at least one sales detail.',
-            'sales_details.*.box_id.required' => 'Please select a fish box.',
-            'sales_details.*.box_id.exists' => 'The selected fish box is invalid.',
+            'sales_details.*.box_id.required' => 'Please select at least one fish box.',
+            'sales_details.*.box_id.array' => 'Fish boxes must be provided as an array.',
+            'sales_details.*.box_id.min' => 'Please select at least one fish box.',
+            'sales_details.*.box_id.*.required' => 'Please select a fish box.',
+            'sales_details.*.box_id.*.exists' => 'The selected fish box is invalid.',
+            'sales_details.*.fish_type_id.required' => 'Please select a fish type.',
+            'sales_details.*.fish_type_id.exists' => 'The selected fish type is invalid.',
             'sales_details.*.item.required' => 'Please enter the item name.',
             'sales_details.*.item.max' => 'Item name cannot exceed 255 characters.',
+            'sales_details.*.unit_price.numeric' => 'Unit price must be a valid number.',
+            'sales_details.*.unit_price.min' => 'Unit price must be at least 0.',
+            'sales_details.*.quantity.integer' => 'Quantity must be a whole number.',
+            'sales_details.*.quantity.min' => 'Quantity must be at least 1.',
+            'sales_details.*.sub_total.numeric' => 'Sub total must be a valid number.',
+            'sales_details.*.sub_total.min' => 'Sub total must be at least 0.',
         ];
     }
 
@@ -79,7 +95,11 @@ class SalesRequest extends FormRequest
             'buyer_contact' => 'buyer contact',
             'sales_details' => 'sales details',
             'sales_details.*.box_id' => 'fish box',
+            'sales_details.*.fish_type_id' => 'fish type',
             'sales_details.*.item' => 'item',
+            'sales_details.*.unit_price' => 'unit price',
+            'sales_details.*.quantity' => 'quantity',
+            'sales_details.*.sub_total' => 'sub total',
         ];
     }
 }
