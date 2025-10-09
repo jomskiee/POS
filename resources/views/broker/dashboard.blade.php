@@ -16,62 +16,70 @@
 
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <!-- My Orders Today -->
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-green-100 text-sm font-medium">My Orders Today</p>
-                                <p class="text-3xl font-bold"> {{ $ordersToday   }}</p>
-                            </div>
-                            <div class="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
-                                <x-heroicon-o-document-text class="w-6 h-6" />
+                    <!-- My Sales Count Today -->
+                    <a href="{{ route('broker.sales.sales') }}" class="block h-full">
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-green-100 text-sm font-medium">My Sales Count Today</p>
+                                    <p class="text-3xl font-bold"> {{ $ordersToday   }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                                    <x-heroicon-o-document-text class="w-6 h-6" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <!-- My Sales -->
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-blue-100 text-sm font-medium">My Sales Today</p>
-                                <p class="text-3xl font-bold">₱ {{ $salesToday }}</p>
-                                <p class="text-blue-100 text-sm">
-                                    @if($paidAmountGrowthPercent > 0)
-                                    +{{ $paidAmountGrowthPercent }} from yesterday
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
-                                <x-heroicon-o-chart-pie class="w-6 h-6" />
+                    <!-- My Collection Today -->
+                    <a href="{{ route('broker.sales.sales') }}" class="block h-full">
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-blue-100 text-sm font-medium">My Collection Today</p>
+                                    <p class="text-3xl font-bold">₱ {{ $salesToday }}</p>
+                                    <p class="text-blue-100 text-sm">
+                                        @if($paidAmountGrowthPercent > 0)
+                                        +{{ $paidAmountGrowthPercent }} from yesterday
+                                        @endif
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
+                                    <x-heroicon-o-chart-pie class="w-6 h-6" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <!-- Commission -->
-                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-purple-100 text-sm font-medium">Payment to Collect</p>
-                                <p class="text-3xl font-bold">₱ {{ $salesBalance }}</p>
-                            </div>
-                            <div class="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
-                                <x-heroicon-o-currency-dollar class="w-6 h-6" />
+                    <!-- Payment to Collect -->
+                    <a href="{{ route('broker.sales.sales') }}" class="block h-full">
+                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-purple-100 text-sm font-medium">Payment to Collect</p>
+                                    <p class="text-3xl font-bold">₱ {{ $salesBalance }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
+                                    <x-heroicon-o-currency-dollar class="w-6 h-6" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
-                    <!-- Tasks -->
-                    <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-orange-100 text-sm font-medium">Total Fish Boxes</p>
-                                <p class="text-3xl font-bold"> {{ $totalFishBoxes }}</p>
-                            </div>
-                            <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center">
-                                <x-heroicon-o-cube class="w-6 h-6" />
+                    <!-- Total Fish Boxes -->
+                    <a href="{{ route('broker.inventory.index') }}" class="block h-full">
+                        <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full flex flex-col justify-between">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-orange-100 text-sm font-medium">Total Fish Boxes Sold</p>
+                                    <p class="text-3xl font-bold"> {{ $totalFishBoxes }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center">
+                                    <x-heroicon-o-cube class="w-6 h-6" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!-- Charts and Lists Grid -->
@@ -104,7 +112,6 @@
                             @endforeach
                         </div>
                     </div>
-
 
                     <!-- My Sales Performance -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
@@ -142,6 +149,81 @@
                                 </p>
                                 <p class="text-sm text-gray-500">Growth</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Analytics Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Top Selling Items -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Top Selling Items</h3>
+                            <div class="text-sm text-gray-500">All Time</div>
+                        </div>
+                        <div class="space-y-4">
+                            @forelse($topItems as $index => $item)
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
+                                            <span class="text-sm font-medium text-gray-600">{{ $index + 1 }}</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">{{ $item['name'] }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900">{{ $item['quantity'] }} sold</p>
+                                        @if($topItems->count() > 0)
+                                            <div class="w-16 bg-gray-200 rounded-full h-2 mt-1">
+                                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $topItems->count() > 0 ? ($item['revenue'] / $topItems->first()['revenue']) * 100 : 0 }}%"></div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-8">
+                                    <p class="text-gray-500">No sales data available</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <!-- Weekly Sales Chart -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">This Month's Weekly Sales Trend</h3>
+
+                        <!-- Sales Amount Labels - Outside/Above Chart Container -->
+                        <div class="flex justify-between space-x-2 mb-4">
+                            @foreach($weeklySalesData as $weekData)
+                                <div class="flex-1 text-center">
+                                    <span class="text-xs font-medium text-gray-700">
+                                        ₱{{ number_format($weekData['sales'], 0) }}
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Chart Bars -->
+                        <div class="h-64 flex items-end justify-between space-x-2">
+                            @php
+                                $maxSales = $weeklySalesData->max('sales');
+                            @endphp
+                            @foreach($weeklySalesData as $weekData)
+                                <div class="flex flex-col items-center flex-1">
+                                    <!-- Chart Bar -->
+                                    <div class="w-full bg-green-200 rounded-t"
+                                         style="height: {{ $maxSales > 0 ? ($weekData['sales'] / $maxSales) * 240 : 0 }}px">
+                                        @if($weekData['sales'] > 0)
+                                            <div class="w-full bg-green-600 rounded-t h-full">
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Week Label -->
+                                    <span class="text-xs text-gray-500 mt-3">{{ $weekData['day'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>

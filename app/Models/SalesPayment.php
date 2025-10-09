@@ -75,4 +75,20 @@ class SalesPayment extends Model
             ];
         });
     }
+
+    /**
+     * @param int|null $brokerId
+     * @return float
+     */
+    public static function getTotalSalesToday(?int $brokerId): float
+    {
+        $query = self::whereDate('payment_date', today())
+            ->where('status', SalesStatusConstant::ACTIVE);
+
+        if ($brokerId) {
+            $query->where('broker_id', $brokerId);
+        }
+
+        return $query->sum('paid_amount');
+    }
 }

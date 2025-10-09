@@ -417,7 +417,7 @@ class Sales extends Model
             $query->where('broker_id', $brokerId);
         }
 
-        $dailySales = $query->selectRaw('DATE(sales_date) as date, SUM(paid_amount) as total_sales')
+        $dailySales = $query->selectRaw('DATE(sales_date) as date, SUM(total_amount) as total_sales')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
@@ -523,7 +523,7 @@ class Sales extends Model
             $query->where('status', $status);
         }
 
-        $weeklySales = $query->selectRaw('YEARWEEK(sales_date, 1) as week, MIN(sales_date) as week_start, MAX(sales_date) as week_end, SUM(paid_amount) as total_sales')
+        $weeklySales = $query->selectRaw('YEARWEEK(sales_date, 1) as week, MIN(sales_date) as week_start, MAX(sales_date) as week_end, SUM(total_amount) as total_sales')
             ->groupBy('week')
             ->orderBy('week')
             ->get();

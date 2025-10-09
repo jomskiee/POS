@@ -106,7 +106,6 @@ class UserManagementController extends Controller
                 'address' => $request->address,
             ];
 
-            // No account_balance input - it defaults to 0 in migration
             User::createUserWithRole($userData, $profileData);
 
             DB::commit();

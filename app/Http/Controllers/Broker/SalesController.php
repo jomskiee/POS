@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -30,7 +31,7 @@ class SalesController extends Controller
         $userId = Auth::id();
         $brokerId = Broker::getBrokerIdByUserId($userId);
 
-        $salesToday = Sales::getTotalSalesToday($brokerId);
+        $salesToday = SalesPayment::getTotalSalesToday($brokerId);
         $salesBalance = Sales::getTotalSalesBalance($brokerId);
         $ordersToday = Sales::getTotalOrdersToday($brokerId);
         $paidAmountToday = Sales::getTotalPaidAmountToday($brokerId);
@@ -49,7 +50,19 @@ class SalesController extends Controller
         $recentSales = Sales::getRecentSales(4, $brokerId);
         $dailySalesData = Sales::getDailySalesLast7Days($brokerId);
 
-        return compact('ordersToday', 'salesToday', 'salesBalance', 'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes', 'dailySalesData');
+        // Get top selling items without date filter (use a very wide date range)
+        $allTimeStart = '2020-01-01'; // Use a very early date
+        $allTimeEnd = Carbon::now()->format('Y-m-d');
+        $topItems = Sales::getTopSellingItems($brokerId, $allTimeStart, $allTimeEnd, 5, null);
+
+        // Get weekly sales data for this month only
+        $thisMonthStart = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $thisMonthEnd = Carbon::now()->format('Y-m-d');
+        $weeklySalesData = Sales::getDailySalesForPeriod($brokerId, $thisMonthStart, $thisMonthEnd, null);
+
+        return compact('ordersToday', 'salesToday', 'salesBalance',
+            'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes',
+            'dailySalesData', 'topItems', 'weeklySalesData');
     }
 
     /**
@@ -244,9 +257,6 @@ class SalesController extends Controller
                 InventoryLog::deleteLogForFishBox($detail->box_id, $sale->created_at);
             }
 
-            $broker = Broker::byUser($userId)->first();
-            $broker->minusFromBalance($sale->paid_amount);
-
             $sale->deleteSales();
         });
 
@@ -281,9 +291,6 @@ class SalesController extends Controller
             $sale = Sales::findOrFail($validated['sales_id']);
             $sale->updatePaidAmount();
             $sale->updatePaymentStatus();
-
-            $broker = Broker::byUser($userId)->first();
-            $broker->addToBalance($validated['paid_amount']);
         });
 
         return redirect()->route('broker.sales.sales')
@@ -308,11 +315,9 @@ class SalesController extends Controller
                 ->with('error', 'You are not authorized to delete this payment.');
         }
 
-        DB::transaction(function () use ($payment, $userId) {
+        DB::transaction(function () use ($payment) {
             $sale = $payment->sales;
 
-            $broker = Broker::byUser($userId)->first();
-            $broker->minusFromBalance($payment->paid_amount);
             $payment->delete();
 
              // Update the sales paid amount and status
