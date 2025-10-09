@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.salesQrScanner) {
                 window.salesQrScanner.openModal();
             } else {
-                alert('QR Scanner not initialized. Please refresh the page.');
+                toastr.error('QR Scanner not initialized. Please refresh the page.');
             }
         });
     }

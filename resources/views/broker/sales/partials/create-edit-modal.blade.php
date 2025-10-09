@@ -3,11 +3,10 @@
     @if(request('modal') === 'edit' && !$editingSales)
         {{-- Sales record not found --}}
         <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center lg:block sm:p-0">
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full max-w-md mx-auto">
+                <div class="relative bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full max-w-md mx-auto">
                     <div class="bg-white px-6 py-6">
                         <div class="text-center">
                             <div class="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4">
@@ -28,11 +27,10 @@
     @else
         {{-- Unified Sale Modal --}}
         <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center lg:block sm:p-0">
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div class="relative inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-7xl w-full max-w-md mx-auto">
+                <div class="relative bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-7xl w-full max-w-md mx-auto">
                     {{-- Modal Header --}}
                     <div class="bg-white px-6 py-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
@@ -104,7 +102,7 @@
                                                         <option value="">Select Fish Type</option>
                                                         @foreach($fishTypes as $fishType)
                                                             <option value="{{ $fishType->id }}"
-                                                                    {{ (string)$detail['fish_type_id'] === (string)$fishType->id ? 'selected' : '' }}>
+                                                                    {{ (string)($detail['fish_type_id'] ?? '') === (string)$fishType->id ? 'selected' : '' }}>
                                                                 {{ $fishType->name }}
                                                             </option>
                                                         @endforeach

@@ -373,6 +373,7 @@ class SalesController extends Controller
                     'id' => $fishBox->id,
                     'name' => $fishBox->name,
                     'qr_code' => $fishBox->qr_code,
+                    'fish_type_id' => $fishBox->fish_type_id,
                     'fish_type' => $fishBox->fishType->name,
                     'status' => $fishBox->status
                 ]
