@@ -35780,8 +35780,9 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
-// Make SweetAlert available globally
+// Make SweetAlert and Toastr available globally
 window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_2___default());
+window.toastr = (toastr__WEBPACK_IMPORTED_MODULE_0___default());
 
 /**
  * POS System JavaScript

@@ -7,6 +7,7 @@
     "/js/qr-backend-handler.js": "/js/qr-backend-handler.js",
     "/js/print-receipt.js": "/js/print-receipt.js",
     "/js/sales-qr-scanner.js": "/js/sales-qr-scanner.js",
+    "/js/sales-form.js": "/js/sales-form.js",
     "/css/filter-layout.css": "/css/filter-layout.css",
     "/css/admin.css": "/css/admin.css",
     "/css/app.css": "/css/app.css"

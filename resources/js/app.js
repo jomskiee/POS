@@ -10,8 +10,9 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import Swal from 'sweetalert2';
 
-// Make SweetAlert available globally
+// Make SweetAlert and Toastr available globally
 window.Swal = Swal;
+window.toastr = toastr;
 
 
 

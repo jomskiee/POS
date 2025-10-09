@@ -100,10 +100,6 @@ class SalesController extends Controller
             $fishTypes = $this->prepareFishTypeForEdit($fishTypes, $editingSales);
         }
 
-        if ($viewingSales) {
-            Log::info('$viewingSales');
-            Log::info(print_r($viewingSales->salesDetails, true));
-        }
         // Prepare sales details for the form
         $salesDetails = $this->prepareSalesDetailsForForm($request, $editingSales);
 
@@ -453,6 +449,13 @@ class SalesController extends Controller
         return $selectedFishBoxes->merge($fishBoxes)->unique('id');
     }
 
+    /**
+     * Prepare fish types for editing mode by including already selected boxes
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $fishTypes
+     * @param Sales|null $editingSales
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     private function prepareFishTypeForEdit($fishTypes, ?Sales $editingSales)
     {
         $selectedBoxIds = $editingSales->salesDetails->pluck('box_id')->flatten()->unique()->toArray();
