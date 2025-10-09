@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class SalesController extends Controller
         $userId = Auth::id();
         $brokerId = Broker::getBrokerIdByUserId($userId);
 
-        $salesToday = Sales::getTotalSalesToday($brokerId);
+        $salesToday = SalesPayment::getTotalSalesToday($brokerId);
         $salesBalance = Sales::getTotalSalesBalance($brokerId);
         $ordersToday = Sales::getTotalOrdersToday($brokerId);
         $paidAmountToday = Sales::getTotalPaidAmountToday($brokerId);
@@ -48,7 +49,19 @@ class SalesController extends Controller
         $recentSales = Sales::getRecentSales(4, $brokerId);
         $dailySalesData = Sales::getDailySalesLast7Days($brokerId);
 
-        return compact('ordersToday', 'salesToday', 'salesBalance', 'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes', 'dailySalesData');
+        // Get top selling items without date filter (use a very wide date range)
+        $allTimeStart = '2020-01-01'; // Use a very early date
+        $allTimeEnd = Carbon::now()->format('Y-m-d');
+        $topItems = Sales::getTopSellingItems($brokerId, $allTimeStart, $allTimeEnd, 5, null);
+
+        // Get weekly sales data for this month only
+        $thisMonthStart = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $thisMonthEnd = Carbon::now()->format('Y-m-d');
+        $weeklySalesData = Sales::getDailySalesForPeriod($brokerId, $thisMonthStart, $thisMonthEnd, null);
+
+        return compact('ordersToday', 'salesToday', 'salesBalance',
+            'recentSales', 'paidAmountGrowthPercent', 'totalFishBoxes',
+            'dailySalesData', 'topItems', 'weeklySalesData');
     }
 
     /**
