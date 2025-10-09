@@ -248,9 +248,6 @@ class SalesController extends Controller
                 InventoryLog::deleteLogForFishBox($detail->box_id, $sale->created_at);
             }
 
-            $broker = Broker::byUser($userId)->first();
-            $broker->minusFromBalance($sale->paid_amount);
-
             $sale->deleteSales();
         });
 
@@ -285,9 +282,6 @@ class SalesController extends Controller
             $sale = Sales::findOrFail($validated['sales_id']);
             $sale->updatePaidAmount();
             $sale->updatePaymentStatus();
-
-            $broker = Broker::byUser($userId)->first();
-            $broker->addToBalance($validated['paid_amount']);
         });
 
         return redirect()->route('broker.sales.sales')
@@ -312,11 +306,9 @@ class SalesController extends Controller
                 ->with('error', 'You are not authorized to delete this payment.');
         }
 
-        DB::transaction(function () use ($payment, $userId) {
+        DB::transaction(function () use ($payment) {
             $sale = $payment->sales;
 
-            $broker = Broker::byUser($userId)->first();
-            $broker->minusFromBalance($payment->paid_amount);
             $payment->delete();
 
              // Update the sales paid amount and status

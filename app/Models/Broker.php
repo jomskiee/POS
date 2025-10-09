@@ -18,12 +18,11 @@ class Broker extends Model
         'name',
         'address',
         'stall_name',
-        'account_balance',
         'status',
     ];
 
     protected $casts = [
-        'account_balance' => 'decimal:2',
+        //
     ];
 
     // ====================RELATIONS=========================//
@@ -63,10 +62,6 @@ class Broker extends Model
      *
      * @return Builder
      */
-    public function scopeWithPositiveBalance($query): Builder
-    {
-        return $query->where('account_balance', '>', 0);
-    }
 
     /**
      * @param Builder $query
@@ -90,7 +85,6 @@ class Broker extends Model
             'user_id' => $userId,
             'name' => $data['name'],
             'address' => $data['address'],
-            'account_balance' => 0.00, // Always default to 0
             'status' => UserStatusConstant::ACTIVE,
         ]);
     }
@@ -127,15 +121,6 @@ class Broker extends Model
         return true;
     }
 
-    public function addToBalance($amount)
-    {
-        $this->increment('account_balance', $amount);
-    }
-
-    public function minusFromBalance($amount)
-    {
-        $this->decrement('account_balance', $amount);
-    }
 
     /**
      * Delete broker and deactivate user
@@ -154,9 +139,4 @@ class Broker extends Model
         return $broker ? $broker->id : null;
     }
 
-    public static function getBrokerBalanceByUserId($userId) : ?float
-    {
-        $broker = self::where('user_id', $userId)->first();
-        return $broker ? $broker->account_balance : null;
-    }
 }

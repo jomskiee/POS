@@ -71,7 +71,7 @@
                         <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full flex flex-col justify-between">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-orange-100 text-sm font-medium">Total Fish Boxes</p>
+                                    <p class="text-orange-100 text-sm font-medium">Total Fish Boxes Sold</p>
                                     <p class="text-3xl font-bold"> {{ $totalFishBoxes }}</p>
                                 </div>
                                 <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center">
