@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Models\Broker;
+use Illuminate\Support\Facades\Auth;
 
 class FishTypeRequest extends FormRequest
 {
@@ -27,13 +29,19 @@ class FishTypeRequest extends FormRequest
         // Get the fish type ID from route parameter (direct ID)
         $fishTypeId = $this->route('id');
 
+        // Get the broker ID for the current user
+        $brokerId = Broker::getBrokerIdByUserId(Auth::id());
+
         $nameRules = ['required', 'string', 'max:255', 'min:2'];
 
-        // Add unique rule with proper ignore for updates
+        // Add unique rule scoped to broker_id with proper ignore for updates
         if ($fishTypeId) {
-            $nameRules[] = Rule::unique('fish_types', 'name')->ignore($fishTypeId, 'id');
+            $nameRules[] = Rule::unique('fish_types', 'name')
+                ->ignore($fishTypeId, 'id')
+                ->where('broker_id', $brokerId);
         } else {
-            $nameRules[] = 'unique:fish_types,name';
+            $nameRules[] = Rule::unique('fish_types', 'name')
+                ->where('broker_id', $brokerId);
         }
 
         return [
