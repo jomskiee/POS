@@ -93,122 +93,6 @@ class SalesRepository
     }
 
     /**
-     * Get total revenue for admin with search functionality
-     *
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @param string|null $status
-     * @param string|null $search
-     * @return float
-     */
-    public function getTotalRevenueForAdminWithSearch(string $dateFrom, string $dateTo, ?string $status = null, ?string $search = null): float
-    {
-        $query = Sales::active()
-            ->whereDate('sales_date', '>=', $dateFrom)
-            ->whereDate('sales_date', '<=', $dateTo);
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        // Add search functionality
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('buyer_name', 'like', "%{$search}%")
-                  ->orWhereHas('broker', function ($brokerQuery) use ($search) {
-                      $brokerQuery->where('name', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        return $query->sum('total_amount');
-    }
-
-    /**
-     * Get total orders count for admin with search functionality
-     *
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @param string|null $status
-     * @param string|null $search
-     * @return int
-     */
-    public function getTotalOrdersForAdminWithSearch(string $dateFrom, string $dateTo, ?string $status = null, ?string $search = null): int
-    {
-        $query = Sales::active()
-            ->whereDate('sales_date', '>=', $dateFrom)
-            ->whereDate('sales_date', '<=', $dateTo);
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        // Add search functionality
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('buyer_name', 'like', "%{$search}%")
-                  ->orWhereHas('broker', function ($brokerQuery) use ($search) {
-                      $brokerQuery->where('name', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        return $query->count();
-    }
-
-    /**
-     * Get paginated sales with filters for admin (includes broker search)
-     *
-     * @param string|null $search
-     * @param string|null $status
-     * @param int|null $brokerId
-     * @param string|null $dateFrom
-     * @param string|null $dateTo
-     * @return LengthAwarePaginator
-     */
-    public function getPaginatedWithFiltersForAdmin(?string $search = null, ?string $status = null, ?int $brokerId, ?string $dateFrom = null, ?string $dateTo = null): LengthAwarePaginator
-    {
-        $query = Sales::with(['broker', 'salesDetails', 'salesPayments'])
-            ->whereIn('status', SalesStatusConstant::getAllActiveStatuses());
-
-        if ($brokerId) {
-            $query->where('broker_id', $brokerId);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('buyer_name', 'like', "%{$search}%")
-                  ->orWhere('buyer_contact', 'like', "%{$search}%")
-                  ->orWhereHas('broker', function ($brokerQuery) use ($search) {
-                      $brokerQuery->where('name', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        // Date range filtering
-        if ($dateFrom) {
-            $query->whereDate('sales_date', '>=', $dateFrom);
-        }
-
-        if ($dateTo) {
-            $query->whereDate('sales_date', '<=', $dateTo);
-        }
-
-        $sales = $query->orderBy('created_at', 'desc')->paginate(15);
-
-        // Add formatted items to each sale
-        $sales->getCollection()->each(function ($sale) {
-            $sale->formatted_items = $sale->getFormattedItems();
-        });
-
-        return $sales;
-    }
-
-    /**
      * Get total revenue for admin dashboard
      *
      * @param string $dateFrom
@@ -261,7 +145,7 @@ class SalesRepository
      */
     public function getRecentOrdersForAdmin(string $dateFrom, string $dateTo, ?string $status = null, int $limit = 5): Collection
     {
-        $query = Sales::with(['broker', 'salesDetails.fishBox.fishType'])
+        $query = Sales::with(['broker', 'salesDetails'])
             ->active()
             ->whereDate('sales_date', '>=', $dateFrom)
             ->whereDate('sales_date', '<=', $dateTo);
@@ -400,6 +284,90 @@ class SalesRepository
                 'total_sales' => $brokerData->total_sales,
                 'fishbox_count' => $brokerData->fishbox_count
             ];
+        });
+    }
+
+    /**
+     * Get all brokers with their sales details for admin analysis
+     * Shows only fish type, fish boxes, and date
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param string|null $brokerSearch
+     * @return LengthAwarePaginator
+     */
+    public function getBrokersWithSalesDetails(string $dateFrom, string $dateTo, ?string $brokerSearch = null): LengthAwarePaginator
+    {
+        // Build query with eager loading and constraints
+        $brokersQuery = Broker::with([
+            'user',
+            'sales' => function ($query) use ($dateFrom, $dateTo) {
+                $query->whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+                    ->whereDate('sales_date', '>=', $dateFrom)
+                    ->whereDate('sales_date', '<=', $dateTo)
+                    ->with('salesDetails')
+                    ->orderBy('sales_date', 'desc');
+            }
+        ])
+        // Only get brokers who have sales in the date range
+        ->whereHas('sales', function ($query) use ($dateFrom, $dateTo) {
+            $query->whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+                ->whereDate('sales_date', '>=', $dateFrom)
+                ->whereDate('sales_date', '<=', $dateTo);
+        });
+
+        // Apply broker search filter if provided
+        if ($brokerSearch) {
+            $brokersQuery->where(function ($query) use ($brokerSearch) {
+                $query->where('name', 'like', "%{$brokerSearch}%")
+                      ->orWhere('stall_name', 'like', "%{$brokerSearch}%");
+            });
+        }
+
+        // Order by broker name
+        $brokersQuery->orderBy('name', 'asc');
+
+        // Paginate the brokers (10 per page)
+        return $brokersQuery->paginate(10);
+    }
+
+    /**
+     * Get total fishboxes sold based on filters
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param string|null $brokerSearch
+     * @return int
+     */
+    public function getTotalFishBoxesSold(string $dateFrom, string $dateTo, ?string $brokerSearch = null): int
+    {
+        $query = Sales::whereIn('status', SalesStatusConstant::getAllActiveStatuses())
+            ->whereDate('sales_date', '>=', $dateFrom)
+            ->whereDate('sales_date', '<=', $dateTo);
+
+        // Filter by broker search if provided
+        if ($brokerSearch) {
+            $query->whereHas('broker', function ($brokerQuery) use ($brokerSearch) {
+                $brokerQuery->where('name', 'like', "%{$brokerSearch}%")
+                            ->orWhere('stall_name', 'like', "%{$brokerSearch}%");
+            });
+        }
+
+        // Sum the quantity from sales_details for these sales
+        return $query->join('sales_details', 'sales.id', '=', 'sales_details.sales_id')
+            ->sum('sales_details.quantity');
+    }
+
+    /**
+     * Get total count of all fish boxes sold (for dashboard)
+     * Counts actual fish boxes from sales_details box_id arrays
+     *
+     * @return int
+     */
+    public function getTotalFishBoxesSoldCount(): int
+    {
+        return SalesDetails::get()->sum(function ($detail) {
+            return is_array($detail->box_id) ? count($detail->box_id) : 0;
         });
     }
 }

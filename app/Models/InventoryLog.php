@@ -193,6 +193,7 @@ class InventoryLog extends Model
 
     /**
      * Get top 5 fish types most sold based on inventory logs
+     * Counts unique fish boxes sold per fish type across all brokers
      *
      * @return Collection
      */
@@ -201,7 +202,7 @@ class InventoryLog extends Model
         return static::join('fish_boxes', 'inventory_logs.fish_box_id', '=', 'fish_boxes.id')
             ->join('fish_types', 'fish_boxes.fish_type_id', '=', 'fish_types.id')
             ->where('inventory_logs.action', 'Sold')
-            ->selectRaw('fish_types.id, fish_types.name, COUNT(inventory_logs.id) as total_sold')
+            ->selectRaw('fish_types.id, fish_types.name, COUNT(DISTINCT inventory_logs.fish_box_id) as total_sold')
             ->groupBy('fish_types.id', 'fish_types.name')
             ->orderByDesc('total_sold')
             ->limit(5)
@@ -219,6 +220,7 @@ class InventoryLog extends Model
 
     /**
      * Get top fish types sold with filters for admin analysis
+     * Counts unique fish boxes sold per fish type within date range
      *
      * @param string $dateFrom
      * @param string $dateTo
@@ -230,17 +232,14 @@ class InventoryLog extends Model
     {
         $query = static::join('fish_boxes', 'inventory_logs.fish_box_id', '=', 'fish_boxes.id')
             ->join('fish_types', 'fish_boxes.fish_type_id', '=', 'fish_types.id')
-            ->join('sales_details', 'fish_boxes.id', '=', 'sales_details.box_id')
-            ->join('sales', 'sales_details.sales_id', '=', 'sales.id')
             ->where('inventory_logs.action', 'Sold')
-            ->whereDate('sales.sales_date', '>=', $dateFrom)
-            ->whereDate('sales.sales_date', '<=', $dateTo);
+            ->whereDate('inventory_logs.created_at', '>=', $dateFrom)
+            ->whereDate('inventory_logs.created_at', '<=', $dateTo);
 
-        if ($status) {
-            $query->where('sales.status', $status);
-        }
+        // Note: Status filter removed as inventory_logs don't directly relate to sales status
+        // If needed, this would require a more complex query with sales_details JSON parsing
 
-        return $query->selectRaw('fish_types.id, fish_types.name, COUNT(inventory_logs.id) as total_sold')
+        return $query->selectRaw('fish_types.id, fish_types.name, COUNT(DISTINCT inventory_logs.fish_box_id) as total_sold')
             ->groupBy('fish_types.id', 'fish_types.name')
             ->orderByDesc('total_sold')
             ->limit($limit)

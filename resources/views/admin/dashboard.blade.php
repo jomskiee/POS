@@ -17,7 +17,7 @@
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <!-- Total Brokers -->
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+                    <a href="{{ route('admin.users.index', ['tab' => 'brokers']) }}" class="block bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-blue-100 text-sm font-medium">Total Brokers</p>
@@ -28,10 +28,10 @@
                                 <x-heroicon-o-users class="w-6 h-6" />
                             </div>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Total Fishboxes Sold -->
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+                    <a href="{{ route('admin.sales.index') }}" class="block bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-green-100 text-sm font-medium">Total Fishboxes Sold</p>
@@ -42,10 +42,10 @@
                                 <x-heroicon-o-archive-box class="w-6 h-6" />
                             </div>
                         </div>
-                    </div>
+                    </a>
 
                      <!-- Total Fishboxes Missing -->
-                     <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-6 text-white shadow-lg">
+                     <a href="{{ route('admin.sales.index', ['tab' => 'fishbox-tracking']) }}" class="block bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-red-100 text-sm font-medium">Total Fishboxes Missing</p>
@@ -56,10 +56,10 @@
                                 <x-heroicon-o-exclamation-triangle class="w-6 h-6" />
                             </div>
                         </div>
-                    </div>
+                    </a>
 
                      <!-- Total Fishboxes Returned -->
-                     <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-6 text-white shadow-lg">
+                     <a href="{{ route('admin.sales.index', ['tab' => 'fishbox-tracking']) }}" class="block bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-yellow-100 text-sm font-medium">Total Fishboxes Returned</p>
@@ -70,7 +70,7 @@
                                 <x-heroicon-o-arrow-uturn-left class="w-6 h-6" />
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!-- Additional Sections Grid -->
@@ -79,7 +79,6 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Top Fish Types Sold</h3>
-                            <a href="{{ route('admin.sales.index', ['tab' => 'fishbox-tracking']) }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-3">
                             @forelse($topFishTypes as $fishType)
@@ -108,7 +107,7 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Top Brokers This Month</h3>
-                            <a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
+                            <a href="{{ route('admin.sales.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View All</a>
                         </div>
                         <div class="space-y-4">
                             @forelse($topBrokers as $brokerData)

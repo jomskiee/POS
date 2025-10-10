@@ -35,11 +35,16 @@
 
 <!-- Movement History -->
     <!-- Filters -->
-    <div class="bg-white  px-6 py-4">
-        <form method="GET" action="{{ route('admin.sales.index') }}" x-data="{ action: '{{ request('action') }}', date_from: '{{ request('date_from', now()->startOfMonth()->format('Y-m-d')) }}', date_to: '{{ request('date_to', now()->format('Y-m-d')) }}' }">
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <form method="GET" action="{{ route('admin.sales.index') }}" x-data="{
+            action: '{{ request('action') }}',
+            dateFrom: '{{ request('date_from', now()->startOfMonth()->format('Y-m-d')) }}',
+            dateTo: '{{ request('date_to', now()->format('Y-m-d')) }}'
+        }">
             <input type="hidden" name="tab" value="fishbox-tracking">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div>
+            <div class="filter-layout">
+                <!-- Status Filter -->
+                <div class="search-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select name="action" x-model="action" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Status</option>
@@ -48,22 +53,34 @@
                         @endforeach
                     </select>
                 </div>
-                <div>
+
+                <!-- Date From -->
+                <div class="status-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
-                    <input type="date" name="date_from" x-model="date_from" value="{{ request('date_from', now()->startOfMonth()->format('Y-m-d')) }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="date"
+                           name="date_from"
+                           x-model="dateFrom"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
-                <div>
+
+                <!-- Date To -->
+                <div class="fish-type-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
-                    <input type="date" name="date_to" x-model="date_to" value="{{ request('date_to', now()->format('Y-m-d')) }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="date"
+                           name="date_to"
+                           x-model="dateTo"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
-                <div class="flex space-x-2">
+
+                <!-- Action Buttons -->
+                <div class="buttons-field flex justify-end space-x-2">
                     <a href="{{ route('admin.sales.index', ['tab' => 'fishbox-tracking']) }}"
                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         Clear
                     </a>
                     <button type="submit"
                             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
-                        Filter
+                        Apply
                     </button>
                 </div>
             </div>
@@ -80,62 +97,63 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-6">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date/Time</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Box</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Type</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QR Code</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Broker</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($inventoryLogs as $log)
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50 sticky top-0">
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $log->created_at->format('M d, Y H:i') }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $log->fishBox->name ?? 'N/A' }}</div>
-                            <div class="text-sm text-gray-500">ID: {{ $log->fish_box_id }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $log->fishBox->fishType->name ?? 'N/A' }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @php
-                                $actionColors = [
-                                    'Stocked' => 'bg-blue-100 text-blue-800',
-                                    'Sold' => 'bg-red-100 text-red-800',
-                                    'Returned' => 'bg-yellow-100 text-yellow-800',
-                                    'Missing' => 'bg-purple-100 text-purple-800',
-                                ];
-                                $colorClass = $actionColors[$log->action] ?? 'bg-gray-100 text-gray-800';
-                            @endphp
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $colorClass }}">
-                                {{ $log->action }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                            {{ Str::limit($log->fishBox->qr_code ?? 'N/A', 12) }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $log->broker->name ?? 'System' }}
-                        </td>
+                        <th class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date/Time</th>
+                        <th class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Box</th>
+                        <th class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fish Type</th>
+                        <th class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        <th class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QR Code</th>
+                        <th class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Broker</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-                            <x-heroicon-o-document-text class="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                            <p class="text-lg font-medium text-gray-900 mb-2">No movement records found</p>
-                            <p class="text-sm">No inventory movements match your current filters.</p>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($inventoryLogs as $log)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-900">
+                                <span class="hidden md:inline">{{ $log->created_at->format('M d, Y H:i') }}</span>
+                                <span class="md:hidden">{{ $log->created_at->format('M d, H:i') }}</span>
+                            </td>
+                            <td class="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                                <div class="text-xs md:text-sm font-medium text-gray-900">{{ $log->fishBox->name ?? 'N/A' }}</div>
+                                <div class="text-xs text-gray-500">ID: {{ $log->fish_box_id }}</div>
+                            </td>
+                            <td class="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                                <div class="text-xs md:text-sm text-gray-900">{{ $log->fishBox->fishType->name ?? 'N/A' }}</div>
+                            </td>
+                            <td class="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                                @php
+                                    $actionColors = [
+                                        'Returned' => 'bg-yellow-100 text-yellow-800',
+                                        'Missing' => 'bg-red-100 text-red-800',
+                                    ];
+                                    $colorClass = $actionColors[$log->action] ?? 'bg-gray-100 text-gray-800';
+                                @endphp
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $colorClass }}">
+                                    {{ $log->action }}
+                                </span>
+                            </td>
+                            <td class="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-500 font-mono">
+                                {{ Str::limit($log->fishBox->qr_code ?? 'N/A', 12) }}
+                            </td>
+                            <td class="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-500">
+                                {{ $log->broker->name ?? 'System' }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-3 py-8 md:px-6 md:py-12 text-center text-gray-500">
+                                <x-heroicon-o-document-text class="w-8 h-8 md:w-12 md:h-12 text-gray-400 mx-auto mb-3 md:mb-4" />
+                                <p class="text-base md:text-lg font-medium text-gray-900 mb-1 md:mb-2">No movement records found</p>
+                                <p class="text-xs md:text-sm">No inventory movements match your current filters.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Pagination -->

@@ -1,43 +1,45 @@
-<!-- Admin Sales Analysis Tab Content -->
+<!-- Admin Sales Analysis Tab Content - Broker-centric view -->
 <div class="space-y-6">
-    <!-- Admin Analysis Filters -->
-    <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+    <!-- Filters Section -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
         <form method="GET" action="{{ route('admin.sales.index', ['tab' => 'analysis']) }}" x-data="{
-            status: '{{ request('status') }}',
             dateFrom: '{{ request('date_from', $dateFrom) }}',
-            dateTo: '{{ request('date_to', $dateTo) }}'
+            dateTo: '{{ request('date_to', $dateTo) }}',
+            brokerSearch: '{{ request('broker_search', '') }}'
         }">
             <input type="hidden" name="tab" value="analysis">
-            <div class="analytics-filter-layout">
-                <!-- Status Filter -->
-                <div class="status-field">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="status" x-model="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">All Status</option>
-                        @foreach($statusOptions as $statusValue => $statusDisplayName)
-                            <option value="{{ $statusValue }}" {{ request('status') == $statusValue ? 'selected' : '' }}>
-                                {{ $statusDisplayName }}
-                            </option>
-                        @endforeach
-                    </select>
+            <div class="filter-layout">
+                <!-- Broker Search -->
+                <div class="search-field">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Search Broker</label>
+                    <div class="relative">
+                        <input type="text"
+                               name="broker_search"
+                               x-model="brokerSearch"
+                               placeholder="Search broker name or stall..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <x-heroicon-o-magnifying-glass class="h-4 w-4 text-gray-400" />
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Date From -->
-                <div class="fish-type-field">
+                <div class="status-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
                     <input type="date"
-                        name="date_from"
-                        x-model="dateFrom"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           name="date_from"
+                           x-model="dateFrom"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <!-- Date To -->
                 <div class="fish-type-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
                     <input type="date"
-                        name="date_to"
-                        x-model="dateTo"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           name="date_to"
+                           x-model="dateTo"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <!-- Action Buttons -->
@@ -49,419 +51,248 @@
                         Apply
                     </button>
                 </div>
-        </div>
+            </div>
         </form>
     </div>
 
-    <!-- Sales Performance Summary -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">Sales Performance Summary</h3>
-            <div class="text-sm text-gray-500">Period Analysis</div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Period Statistics -->
-            <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-blue-100 p-2 rounded-lg">
-                        <x-heroicon-o-calendar-days class="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Period Duration</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ \Carbon\Carbon::parse($dateFrom)->diffInDays(\Carbon\Carbon::parse($dateTo)) + 1 }} days</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Revenue Growth -->
-            <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-green-100 p-2 rounded-lg">
-                        <x-heroicon-o-arrow-trending-up class="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Daily Revenue Avg</p>
-                        <p class="text-lg font-semibold text-gray-900">₱{{ number_format($totalRevenue / max(1, \Carbon\Carbon::parse($dateFrom)->diffInDays(\Carbon\Carbon::parse($dateTo)) + 1), 0) }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Order Frequency -->
-            <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-purple-100 p-2 rounded-lg">
-                        <x-heroicon-o-clock class="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Orders per Day</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ number_format($totalOrders / max(1, \Carbon\Carbon::parse($dateFrom)->diffInDays(\Carbon\Carbon::parse($dateTo)) + 1), 1) }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Market Share -->
-            <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-orange-100 p-2 rounded-lg">
-                        <x-heroicon-o-chart-pie class="w-5 h-5 text-orange-600" />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Active Brokers</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ $topBrokers->count() }} / {{ $totalBrokers }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Performance Insights -->
+    <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Average Order Value -->
+        <!-- Active Brokers Card -->
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Average Order Value</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalOrders > 0 ? $totalRevenue / $totalOrders : 0, 2) }}</p>
-                    <div class="flex items-center mt-1">
-                        <span class="text-sm text-gray-500">Per transaction</span>
-                    </div>
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <x-heroicon-o-users class="w-6 h-6 text-white" />
                 </div>
-                <div class="bg-blue-50 p-3 rounded-full">
-                    <x-heroicon-o-calculator class="w-6 h-6 text-blue-600" />
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Active Brokers</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $brokersWithSales->total() }}</p>
+                    <p class="text-xs text-blue-600">With sales</p>
                 </div>
             </div>
         </div>
 
-        <!-- Revenue per Broker -->
+        <!-- Total Sales Card -->
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Revenue per Broker</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalBrokers > 0 ? $totalRevenue / $totalBrokers : 0, 2) }}</p>
-                    <div class="flex items-center mt-1">
-                        <span class="text-sm text-gray-500">Average performance</span>
-                    </div>
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <x-heroicon-o-shopping-cart class="w-6 h-6 text-white" />
                 </div>
-                <div class="bg-green-50 p-3 rounded-full">
-                    <x-heroicon-o-chart-bar class="w-6 h-6 text-green-600" />
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Total Sales</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $brokersWithSales->sum(fn($broker) => $broker->sales->count()) }}</p>
+                    <p class="text-xs text-green-600">Transactions</p>
                 </div>
             </div>
         </div>
 
-        <!-- Conversion Rate -->
+        <!-- Fishboxes Sold Card -->
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Sales Conversion</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $totalBrokers > 0 ? number_format(($totalOrders / $totalBrokers) * 100, 1) : 0 }}%</p>
-                    <div class="flex items-center mt-1">
-                        <span class="text-sm text-gray-500">Orders per broker</span>
-                    </div>
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                    <x-heroicon-o-archive-box class="w-6 h-6 text-white" />
                 </div>
-                <div class="bg-purple-50 p-3 rounded-full">
-                    <x-heroicon-o-arrow-trending-up class="w-6 h-6 text-purple-600" />
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Fishboxes Sold</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ number_format($totalFishBoxesSold) }}</p>
+                    <p class="text-xs text-orange-600">Total units</p>
                 </div>
             </div>
         </div>
 
-        <!-- Top Performer -->
+        <!-- Date Range Card -->
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Top Broker</p>
-                    <p class="text-lg font-bold text-gray-900">{{ $topBrokers->isNotEmpty() ? $topBrokers->first()['broker']->name : 'N/A' }}</p>
-                    <div class="flex items-center mt-1">
-                        <span class="text-sm text-gray-500">{{ $topBrokers->isNotEmpty() ? $topBrokers->first()['sales_count'] . ' sales' : 'No data' }}</span>
-                    </div>
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <x-heroicon-o-calendar-days class="w-6 h-6 text-white" />
                 </div>
-                <div class="bg-orange-50 p-3 rounded-full">
-                    <x-heroicon-o-trophy class="w-6 h-6 text-orange-600" />
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Date Range</p>
+                    <p class="text-base font-bold text-gray-900">{{ \Carbon\Carbon::parse($dateFrom)->format('M d') }} - {{ \Carbon\Carbon::parse($dateTo)->format('M d') }}</p>
+                    <p class="text-xs text-purple-600">{{ \Carbon\Carbon::parse($dateFrom)->diffInDays(\Carbon\Carbon::parse($dateTo)) + 1 }} days</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Detailed Analytics Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Revenue Trend Analysis -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Revenue Trend Analysis</h3>
-                <div class="text-sm text-gray-500">Period Overview</div>
-            </div>
-            <div class="h-64 flex items-end justify-between space-x-2">
-                @php
-                    $maxValue = max(array_column($dailySalesData, 'value'));
-                    $totalPeriodRevenue = array_sum(array_column($dailySalesData, 'value'));
-                @endphp
-                @foreach($dailySalesData as $index => $day)
-                    <div class="flex flex-col items-center flex-1">
-                        <div class="w-full bg-blue-200 rounded-t relative"
-                             style="height: {{ $maxValue > 0 ? ($day['value'] / $maxValue) * 240 : 0 }}px">
-                            <div class="w-full bg-blue-600 rounded-t absolute bottom-0"
-                                 style="height: {{ $maxValue > 0 ? ($day['value'] / $maxValue) * 240 : 0 }}px">
-                            </div>
-                            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">
-                                ₱{{ number_format($day['value'], 0) }}
-                        </div>
-                    </div>
-                        <span class="text-xs text-gray-500 mt-2">{{ $day['label'] }}</span>
-            </div>
-                @endforeach
+    <!-- Brokers List with Sales -->
+    @if($brokersWithSales->isEmpty())
+        <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+            <x-heroicon-o-inbox class="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No Sales Found</h3>
+            <p class="text-gray-600">No brokers have sales within the selected date range.</p>
         </div>
-            <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                        <span class="text-gray-600">Peak Day:</span>
-                        <span class="font-medium text-gray-900">
-                            @php
-                                $peakDay = collect($dailySalesData)->sortByDesc('value')->first();
-                            @endphp
-                            {{ $peakDay['label'] }} (₱{{ number_format($peakDay['value'], 0) }})
-                        </span>
-            </div>
-                    <div>
-                        <span class="text-gray-600">Daily Average:</span>
-                        <span class="font-medium text-gray-900">₱{{ number_format($totalPeriodRevenue / count($dailySalesData), 0) }}</span>
+    @else
+        <div class="space-y-4 sm:space-y-6">
+            @foreach($brokersWithSales as $broker)
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg overflow-hidden" x-data="{ expanded: false }" data-broker-id="{{ $broker->id }}">
+                    <!-- Broker Header -->
+                    <div class="p-3 sm:p-4 border-b border-gray-200 cursor-pointer transition-colors {{ $loop->even ? 'bg-gray-50 hover:bg-gray-100' : 'bg-white hover:bg-gray-50' }}" @click="expanded = !expanded">
+                        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+                            <!-- Broker Info -->
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-blue-600 text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-sm sm:text-base flex-shrink-0">
+                                    {{ strtoupper(substr($broker->name, 0, 2)) }}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="text-base sm:text-lg font-bold text-gray-900 truncate">{{ $broker->name }}</h3>
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-0.5 gap-0.5 sm:gap-0">
+                                        @if($broker->stall_name)
+                                            <span class="text-xs sm:text-sm text-gray-600 truncate">
+                                                <x-heroicon-o-building-storefront class="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1" />
+                                                {{ $broker->stall_name }}
+                                            </span>
+                                        @endif
+                                        @if($broker->user)
+                                            <span class="text-xs sm:text-sm text-gray-600 truncate">
+                                                <x-heroicon-o-envelope class="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1" />
+                                                {{ $broker->user->email }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-        <!-- Broker Performance Analysis -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Broker Performance Analysis</h3>
-                <div class="text-sm text-gray-500">Top Performers</div>
-            </div>
-            <div class="space-y-4">
-                @forelse($topBrokers as $index => $brokerData)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 {{ $index === 0 ? 'bg-yellow-100' : 'bg-green-100' }} rounded-lg flex items-center justify-center">
-                                @if($index === 0)
-                                    <x-heroicon-o-trophy class="w-4 h-4 text-yellow-600" />
-                                @else
-                                    <span class="text-green-600 font-semibold text-sm">{{ $index + 1 }}</span>
-                                @endif
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">{{ $brokerData['broker']->name ?? 'Unknown Broker' }}</p>
-                                <p class="text-xs text-gray-500">{{ $brokerData['sales_count'] }} sales • {{ $topBrokers->isNotEmpty() && $topBrokers->first()['total_sales'] > 0 ? number_format(($brokerData['total_sales'] / $topBrokers->first()['total_sales']) * 100, 1) : 0 }}% of top performer</p>
-                            </div>
-                            </div>
-                        <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">₱{{ number_format($brokerData['total_sales'], 2) }}</p>
-                            <div class="w-20 bg-gray-200 rounded-full h-2 mt-1">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: {{ $topBrokers->isNotEmpty() && $topBrokers->first()['total_sales'] > 0 ? ($brokerData['total_sales'] / $topBrokers->first()['total_sales']) * 100 : 0 }}%"></div>
-                        </div>
-                </div>
-            </div>
-                @empty
-                    <div class="text-center py-8">
-                        <x-heroicon-o-users class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                        <p class="text-gray-500 text-sm">No broker sales data available</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-    </div>
+                            <!-- Metrics and Actions -->
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-3 lg:flex-1 lg:justify-end xl:justify-end">
+                                <!-- Metrics -->
+                                <div class="grid grid-cols-3 gap-2 sm:flex sm:items-center sm:justify-between lg:justify-center xl:flex-1 sm:gap-2 lg:gap-3 xl:gap-6 2xl:gap-16">
+                                    <!-- Total Sales -->
+                                    <div class="text-center border-2 border-blue-600 bg-blue-50 rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 lg:px-2 xl:px-4 sm:min-w-[80px] lg:min-w-[85px] xl:min-w-[100px]">
+                                        <p class="text-[10px] sm:text-xs text-blue-700 uppercase tracking-wider mb-0.5">Sales</p>
+                                        <p class="text-base sm:text-lg lg:text-lg xl:text-xl font-bold text-blue-600">{{ $broker->sales->count() }}</p>
+                                    </div>
 
-    <!-- Market Analysis Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Fish Type Market Analysis -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Fish Type Market Analysis</h3>
-                <div class="text-sm text-gray-500">Demand Insights</div>
-            </div>
-            <div class="space-y-4">
-                @forelse($topFishTypes as $index => $fishType)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 {{ $index === 0 ? 'bg-yellow-100' : 'bg-blue-100' }} rounded-lg flex items-center justify-center">
-                                @if($index === 0)
-                                    <x-heroicon-o-star class="w-4 h-4 text-yellow-600" />
-                                @else
-                                    <span class="text-blue-600 font-semibold text-sm">{{ $index + 1 }}</span>
-                                @endif
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">{{ $fishType['fish_type']->name }}</p>
-                                <p class="text-xs text-gray-500">{{ $fishType['sold_count'] }} units • {{ $topFishTypes->isNotEmpty() && $topFishTypes->first()['sold_count'] > 0 ? number_format(($fishType['sold_count'] / $topFishTypes->first()['sold_count']) * 100, 1) : 0 }}% of top seller</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">{{ $fishType['sold_count'] }}</p>
-                            <div class="w-20 bg-gray-200 rounded-full h-2 mt-1">
-                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $topFishTypes->isNotEmpty() && $topFishTypes->first()['sold_count'] > 0 ? ($fishType['sold_count'] / $topFishTypes->first()['sold_count']) * 100 : 0 }}%"></div>
+                                    <!-- Total Fishboxes -->
+                                    <div class="text-center border-2 border-orange-600 bg-orange-50 rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 lg:px-2 xl:px-4 sm:min-w-[80px] lg:min-w-[85px] xl:min-w-[100px]">
+                                        <p class="text-[10px] sm:text-xs text-orange-700 uppercase tracking-wider mb-0.5">Fishboxes</p>
+                                        <p class="text-base sm:text-lg lg:text-lg xl:text-xl font-bold text-orange-600">{{ $broker->sales->sum(fn($sale) => $sale->salesDetails->sum('quantity')) }}</p>
+                                    </div>
+
+                                    <!-- Buyers -->
+                                    <div class="text-center border-2 border-green-600 bg-green-50 rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 lg:px-2 xl:px-4 sm:min-w-[80px] lg:min-w-[85px] xl:min-w-[100px]">
+                                        <p class="text-[10px] sm:text-xs text-green-700 uppercase tracking-wider mb-0.5">Buyers</p>
+                                        <p class="text-base sm:text-lg lg:text-lg xl:text-xl font-bold text-green-600">{{ $broker->sales->count() }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex items-center justify-center sm:justify-start space-x-2 sm:ml-2 lg:ml-1 xl:ml-4 flex-shrink-0">
+                                    <button @click.stop="printBrokerSales({{ $broker->id }}, '{{ $broker->name }}', '{{ $broker->stall_name ?? '' }}')"
+                                            class="text-green-600 hover:text-green-800 transition-colors p-1.5 sm:p-2 hover:bg-green-50 rounded-lg"
+                                            title="Print Sales">
+                                        <x-heroicon-o-printer class="w-6 h-6 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
+                                    </button>
+
+                                    <div class="text-blue-600 p-1.5">
+                                        <x-heroicon-o-chevron-down class="w-5 h-5 transition-transform duration-200" x-bind:class="{ 'rotate-180': expanded }" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                @empty
-                    <div class="text-center py-8">
-                        <x-heroicon-o-archive-box class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                        <p class="text-gray-500 text-sm">No fish type sales data available</p>
+
+                    <!-- Sales Details (Collapsible) -->
+                    <div x-show="expanded"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 transform -translate-y-2"
+                         x-transition:enter-end="opacity-100 transform translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 transform translate-y-0"
+                         x-transition:leave-end="opacity-0 transform -translate-y-2"
+                         class="overflow-x-auto"
+                         x-data="{ hoveredSale: null }">
+                        <table class="w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th scope="col" class="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-tight sm:tracking-wider whitespace-nowrap">
+                                        <div class="flex items-center space-x-1">
+                                            <x-heroicon-o-calendar class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                                            <span>Date</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-tight sm:tracking-wider whitespace-nowrap">
+                                        <div class="flex items-center space-x-1">
+                                            <x-heroicon-o-user class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                                            <span>Buyer</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-tight sm:tracking-wider whitespace-nowrap">
+                                        <div class="flex items-center space-x-1">
+                                            <x-heroicon-o-cube class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                                            <span>Fish</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-tight sm:tracking-wider whitespace-nowrap">
+                                        <div class="flex items-center space-x-1">
+                                            <x-heroicon-o-hashtag class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                                            <span>Qty</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-tight sm:tracking-wider whitespace-nowrap">
+                                        <div class="flex items-center space-x-1">
+                                            <x-heroicon-o-archive-box class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                                            <span class="hidden sm:inline">Fish Boxes</span>
+                                            <span class="sm:hidden">Boxes</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @foreach($broker->sales as $saleIndex => $sale)
+                                    @foreach($sale->salesDetails as $detailIndex => $detail)
+                                        <tr @mouseenter="hoveredSale = {{ $saleIndex }}"
+                                            @mouseleave="hoveredSale = null"
+                                            :class="hoveredSale === {{ $saleIndex }} ? 'bg-gray-100' : '{{ $saleIndex % 2 == 0 ? 'bg-white' : 'bg-gray-50' }}'"
+                                            class="transition-colors">
+                                            @if($detailIndex === 0)
+                                                <td rowspan="{{ $sale->salesDetails->count() }}" class="px-2 sm:px-6 py-2 sm:py-4 text-[10px] sm:text-sm text-gray-900 border-r border-gray-200 whitespace-nowrap">
+                                                    <div class="flex flex-col">
+                                                        <span class="font-medium">{{ \Carbon\Carbon::parse($sale->sales_date)->format('M d, Y') }}</span>
+                                                    </div>
+                                                </td>
+                                                <td rowspan="{{ $sale->salesDetails->count() }}" class="px-2 sm:px-6 py-2 sm:py-4 text-[10px] sm:text-sm text-gray-900 border-r border-gray-200">
+                                                    <div class="max-w-[80px] sm:max-w-none truncate">{{ $sale->buyer_name }}</div>
+                                                </td>
+                                            @endif
+                                            <td class="px-2 sm:px-6 py-2 sm:py-4 text-[10px] sm:text-sm font-medium text-gray-900">
+                                                <div class="max-w-[80px] sm:max-w-none truncate">{{ $detail->item }}</div>
+                                            </td>
+                                            <td class="px-2 sm:px-6 py-2 sm:py-4 text-[10px] sm:text-sm text-gray-900 text-center">
+                                                {{ $detail->quantity }}
+                                            </td>
+                                            <td class="px-2 sm:px-6 py-2 sm:py-4 text-[10px] sm:text-sm text-gray-900">
+                                                @php
+                                                    $fishBoxes = $detail->fishBoxes();
+                                                @endphp
+                                                @if($fishBoxes->isNotEmpty())
+                                                    <div class="flex flex-wrap gap-1">
+                                                        @foreach($fishBoxes as $fishBox)
+                                                            <span class="inline-flex items-center bg-gray-100 border border-gray-300 rounded px-1 sm:px-2 py-0.5 text-[9px] sm:text-xs font-mono whitespace-nowrap">
+                                                                {{ $fishBox->name }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-400 italic text-[9px] sm:text-xs">-</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                @endforelse
-            </div>
+                </div>
+            @endforeach
         </div>
 
-        <!-- Payment Method Analysis -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Payment Method Analysis</h3>
-                <div class="text-sm text-gray-500">Transaction Patterns</div>
+        <!-- Pagination -->
+        @if($brokersWithSales->hasPages())
+            <div class="mt-8">
+                {{ $brokersWithSales->appends(request()->query())->links('components.pagination') }}
             </div>
-            <div class="space-y-4">
-                @forelse($paymentMethods as $method)
-                    <div class="p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 rounded-full {{ $method['color'] }}"></div>
-                                <span class="text-sm font-medium text-gray-700">{{ $method['name'] }}</span>
-                            </div>
-                            <span class="text-sm font-medium text-gray-900">{{ $method['percentage'] }}%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
-                            <div class="h-3 rounded-full {{ $method['color'] }}" style="width: {{ $method['percentage'] }}%"></div>
-                        </div>
-                        <div class="flex justify-between text-xs text-gray-500">
-                            <span>{{ $method['transactions'] }} transactions</span>
-                            <span>₱{{ number_format($method['amount'], 2) }}</span>
-                        </div>
-            </div>
-                @empty
-                    <div class="text-center py-8">
-                        <x-heroicon-o-credit-card class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                        <p class="text-gray-500 text-sm">No payment data available</p>
-                        </div>
-                @endforelse
-                    </div>
-            </div>
-        </div>
-
-    <!-- Sales Status Analysis -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Sales Status Breakdown -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Sales Status Breakdown</h3>
-                <div class="text-sm text-gray-500">Payment Status</div>
-            </div>
-            <div class="space-y-4">
-                @foreach($salesStatusBreakdown['breakdown'] as $statusValue => $data)
-                    <div class="p-4 {{ $data['bg_class'] }} rounded-lg">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 rounded-full {{ $data['progress_color'] }}"></div>
-                                <span class="text-sm font-medium text-gray-700">{{ $data['display_name'] }}</span>
-                            </div>
-                            <span class="text-sm font-medium text-gray-900">{{ number_format($data['percentage'], 1) }}%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
-                            <div class="h-3 rounded-full {{ $data['progress_color'] }}" style="width: {{ $data['percentage'] }}%"></div>
-                        </div>
-                        <div class="flex justify-between text-xs text-gray-500">
-                            <span>{{ $data['count'] }} orders</span>
-                            <span>₱{{ number_format($data['total_amount'], 2) }}</span>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <!-- Payment Conversion Analysis -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Payment Conversion Analysis</h3>
-                <div class="text-sm text-gray-500">Conversion Rates</div>
-            </div>
-            <div class="space-y-6">
-                <!-- Full Payment Conversion -->
-                <div class="text-center p-4 bg-green-50 rounded-lg">
-                    <div class="text-2xl font-bold text-green-600">{{ number_format($paymentConversionData['conversion_rate'], 1) }}%</div>
-                    <div class="text-sm text-gray-600">Full Payment Rate</div>
-                    <div class="text-xs text-gray-500 mt-1">{{ $paymentConversionData['paid_orders'] }} of {{ $paymentConversionData['total_orders'] }} orders</div>
-                </div>
-
-                <!-- Partial Payment Conversion -->
-                <div class="text-center p-4 bg-blue-50 rounded-lg">
-                    <div class="text-2xl font-bold text-blue-600">{{ number_format($paymentConversionData['partial_conversion_rate'], 1) }}%</div>
-                    <div class="text-sm text-gray-600">Partial Payment Rate</div>
-                    <div class="text-xs text-gray-500 mt-1">{{ $paymentConversionData['partially_paid_orders'] }} of {{ $paymentConversionData['total_orders'] }} orders</div>
-                </div>
-
-                <!-- Outstanding Payments -->
-                <div class="text-center p-4 bg-yellow-50 rounded-lg">
-                    <div class="text-2xl font-bold text-yellow-600">{{ $paymentConversionData['active_orders'] }}</div>
-                    <div class="text-sm text-gray-600">Outstanding Orders</div>
-                    <div class="text-xs text-gray-500 mt-1">Awaiting payment</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Inventory Analysis -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Stock Status Overview -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Stock Status Overview</h3>
-                <div class="text-sm text-gray-500">Current Inventory</div>
-            </div>
-            <div class="space-y-4">
-                @foreach($inventoryAnalysisData['stock_status'] as $statusName => $data)
-                    <div class="p-4 {{ $data['bg_class'] }} rounded-lg">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 rounded-full {{ $data['color_class'] }}"></div>
-                                <span class="text-sm font-medium text-gray-700">{{ $statusName }}</span>
-                            </div>
-                            <span class="text-sm font-medium text-gray-900">{{ number_format($data['percentage'], 1) }}%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
-                            <div class="h-3 rounded-full {{ $data['color_class'] }}" style="width: {{ $data['percentage'] }}%"></div>
-                        </div>
-                        <div class="text-xs text-gray-500">
-                            {{ $data['count'] }} fish boxes
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <!-- Inventory Turnover Analysis -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Inventory Turnover Analysis</h3>
-                <div class="text-sm text-gray-500">Sales Efficiency</div>
-            </div>
-            <div class="space-y-6">
-                <!-- Turnover Rate -->
-                <div class="text-center p-4 bg-blue-50 rounded-lg">
-                    <div class="text-2xl font-bold text-blue-600">{{ number_format($inventoryAnalysisData['turnover_rate'], 1) }}%</div>
-                    <div class="text-sm text-gray-600">Inventory Turnover Rate</div>
-                    <div class="text-xs text-gray-500 mt-1">{{ $inventoryAnalysisData['sold_count'] }} sold of {{ $inventoryAnalysisData['total_inventory'] }} total</div>
-                </div>
-
-                <!-- Stock Availability -->
-                <div class="text-center p-4 bg-green-50 rounded-lg">
-                    <div class="text-2xl font-bold text-green-600">{{ $inventoryAnalysisData['in_stock_count'] }}</div>
-                    <div class="text-sm text-gray-600">Available Stock</div>
-                    <div class="text-xs text-gray-500 mt-1">Ready for sale</div>
-                </div>
-
-                <!-- Sales Performance -->
-                <div class="text-center p-4 bg-purple-50 rounded-lg">
-                    <div class="text-2xl font-bold text-purple-600">{{ $inventoryAnalysisData['sold_count'] }}</div>
-                    <div class="text-sm text-gray-600">Total Sold</div>
-                    <div class="text-xs text-gray-500 mt-1">All time sales</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+        @endif
+    @endif
 </div>
 
+<script src="{{ asset('js/broker-sales-print.js') }}"></script>
