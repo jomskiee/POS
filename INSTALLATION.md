@@ -102,11 +102,13 @@ php artisan serve
 
 ## 🛠️ Tech Stack
 - **Backend:** Laravel 10
-- **Frontend:** Tailwind CSS, Blade Templates
+- **Frontend:** Tailwind CSS, Blade Templates, Alpine.js
 - **Database:** MySQL
 - **Authentication:** Laravel Sanctum
+- **HTTP Client:** Axios (AJAX requests)
 - **UI Components:** Heroicons, Custom Components
-- **QR Code:** QR Scanner Integration
+- **Notifications:** SweetAlert2, Toastr
+- **QR Code:** QR Scanner, QR Code Styling
 
 ## 📱 Responsive Design
 - ✅ Mobile-first design
