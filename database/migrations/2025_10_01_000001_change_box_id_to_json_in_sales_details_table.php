@@ -30,7 +30,7 @@ return new class extends Migration
             $table->integer('box_id')->change();
 
             // Recreate foreign key constraint
-            $table->foreign('box_id')->references('id')->on('fish_boxes');
+            $table->foreign('box_id')->references('id')->on('fish_boxes')->onDelete('cascade');
         });
     }
 };
