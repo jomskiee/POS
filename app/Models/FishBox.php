@@ -167,11 +167,7 @@ class FishBox extends Model
     public static function getPaginatedWithFilters(?string $search = null, ?string $status = null, ?int $fishTypeId = null, int $perPage = 12, ?int $brokerId = null): LengthAwarePaginator
     {
         $query = static::with(['fishType', 'broker', 'latestSale', 'salesDetails'])
-            ->select('fish_boxes.*')
-            ->selectRaw('NOT (status = ? OR status = ?) as can_delete', [
-                FishBoxStatusConstant::SOLD,
-                FishBoxStatusConstant::RETURNED
-            ]);
+            ->select('fish_boxes.*');
 
         // Apply search filter
         if ($search) {
@@ -415,7 +411,10 @@ class FishBox extends Model
      */
     public function canBeDeleted(): bool
     {
-        return $this->can_delete && $this->status !== FishBoxStatusConstant::SOLD;
+        return !in_array($this->status, [
+            FishBoxStatusConstant::SOLD,
+            FishBoxStatusConstant::RETURNED
+        ]);
     }
 
     /**

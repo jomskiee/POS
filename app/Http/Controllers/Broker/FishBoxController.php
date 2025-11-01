@@ -105,7 +105,7 @@ class FishBoxController extends Controller
         $fishBox = FishBox::getFishBoxByIdAndBroker($id, $brokerId);
 
         // Check if fish box can be deleted
-        if (!$fishBox->can_delete) {
+        if (!$fishBox->canBeDeleted()) {
             return redirect()->route('broker.inventory.index', ['tab' => 'fishBoxes'])
                 ->with('error', 'Cannot delete fish box that has been sold or returned.');
         }
