@@ -265,7 +265,11 @@ class Sales extends Model
      */
     public function deleteSales(): void
     {
-        self::update(['status' => SalesStatusConstant::DELETED]);
+        // Delete related sales details
+        $this->salesDetails()->delete();
+
+        // Mark the sale as deleted
+        $this->update(['status' => SalesStatusConstant::DELETED]);
     }
 
     /**

@@ -253,8 +253,13 @@ class SalesController extends Controller
 
             // Reset fish boxes back to IN_STOCK status
             foreach ($salesDetails as $detail) {
-                FishBox::updateStatus($detail->box_id, FishBoxStatusConstant::IN_STOCK, $userId);
-                InventoryLog::deleteLogForFishBox($detail->box_id, $sale->created_at);
+                $boxIds = $detail->box_id;
+
+                foreach ($boxIds as $boxId) {
+
+                    FishBox::updateStatus((int) $boxId, FishBoxStatusConstant::IN_STOCK, $userId);
+                    InventoryLog::deleteLogForFishBox((int) $boxId, $sale->created_at);
+                }
             }
 
             $sale->deleteSales();
@@ -487,29 +492,25 @@ class SalesController extends Controller
     private function prepareSalesDetailsForForm(Request $request, ?Sales $editingSales): array
     {
         if ($request->get('modal') === 'edit' && $editingSales) {
-            // Group sales details by item to handle multiple fish boxes
-            $groupedDetails = $editingSales->salesDetails->groupBy('item');
-
-            return $groupedDetails->map(function($details) {
-                $firstDetail = $details->first();
-
+            // Return all sales details without grouping
+            return $editingSales->salesDetails->map(function($detail) {
                 // Get fish type ID from the first fish box
                 $fishTypeId = '';
-                if (is_array($firstDetail->box_id) && !empty($firstDetail->box_id)) {
-                    $firstFishBox = FishBox::find($firstDetail->box_id[0]);
+                if (is_array($detail->box_id) && !empty($detail->box_id)) {
+                    $firstFishBox = FishBox::find($detail->box_id[0]);
                     $fishTypeId = $firstFishBox ? (string)$firstFishBox->fish_type_id : '';
                 }
 
                 return [
-                    'box_id' => $firstDetail->box_id ?? [], // box_id is now a JSON array
+                    'box_id' => $detail->box_id ?? [], // box_id is now a JSON array
                     'fish_type_id' => $fishTypeId,
-                    'item' => $firstDetail->item,
-                    'item_description' => $firstDetail->item_description ?? '',
-                    'unit_price' => $firstDetail->unit_price ?? '',
-                    'quantity' => $firstDetail->quantity ?? 1,
-                    'sub_total' => $firstDetail->sub_total ?? '',
+                    'item' => $detail->item,
+                    'item_description' => $detail->item_description ?? '',
+                    'unit_price' => $detail->unit_price ?? '',
+                    'quantity' => $detail->quantity ?? 1,
+                    'sub_total' => $detail->sub_total ?? '',
                 ];
-            })->values()->toArray();
+            })->toArray();
         }
 
         return old('sales_details') ?: [
