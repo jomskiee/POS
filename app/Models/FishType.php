@@ -34,6 +34,18 @@ class FishType extends Model
         return $this->hasMany(FishBox::class);
     }
 
+    /**
+     * Check if this fish type is used by checking if fish boxes exist with the same broker_id
+     *
+     * @return bool
+     */
+    public function isUsed(): bool
+    {
+        return $this->fishBoxes()
+            ->where('broker_id', $this->broker_id)
+            ->exists();
+    }
+
     // =============== DATABASE OPERATIONS =============== //
 
     /**
@@ -65,9 +77,7 @@ class FishType extends Model
      */
     public static function getPaginatedWithSearch(?string $search = null, ?int $brokerId = null, int $perPage = 12): LengthAwarePaginator
     {
-        $query = static::query()
-            ->select('fish_types.*')
-            ->selectRaw('EXISTS(SELECT 1 FROM fish_boxes WHERE fish_boxes.fish_type_id = fish_types.id) as is_used');
+        $query = static::query();
 
         // Filter by broker if provided
         if ($brokerId) {

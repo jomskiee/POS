@@ -38,10 +38,12 @@ class FishTypeRequest extends FormRequest
         if ($fishTypeId) {
             $nameRules[] = Rule::unique('fish_types', 'name')
                 ->ignore($fishTypeId, 'id')
-                ->where('broker_id', $brokerId);
+                ->where('broker_id', $brokerId)
+                ->whereNull('deleted_at');
         } else {
             $nameRules[] = Rule::unique('fish_types', 'name')
-                ->where('broker_id', $brokerId);
+                ->where('broker_id', $brokerId)
+                ->whereNull('deleted_at');
         }
 
         return [

@@ -187,7 +187,7 @@
                                        class="text-green-600 hover:text-green-900 transition-colors">
                                         <x-heroicon-o-pencil-square class="w-6 h-6" />
                                     </a>
-                                    @if($fishType->is_used)
+                                    @if($fishType->isUsed())
                                         <button type="button" class="text-gray-400 cursor-not-allowed" title="Cannot delete: Fish type is in use">
                                             <x-heroicon-o-trash class="w-6 h-6" />
                                         </button>
